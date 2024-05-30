@@ -14,6 +14,9 @@ dependencies:
   '@nabux-crush/crush-pagination':
     specifier: ^0.0.2
     version: 0.0.2
+  '@nabux-crush/crush-styles':
+    specifier: ^0.0.21
+    version: 0.0.21
   '@nabux-crush/crush-text-field':
     specifier: ^0.5.1
     version: 0.5.1

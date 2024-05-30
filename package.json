@@ -12,6 +12,7 @@
     "@fortawesome/fontawesome-free": "^6.5.2",
     "@nabux-crush/crush-button": "^1.0.33",
     "@nabux-crush/crush-pagination": "^0.0.2",
+    "@nabux-crush/crush-styles": "^0.0.21",
     "@nabux-crush/crush-text-field": "^0.5.1",
     "@nabux-crush/crush-upload": "^0.0.2",
     "axios": "^1.7.2",

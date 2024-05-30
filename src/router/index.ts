@@ -9,6 +9,7 @@ const RestaurantInfo = () => import('@/views/app/RestaurantInfo/Index.vue');
 const InvoiceHistory = () => import('@/views/app/InvoiceHistory.vue');
 const OrderHistory = () => import('@/views/app/OrderHistory.vue');
 const DeliverySetup = () => import('@/views/app/DeliverySetup.vue');
+const Integrations = () => import('@/views/app/Integrations.vue');
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -25,7 +26,7 @@ const routes: Array<RouteRecordRaw> = [
     component: AppLayout,
     children: [
       {
-        path: '',
+        path: '/restaurant-info',
         name: 'Restaurant Info',
         component: RestaurantInfo,
         meta: {
@@ -54,6 +55,14 @@ const routes: Array<RouteRecordRaw> = [
         component: DeliverySetup,
         meta: {
           title: 'Configuración de pedidos'
+        }
+      },
+      {
+        path: '/integrations',
+        name: 'Integrations',
+        component: Integrations,
+        meta: {
+          title: 'Integraciones'
         }
       },
     ]
