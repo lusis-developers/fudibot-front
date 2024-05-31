@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 
+import { googleAuthGuard } from './utils/authGuard';
+
 // import layout components
 const AppLayout = () => import('@/layouts/AppLayout.vue');
 
@@ -83,10 +85,10 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach(async (to, _from, next) => {
+router.beforeEach(async (to, from, next) => {
   document.title = to.meta.title as string;
 
-  next();
+  await googleAuthGuard(to, from, next);
 });
 
 export default router;
