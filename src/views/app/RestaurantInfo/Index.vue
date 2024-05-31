@@ -3,6 +3,6 @@
 
 <template>
   <div>
-    Restaurante infor
+    Vamos a trabajar en el restaurante
   </div>
 </template>

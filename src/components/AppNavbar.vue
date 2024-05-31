@@ -132,7 +132,7 @@ function toggleNav(): void {
 
   @media (min-width: $tablet-upper-breakpoint) {
     position: relative;
-    width: 88px;
+    width: 64px;
     min-height: 100vh;
     display: flex;
     flex-direction: column;

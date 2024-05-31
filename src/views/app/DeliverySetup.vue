@@ -3,6 +3,6 @@
 
 <template>
   <div>
-    Costo por kilometros
+    Settings para trabjaar delivery el trabjo
   </div>
 </template>

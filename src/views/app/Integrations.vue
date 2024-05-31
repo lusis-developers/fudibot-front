@@ -3,6 +3,6 @@
 
 <template>
   <div>
-    integraciones
+    Trabajar las integraciones
   </div>
 </template>
