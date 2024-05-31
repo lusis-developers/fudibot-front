@@ -1,17 +1,14 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
 
-import useAuthStore from '@/store/auth';
-
 const router = useRouter();
-const authStore = useAuthStore();
 
 function getAuth(): void {
-  authStore.getGoogleAuth();
+  console.log('me autentico');
 }
 
 function redirect(): void {
-  router.push('/register');
+  router.push('/login');
 }
 </script>
 
@@ -19,9 +16,11 @@ function redirect(): void {
   <div class="wrapper">
     <div class="wrapper-login">
       <h1 class="wrapper-login-title">
-        Ingresar...
+        Inicia Sesión...
       </h1>
-      <p>¿Estás listo? Toma el poder de tu negocio, gestiona y automatiza tus deliveries</p>
+      <p>
+        Inicia Sesión y tomemos en control tus deliveries y tu negocio.
+      </p>
       <CrushButton
         :small="true"
         class="wrapper-login-google"
@@ -32,7 +31,7 @@ function redirect(): void {
       <div class="wrapper-login-link">
         <CrushButton
           :small="true"
-          text="Crear cuenta"
+          text="Inicia Sesión"
           variant="textonly"
           class="link"
           @click="redirect" />

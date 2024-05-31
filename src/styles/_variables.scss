@@ -5,6 +5,9 @@
 @import './externalVariables';
 $font: 'Reddit Mono', sans-serif;
 
+// look and feel
+$drop-shadow-filter: drop-shadow(0px 1px 1px $black);
+
 * {
   margin: 0;
   padding: 0;
@@ -20,4 +23,5 @@ body {
 p, h1, h2, h3, h4, h5, h6, span, div {
   color: $black;
   font-family: $font;
+  filter: none;
 }

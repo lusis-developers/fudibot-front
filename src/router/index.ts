@@ -5,6 +5,7 @@ const AppLayout = () => import('@/layouts/AppLayout.vue');
 
 // import web views
 const Login = () => import('@/views/Login.vue');
+const Register = () => import('@/views/Register.vue');
 const RestaurantInfo = () => import('@/views/app/RestaurantInfo/Index.vue');
 const InvoiceHistory = () => import('@/views/app/InvoiceHistory.vue');
 const OrderHistory = () => import('@/views/app/OrderHistory.vue');
@@ -13,11 +14,19 @@ const Integrations = () => import('@/views/app/Integrations.vue');
 
 const routes: Array<RouteRecordRaw> = [
   {
-    path: '/',
+    path: '/login',
     name: 'Login',
     component: Login,
     meta: {
       title: 'Inicia Sesión 🚀'
+    }
+  },
+  {
+    path: '/register',
+    name: 'Register',
+    component: Register,
+    meta: {
+      title: 'Regístrate 🚀'
     }
   },
   {
@@ -26,7 +35,7 @@ const routes: Array<RouteRecordRaw> = [
     component: AppLayout,
     children: [
       {
-        path: '/restaurant-info',
+        path: 'restaurant-info',
         name: 'Restaurant Info',
         component: RestaurantInfo,
         meta: {
@@ -34,7 +43,7 @@ const routes: Array<RouteRecordRaw> = [
         }
       },
       {
-        path: '/invoice-history',
+        path: 'invoice-history',
         name: 'InvoiceHistory',
         component: InvoiceHistory,
         meta: {
@@ -42,7 +51,7 @@ const routes: Array<RouteRecordRaw> = [
         }
       },
       {
-        path: '/order-history',
+        path: 'order-history',
         name: 'OrderHistory',
         component: OrderHistory,
         meta: {
@@ -50,7 +59,7 @@ const routes: Array<RouteRecordRaw> = [
         }
       },
       {
-        path: '/delivery-setup',
+        path: 'delivery-setup',
         name: 'DeliverySetup',
         component: DeliverySetup,
         meta: {
@@ -58,7 +67,7 @@ const routes: Array<RouteRecordRaw> = [
         }
       },
       {
-        path: '/integrations',
+        path: 'integrations',
         name: 'Integrations',
         component: Integrations,
         meta: {

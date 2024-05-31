@@ -4,27 +4,27 @@ import { ref } from 'vue';
 const menu = [
   {
     name: 'Info',
-    path: '/restaurant-info',
+    path: 'restaurant-info',
     icon: 'fa-solid fa-receipt'
   },
   {
     name: 'Ordenes',
-    path: '/order-history',
+    path: 'order-history',
     icon: 'fas fa-history'
   },
   {
     name: 'Facturas',
-    path: '/invoice-history',
+    path: 'invoice-history',
     icon: 'fa-solid fa-file-invoice'
   },
   {
     name: 'Delivery',
-    path: '/delivery-setup',
+    path: 'delivery-setup',
     icon: 'fa-solid fa-motorcycle'
   },
   {
     name: 'Integraciones',
-    path: '/integrations',
+    path: 'integrations',
     icon: 'fa-solid fa-circle-nodes'
   },
 ];
@@ -56,7 +56,7 @@ function toggleNav(): void {
       <router-link
         v-for="(item, index) in menu"
         :key="index"
-        :to="item.path"
+        :to="`/app/${item.path}`"
         class="nav-item">
         <i :class="item.icon"></i>
         <span class="nav-text">
@@ -80,7 +80,7 @@ function toggleNav(): void {
   flex-direction: row;
   justify-content: space-around;
   background-color: $white;
-  border-right: 1px solid $primary-green;
+  border-right: 1px solid $green;
   box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
   z-index: 10;
   transition: all 0.3s ease;
@@ -122,10 +122,10 @@ function toggleNav(): void {
 
     &.router-link-exact-active,
     &:hover {
-      color: $primary-green;
+      color: $green;
 
       .nav-text {
-        color: $primary-green;
+        color: $green;
       }
     }
   }
@@ -146,7 +146,7 @@ function toggleNav(): void {
       justify-content: center;
       margin: 0 auto;
       padding: 8px;
-      border-bottom: 1px solid $primary-green;
+      border-bottom: 1px solid $green;
       .logo {
         display: block;
         width: 24px;
@@ -154,7 +154,7 @@ function toggleNav(): void {
       button {
         border: none;
         outline: none;
-        color: $primary-green;
+        color: $green;
         i {
           font-size: 20px;
         }
