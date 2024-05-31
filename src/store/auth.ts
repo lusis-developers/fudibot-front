@@ -1,17 +1,9 @@
-import {
-  GoogleAuthProvider,
-  signInWithPopup,
-  getAuth,
-  onAuthStateChanged
-} from 'firebase/auth';
 import { defineStore } from 'pinia';
 
+import { googleProvider, auth } from '@/config/firebase';
+import { signInWithPopup, signOut as firebaseSignOut, onAuthStateChanged } from 'firebase/auth';
+
 import type { User } from '@/types/user.interface';
-
-const googleAuth = getAuth();
-const provider = new GoogleAuthProvider();
-
-provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
 
 interface RootState {
   user: User | null,
@@ -27,7 +19,7 @@ const useAuthStore = defineStore('AuthStore', {
   actions: {
     async getGoogleAuth(): Promise<void> {
       try {
-        const response = await signInWithPopup(googleAuth, provider);
+        const response = await signInWithPopup(auth, googleProvider);
         if (response.user) {
           this.user = {
             uid: response.user.uid,
@@ -48,7 +40,7 @@ const useAuthStore = defineStore('AuthStore', {
     },
     async checkAuth(): Promise<void> {
       onAuthStateChanged(
-        googleAuth,
+        auth,
         (user) => {
           if (user) {
             this.user = {
@@ -67,7 +59,7 @@ const useAuthStore = defineStore('AuthStore', {
     },
     async signOut(): Promise<void> {
       try {
-        await googleAuth.signOut();
+        await firebaseSignOut(auth);
         this.user = null;
       } catch (error: unknown) {
         if (error instanceof Error) {

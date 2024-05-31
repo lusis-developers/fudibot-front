@@ -7,7 +7,10 @@ export async function googleAuthGuard(
   _from: RouteLocationNormalized,
   next: NavigationGuardNext
 ): Promise<void> {
+
   const authStore = useAuthStore();
+
+  await authStore.checkAuth();
 
   const isAuthenticated = authStore.user !== null;
 
