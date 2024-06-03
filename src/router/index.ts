@@ -94,10 +94,11 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach(async (to, from, next) => {
+router.beforeEach(async (to, _from, next) => {
   document.title = to.meta.title as string;
 
-  await googleAuthGuard(to, from, next);
+  // await googleAuthGuard(to, from, next);
+  next()
 });
 
 export default router;

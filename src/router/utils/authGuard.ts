@@ -13,6 +13,8 @@ export async function googleAuthGuard(
 
   await authStore.checkAuth();
 
+  console.log(authStore)
+
   console.log('user', authStore?.user)
 
   const isAuthenticated = authStore.user !== null;

@@ -29,6 +29,8 @@ const pageTitle = computed(() => route.meta.title);
     min-height: 100vh;
     padding: 16px;
     .title {
+      max-width: $desktop-upper-breakpoint;
+      margin: 0 auto;
       font-size: $h2-font-size;
       margin-bottom: 16px;
     }

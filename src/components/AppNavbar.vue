@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 
 const menu = [
   {
@@ -31,10 +31,17 @@ const menu = [
 
 const isOpen = ref(false);
 
+const isDektop = computed(() => window.innerWidth > 1280)
+
 function toggleNav(): void {
   isOpen.value = !isOpen.value;
 }
 
+onMounted(() => {
+  if (isDektop.value) {
+    isOpen.value = true;
+  }
+});
 </script>
 
 <template>
@@ -47,6 +54,7 @@ function toggleNav(): void {
         alt="fudibot"
         class="logo">
         <button
+          v-if="!isDektop"
           class="button"
           @click="toggleNav">
           <i class="fa-solid fa-bars"></i>

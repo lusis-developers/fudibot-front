@@ -13,17 +13,24 @@ class Auth0Service {
   }
 
   async init(): Promise<void> {
-    const config: Auth0ClientOptions = {
-      domain: 'dev-rtlzfsmq8fzuo8xt.us.auth0.com', // Usa tu dominio Auth0 real aquí
-      clientId: 'MKec3hnxog79HvHqal3Mh3G1am5N6qFU',
-      authorizationParams: {
-        grandType: 'authorization_code',
-        redirect_uri: 'http://localhost:5173/authorize',
-        scope: 'openid profile email phone address'
+    try {
+      const config: Auth0ClientOptions = {
+        domain: 'dev-rtlzfsmq8fzuo8xt.us.auth0.com', // Usa tu dominio Auth0 real aquí
+        clientId: 'MKec3hnxog79HvHqal3Mh3G1am5N6qFU',
+        authorizationParams: {
+          grandType: 'authorization_code',
+          redirect_uri: 'http://localhost:5173/authorize',
+          scope: 'openid profile email phone address'
+        },
+        useRefreshTokens: true, // Habilita el uso de refresh tokens
+        cacheLocation: 'localstorage'
       }
+  
+      this.auth0Client = await createAuth0Client(config);
+    } catch (error) {
+      console.log('error', error)
     }
 
-    this.auth0Client = await createAuth0Client(config);
   }
 
   private async loginWithConnection(connection: string): Promise<void> {

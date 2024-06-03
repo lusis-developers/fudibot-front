@@ -18,6 +18,7 @@ const useAuthStore = defineStore('AuthStore', {
   actions: {
     async loginWithGoogle(): Promise<void> {
       try {
+        console.log(auth0Service)
         await auth0Service.loginWithGoogle();
       } catch (error: unknown) {
         if (error instanceof Error) {
