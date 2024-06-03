@@ -1,14 +1,13 @@
 import { defineStore } from 'pinia';
-
-import { googleProvider, auth } from '@/config/firebase';
-import { signInWithPopup, signOut as firebaseSignOut, onAuthStateChanged } from 'firebase/auth';
-
+import Auth0Service from '@/services/auth';
 import type { User } from '@/types/user.interface';
 
+const auth0Service = new Auth0Service();
+
 interface RootState {
-  user: User | null,
-  error: string | null
-} 
+  user: User | null;
+  error: string | null;
+}
 
 const useAuthStore = defineStore('AuthStore', {
   state: (): RootState => ({
@@ -17,53 +16,70 @@ const useAuthStore = defineStore('AuthStore', {
   }),
 
   actions: {
-    async getGoogleAuth(): Promise<void> {
+    async loginWithGoogle(): Promise<void> {
       try {
-        const response = await signInWithPopup(auth, googleProvider);
-        if (response.user) {
-          this.user = {
-            uid: response.user.uid,
-            displayName: response.user.displayName,
-            email: response.user.email,
-            photoURL: response.user.photoURL,
-            phoneNumber: response.user.phoneNumber,
-            emailVerified: response.user.emailVerified
-          }
-        }
+        await auth0Service.loginWithGoogle();
       } catch (error: unknown) {
         if (error instanceof Error) {
-          this.error = error?.message;
+          this.error = error.message;
+        } else {
+          this.error = String(error);
+        }
+      }
+    },
+    async loginWithFacebook(): Promise<void> {
+      try {
+        await auth0Service.loginWithFacebook();
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          this.error = error.message;
+        } else {
+          this.error = String(error);
+        }
+      }
+    },
+    async handleAuthCallback(): Promise<void> {
+      try {
+        await auth0Service.handleRedirectCallback();
+        await this.checkAuth();
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          this.error = error.message;
         } else {
           this.error = String(error);
         }
       }
     },
     async checkAuth(): Promise<void> {
-      onAuthStateChanged(
-        auth,
-        (user) => {
-          if (user) {
-            this.user = {
-              uid: user.uid,
-              displayName: user.displayName,
-              email: user.email,
-              photoURL: user.photoURL,
-              phoneNumber: user.phoneNumber,
-              emailVerified: user.emailVerified
-            }
-          } else {
-            this.user = null;
-          }
+      try {
+        const isAuthenticated = await auth0Service.isAuthenticated();
+        if (isAuthenticated) {
+          const user = await auth0Service.getUser();
+          this.user = {
+            sub: user.sub,
+            name: user.name,
+            email: user.email,
+            picture: user.picture,
+            email_verified: user.email_verified,
+          };
+        } else {
+          this.user = null;
         }
-      )
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          this.error = error.message;
+        } else {
+          this.error = String(error);
+        }
+      }
     },
     async signOut(): Promise<void> {
       try {
-        await firebaseSignOut(auth);
+        auth0Service.logout();
         this.user = null;
       } catch (error: unknown) {
         if (error instanceof Error) {
-          this.error = error?.message;
+          this.error = error.message;
         } else {
           this.error = String(error);
         }

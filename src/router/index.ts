@@ -8,6 +8,7 @@ const AppLayout = () => import('@/layouts/AppLayout.vue');
 // import web views
 const Login = () => import('@/views/Login.vue');
 const Register = () => import('@/views/Register.vue');
+const Authorize = () => import('@/views/Authorize.vue');
 const RestaurantInfo = () => import('@/views/app/RestaurantInfo/Index.vue');
 const InvoiceHistory = () => import('@/views/app/InvoiceHistory.vue');
 const OrderHistory = () => import('@/views/app/OrderHistory.vue');
@@ -29,6 +30,14 @@ const routes: Array<RouteRecordRaw> = [
     component: Register,
     meta: {
       title: 'Regístrate 🚀'
+    }
+  },
+  {
+    path: '/authorize',
+    name: 'Authorize',
+    component: Authorize,
+    meta: {
+      title: 'Authorize 🚀'
     }
   },
   {

@@ -4,10 +4,15 @@ import { useRouter } from 'vue-router';
 import useAuthStore from '@/store/auth';
 
 const router = useRouter();
+
 const authStore = useAuthStore();
 
-function getAuth(): void {
-  authStore.getGoogleAuth();
+function loginWithGoogle(): void {
+  authStore.loginWithGoogle();
+}
+
+function loginWithFacebook(): void {
+  authStore.loginWithFacebook();
 }
 
 function redirect(): void {
@@ -25,9 +30,16 @@ function redirect(): void {
       <CrushButton
         :small="true"
         class="wrapper-login-google"
-        @click="getAuth">
+        @click="loginWithGoogle">
         <i class="fa-brands fa-google"></i>
         Inicia con Google
+      </CrushButton>
+      <CrushButton
+        :small="true"
+        class="wrapper-login-google"
+        @click="loginWithFacebook">
+        <i class="fa-brands fa-facebook"></i>
+        Inicia con Facebook
       </CrushButton>
       <div class="wrapper-login-link">
         <CrushButton

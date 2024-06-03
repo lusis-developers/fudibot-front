@@ -1,12 +1,10 @@
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
-import { initializeApp } from 'firebase/app';
 import { getAnalytics } from 'firebase/analytics';
 
 import App from './App.vue';
 import router from './router';
-
-import { firebaseApp as firebaseApp, analytics } from './config/firebase';
+import firebaseApp from './config/firebase';
 
 // Import main components from crush
 import CrushPagination from '@nabux-crush/crush-pagination';
@@ -23,6 +21,9 @@ async function createVueApp() {
 
   //setting router
   app.use(router);
+
+  // setting firebase
+  getAnalytics(firebaseApp);
 
   // components globally
   app.component('CrushPagination', CrushPagination);
