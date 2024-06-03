@@ -28,9 +28,9 @@ const pageTitle = computed(() => route.meta.title);
     flex-grow: 1;
     min-height: 100vh;
     padding: 16px;
+    margin: 0 auto;
+    max-width: $desktop-upper-breakpoint;
     .title {
-      max-width: $desktop-upper-breakpoint;
-      margin: 0 auto;
       font-size: $h2-font-size;
       margin-bottom: 16px;
     }

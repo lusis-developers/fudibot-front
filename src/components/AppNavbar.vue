@@ -198,7 +198,6 @@ onMounted(() => {
 
   @media (min-width: $desktop-lower-breakpoint) {
     max-width: $crush-container-max-width;
-    margin: 0 auto;
   }
 
   &.nav-open {
