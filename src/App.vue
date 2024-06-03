@@ -1,28 +1,14 @@
 <script setup lang="ts">
-import { onMounted, watch } from 'vue';
-import { RouterView, useRouter } from 'vue-router';
+import { onMounted } from 'vue';
+import { RouterView } from 'vue-router';
 
 import useAuthStore from './store/auth';
 
-const router = useRouter();
-
 const authStore = useAuthStore();
 
-onMounted(() => {
-  authStore.checkAuth();
-});
-
-watch(
-  () => authStore.user,
-  (user) => {
-    if (user !== null) {
-      // router.push('/app/restaurant-info');
-    }
-  },
-  {
-    deep: true
-  }
-)
+// onMounted(async () => {
+//   await authStore.checkAuth();
+// });
 </script>
 
 <template>

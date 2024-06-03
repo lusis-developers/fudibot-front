@@ -8,21 +8,13 @@ export async function googleAuthGuard(
   next: NavigationGuardNext
 ): Promise<void> {
 
-  console.log('entramos en guard')
   const authStore = useAuthStore();
 
   await authStore.checkAuth();
 
-  console.log(authStore)
-
-  console.log('user', authStore?.user)
-
   const isAuthenticated = authStore.user !== null;
 
-  console.log('isAuthenticated', isAuthenticated)
-
-  if (isAuthenticated && (to.name === 'Login' || to.name === 'Register')) {
-    console.log('condition', isAuthenticated && (to.name === 'Login' || to.name === 'Register'))
+  if (isAuthenticated && (to.name === 'Login' || to.name === 'Register' || to.name === 'Authorize')) {
     next({ path: '/app/restaurant-info' });
     return;
   } else if (!isAuthenticated && to.path.startsWith('/app')) {
