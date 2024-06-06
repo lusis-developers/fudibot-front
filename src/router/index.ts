@@ -23,24 +23,24 @@ const routes: Array<RouteRecordRaw> = [
     name: 'Login',
     component: Login,
     meta: {
-      title: 'Inicia Sesión 🚀'
-    }
+      title: 'Inicia Sesión 🚀',
+    },
   },
   {
     path: '/register',
     name: 'Register',
     component: Register,
     meta: {
-      title: 'Regístrate 🚀'
-    }
+      title: 'Regístrate 🚀',
+    },
   },
   {
     path: '/authorize',
     name: 'Authorize',
     component: Authorize,
     meta: {
-      title: 'Authorize 🚀'
-    }
+      title: 'Authorize 🚀',
+    },
   },
   {
     path: '/app',
@@ -52,51 +52,51 @@ const routes: Array<RouteRecordRaw> = [
         name: 'Wizard',
         component: Wizard,
         meta: {
-          title: 'Primeros Pasos'
-        }
+          title: 'Primeros Pasos',
+        },
       },
       {
         path: 'restaurant-info',
         name: 'Restaurant Info',
         component: RestaurantInfo,
         meta: {
-          title: 'Información de pedidos'
-        }
+          title: 'Información de pedidos',
+        },
       },
       {
         path: 'invoice-history',
         name: 'InvoiceHistory',
         component: InvoiceHistory,
         meta: {
-          title: 'Pedidos'
-        }
+          title: 'Pedidos',
+        },
       },
       {
         path: 'order-history',
         name: 'OrderHistory',
         component: OrderHistory,
         meta: {
-          title: 'Ordenes'
-        }
+          title: 'Ordenes',
+        },
       },
       {
         path: 'delivery-setup',
         name: 'DeliverySetup',
         component: DeliverySetup,
         meta: {
-          title: 'Configuración de pedidos'
-        }
+          title: 'Configuración de pedidos',
+        },
       },
       {
         path: 'integrations',
         name: 'Integrations',
         component: Integrations,
         meta: {
-          title: 'Integraciones'
-        }
+          title: 'Integraciones',
+        },
       },
-    ]
-  }
+    ],
+  },
 ];
 
 const router = createRouter({

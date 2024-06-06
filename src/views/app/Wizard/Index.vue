@@ -38,12 +38,30 @@ function completeWizard() {
       </div>
     </div>
     <div class="wizard-content">
-      <Step1BasicInfo v-if="currentStep === 1" @next="nextStep" />
-      <Step2ContactInfo v-if="currentStep === 2" @next="nextStep" @prev="prevStep" />
-      <Step3CompanyInfo v-if="currentStep === 3" @next="nextStep" @prev="prevStep" />
-      <Step4Settings v-if="currentStep === 4" @next="nextStep" @prev="prevStep" />
-      <Step5PaymentSettings v-if="currentStep === 5" @next="nextStep" @prev="prevStep" />
-      <Step6QRCode v-if="currentStep === 6" @next="nextStep" @prev="prevStep" @complete="completeWizard" />
+      <Step1BasicInfo
+        v-if="currentStep === 1"
+        @next="nextStep" />
+      <Step2ContactInfo
+        v-if="currentStep === 2"
+        @next="nextStep"
+        @prev="prevStep" />
+      <Step3CompanyInfo
+        v-if="currentStep === 3"
+        @next="nextStep"
+        @prev="prevStep" />
+      <Step4Settings
+        v-if="currentStep === 4"
+        @next="nextStep"
+        @prev="prevStep" />
+      <Step5PaymentSettings
+        v-if="currentStep === 5"
+        @next="nextStep"
+        @prev="prevStep" />
+      <Step6QRCode
+        v-if="currentStep === 6"
+        @next="nextStep"
+        @prev="prevStep"
+        @complete="completeWizard" />
     </div>
   </div>
 </template>
