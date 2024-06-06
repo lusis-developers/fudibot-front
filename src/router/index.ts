@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 
 import { googleAuthGuard } from './utils/authGuard';
+import { wizardGuard } from './utils/wizardGuard';
 
 // import layout components
 const AppLayout = () => import('@/layouts/AppLayout.vue');
@@ -9,6 +10,7 @@ const AppLayout = () => import('@/layouts/AppLayout.vue');
 const Login = () => import('@/views/Login.vue');
 const Register = () => import('@/views/Register.vue');
 const Authorize = () => import('@/views/Authorize.vue');
+const Wizard = () => import('@/views/app/Wizard/Index.vue');
 const RestaurantInfo = () => import('@/views/app/RestaurantInfo/Index.vue');
 const InvoiceHistory = () => import('@/views/app/InvoiceHistory.vue');
 const OrderHistory = () => import('@/views/app/OrderHistory.vue');
@@ -45,6 +47,14 @@ const routes: Array<RouteRecordRaw> = [
     name: 'App',
     component: AppLayout,
     children: [
+      {
+        path: 'wizard',
+        name: 'Wizard',
+        component: Wizard,
+        meta: {
+          title: 'Primeros Pasos'
+        }
+      },
       {
         path: 'restaurant-info',
         name: 'Restaurant Info',
@@ -97,7 +107,9 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
   document.title = to.meta.title as string;
 
-  await googleAuthGuard(to, from, next)
+  await googleAuthGuard(to, from, next);
+
+  wizardGuard(to, from, next);
 });
 
 export default router;
