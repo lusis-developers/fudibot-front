@@ -12,6 +12,7 @@ import CrushPagination from '@nabux-crush/crush-pagination';
 import CrushButton from '@nabux-crush/crush-button';
 import CrushTextField from '@nabux-crush/crush-text-field';
 import CrushUpload from '@nabux-crush/crush-upload';
+import CrushSelect from '@nabux-crush/crush-select';
 
 async function createVueApp() {
   const app = createApp(App);
@@ -31,6 +32,7 @@ async function createVueApp() {
   app.component('CrushButton', CrushButton);
   app.component('CrushTextField', CrushTextField);
   app.component('CrushUpload', CrushUpload);
+  app.component('CrushSelect', CrushSelect);
 
   return app;
 }

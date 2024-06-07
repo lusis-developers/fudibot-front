@@ -5,3 +5,4 @@ declare module '@nabux-crush/crush-button';
 declare module '@nabux-crush/crush-editor';
 declare module  '@nabux-crush/crush-alert';
 declare module '@nabux-crush/crush-upload';
+declare module '@nabux-crush/crush-select'
