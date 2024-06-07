@@ -33,3 +33,18 @@ export const websiteOrInstagramRules = [
     message: 'El sitio web o link de tu Instagram no es válido 😥'
   }
 ];
+
+
+export const productNameRules = [
+  {
+    validate: (value: string) => value.length > 0,
+    message: 'El nombre del producto no puede estar vacío'
+  }
+];
+
+export const priceRules = [
+  {
+    validate: (value: string) => /^[0-9]+(\.[0-9]{1,2})?$/.test(value),
+    message: 'El precio debe ser un número válido con hasta dos decimales'
+  }
+];

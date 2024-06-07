@@ -5,8 +5,8 @@ import Step1BasicInfo from '@/views/app/Wizard/components/Step1BasicInfo.vue';
 import Step2ContactInfo from '@/views/app/Wizard/components/Step2ContactInfo.vue';
 import Step3CompanyInfo from '@/views/app/Wizard/components/Step3CompanyInfo.vue';
 import Step4Settings from '@/views/app/Wizard/components/Step4Settings.vue';
-import Step5PaymentSettings from '@/views/app/Wizard/components/Step5PaymentSettings.vue';
-import Step6QRCode from '@/views/app/Wizard/components/Step6QRCode.vue';
+import Step5AddItems from './components/Step5AddItems.vue';
+import Step6PaymentSettings from './components/Step6PaymentSettings.vue';
 
 const emit = defineEmits(['completed']);
 
@@ -53,11 +53,11 @@ function completeWizard() {
         v-if="currentStep === 4"
         @next="nextStep"
         @prev="prevStep" />
-      <Step5PaymentSettings
+      <Step5AddItems
         v-if="currentStep === 5"
         @next="nextStep"
         @prev="prevStep" />
-      <Step6QRCode
+      <Step6PaymentSettings
         v-if="currentStep === 6"
         @next="nextStep"
         @prev="prevStep"

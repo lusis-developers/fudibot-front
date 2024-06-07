@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import Auth0Service from '@/services/auth';
 import type { User } from '@/types/user.interface';
+import useClientStore from './client';
 
 const auth0Service = new Auth0Service();
 
@@ -62,6 +63,8 @@ const useAuthStore = defineStore('AuthStore', {
             picture: user.picture,
             email_verified: user.email_verified,
           };
+          const clientStore = useClientStore();
+          clientStore.setUser(this.user)
         } else {
           this.user = null;
         }
