@@ -1,5 +1,7 @@
 import { defineStore } from 'pinia';
-import type { Restaurant, Meal, Drink } from '@/types/restaurant.interface';
+
+// import RestaurantService from '@/services/restaurant';
+import type { BasicInfo, CompanyInfo, ContactInfo, Restaurant, Settings } from '@/types/restaurant.interface';
 
 interface RootState {
   restaurant: Restaurant;
@@ -7,35 +9,62 @@ interface RootState {
   isLoading: boolean;
 }
 
-export const useRestaurantStore = defineStore('RestaurantStore', {
+// const restaurantService = new RestaurantService();
+
+const useRestaurantStore = defineStore('RestaurantStore', {
   state: (): RootState => ({
     restaurant: {
-      name: 'Restaurante Ficticio',
-      meals: [
-        { id: '1', name: 'Pizza', price: 10 },
-        { id: '2', name: 'Burger', price: 8 },
-        { id: '3', name: 'Pasta', price: 12 },
-      ],
-      drinks: [
-        { id: '1', name: 'Coke', price: 2 },
-        { id: '2', name: 'Water', price: 1 },
-        { id: '3', name: 'Juice', price: 3 },
-      ],
+      basicInfo: {
+        location: {
+          lat: 0,
+          lng: 0,
+          radius: 0,
+          fullAdress: ''
+        },
+        botName: ''
+      },
+      contactInfo: {
+        email: '',
+        cellphone: ''
+      },
+      companyInfo: {
+        companyName: '',
+        schedule: ''
+      },
+      settings: {
+        manager: '',
+        website: '',
+        logo: ''
+      },
+      currency: 'USD',
+      meals: [],
+      drinks: [],
+      countryCode: '+593',
+      enable: false,
+      deleted: false
     },
     error: null,
-    isLoading: false,
+    isLoading: false
   }),
 
   actions: {
-    addMeal(meal: Meal): void {
-      this.restaurant.meals.push(meal);
-      console.log('Meal added:', meal);
+    addBasicInfo(basicInfo: BasicInfo) {
+      this.restaurant.basicInfo = basicInfo;
+      console.log('Basic Info added:', basicInfo);
     },
-
-    addDrink(drink: Drink): void {
-      this.restaurant.drinks.push(drink);
-      console.log('Drink added:', drink);
+    addContactInfo(contactInfo: ContactInfo) {
+      this.restaurant.contactInfo = contactInfo;
+      console.log('Contact Info added:', contactInfo);
     },
+    addCompanyInfo(companyInfo: CompanyInfo) {
+      this.restaurant.companyInfo = companyInfo;
+      console.log('Company Info added:', companyInfo);
+    },
+    async addSettings(settings: Settings) {
+      this.restaurant.settings = settings;
+      console.log('Settings added:', settings);
+      // await restaurantService.createRestaurant(this.restaurant);
+    }
   }
 });
 

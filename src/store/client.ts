@@ -1,8 +1,6 @@
 import { defineStore } from 'pinia';
-import router from '@/router';
-import Auth0Service from '@/services/auth';
-import type { User } from '@/types/user.interface';
 
+import type { User } from '@/types/user.interface';
 
 interface RootState {
   user: User | null;
