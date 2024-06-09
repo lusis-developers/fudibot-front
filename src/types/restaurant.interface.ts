@@ -1,17 +1,40 @@
-export interface Meal {
-  id: string;
-  name: string;
-  price: number;
-}
-
-export interface Drink {
-  id: string;
-  name: string;
-  price: number;
-}
-
 export interface Restaurant {
-  name: string;
-  meals: Meal[];
-  drinks: Drink[];
+  basicInfo:      BasicInfo;
+  contactInfo:    ContactInfo;
+  companyInfo:    CompanyInfo;
+  settings:       Settings;
+  currency:       string;
+  meals?:        any;
+  drinks?:       any;
+  countryCode:    string;
+  enable:         boolean;
+  deleted:        boolean;
+}
+
+export interface Location {
+  lat:        number;
+  lng:        number;
+  radius:     number;
+  fullAdress: string;
+}
+
+export interface BasicInfo {
+  location:       Location;
+  botName:        string;
+}
+
+export interface ContactInfo {
+  email:          string;
+  cellphone:      string;
+}
+
+export interface CompanyInfo {
+  companyName:    string;
+  schedule:       string;
+}
+
+export interface Settings {
+  manager:        string;
+  website:        string;
+  logo:           string;
 }
