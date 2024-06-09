@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import CrushSelect from '@nabux-crush/crush-select';
+
+import useRestaurantStore from '@/store/restaurant';
 import SelectDaysIsOpen from '@/components/SelectDaysIsOpen.vue';
 
 const emit = defineEmits(['next']);
 
+const restaurantStore = useRestaurantStore();
 const form = ref({
   restaurantName: '',
   openingHours: {
@@ -13,18 +16,16 @@ const form = ref({
     days: [] as any
   }
 });
+const timeOptions = [
+  '6:00', '7:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', 
+  '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00'
+];
 
 const isFormValid = computed(() => {
   return form.value.openingHours.start !== '' && 
          form.value.openingHours.end !== '' && 
          form.value.openingHours.days.length > 0;
 });
-
-
-const timeOptions = [
-  '6:00', '7:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', 
-  '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00'
-];
 
 function updateSelectedDays(days: string[]) {
   form.value.openingHours.days = days;
@@ -46,7 +47,6 @@ function handleInput(event: string, type: string): void {
     form.value.openingHours.days = event;
   }
 }
-
 function submitForm(): void {
   if (isFormValid.value) {
     emit('next', form.value);
@@ -54,6 +54,14 @@ function submitForm(): void {
   } else {
     console.log('faltan datos');
   }
+}
+function updateCompanyInfo() {
+  const schedule = `${form.value.openingHours.start} - ${form.value.openingHours.end}`;
+  const newForm = {
+    companyName: form.value.restaurantName,
+    schedule,
+  };
+  restaurantStore.addCompanyInfo(newForm)
 }
 </script>
 
@@ -88,6 +96,7 @@ function submitForm(): void {
       <div class="form-actions">
         <button 
           type="submit"
+          @click="updateCompanyInfo"
           :style="{ cursor: isFormValid ? 'pointer' : 'not-allowed' }">
           Siguiente
         </button>

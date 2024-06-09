@@ -3,8 +3,11 @@ import { onMounted, ref } from 'vue';
 import { Loader } from '@googlemaps/js-api-loader';
 import CrushTextField from '@nabux-crush/crush-text-field'
 
+import useRestaurantStore from '@/store/restaurant';
+
 const emit = defineEmits(['next']);
 
+const restaurantStore = useRestaurantStore();
 const apiKey = 'AIzaSyA-m3u-eZGtvXPnO4Z3bQ_L_iybWOwQgdY';
 const map = ref<google.maps.Map | null>(null);
 const marker = ref<google.maps.Marker | null>(null);
@@ -17,10 +20,6 @@ const form = ref({
     fullAdress: ''
   }
 });
-
-function submitForm(): void {
-  emit('next', form.value);
-}
 
 function initializeMap(lat: number, lng: number): void {
   const loader = new Loader({
@@ -62,7 +61,6 @@ function initializeMap(lat: number, lng: number): void {
     });
   });
 }
-
 function getUserLocation(): void {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
@@ -80,14 +78,17 @@ function getUserLocation(): void {
     initializeMap(-2.170998, -79.922356); // Guayaquil coordinates
   }
 }
-
 function handleInput(event: string, type: string): void {
   if (type === 'botName') {
     form.value.botName = event;
   }
   if (type === 'location') {
     form.value.location.fullAdress = event;
-  }
+  } 
+}
+function submitForm(): void {
+  emit('next', form.value);
+  restaurantStore.addBasicInfo(form.value)
 }
 
 onMounted(() => {
@@ -120,12 +121,16 @@ onMounted(() => {
       </div>
 
       <div class="form-group">
-        <label for="coordinates">Coordenadas:</label>
+        <label for="coordinates">
+          Coordenadas:
+        </label>
         <div id="map"></div>
       </div>
 
       <div class="form-actions">
-        <button type="submit">Siguiente</button>
+        <button type="submit">
+          Siguiente
+        </button>
       </div>
     </form>
   </div>

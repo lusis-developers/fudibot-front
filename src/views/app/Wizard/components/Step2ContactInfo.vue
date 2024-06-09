@@ -1,16 +1,17 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import CrushTextField from '@nabux-crush/crush-text-field'
+
+import useRestaurantStore from '@/store/restaurant';
 import { cellphoneRules, emailRules } from '@/utils/validations';
 
 const emit = defineEmits(['next']);
 
+const restaurantStore = useRestaurantStore();
 const form = ref({
-  email: '',
+  email: 'asdasdas@gmail.com',
   cellphone: '',
 });
-
-
 const rules = {
   cellphone: cellphoneRules,
   email: emailRules
@@ -28,49 +29,49 @@ function handleInput(event: string, type: string): void {
   }
 }
 function submitForm(): void {
-    console.log('enviar formulario');
-    emit('next');
+  emit('next');
+  restaurantStore.addContactInfo(form.value);
 }
 </script>
 
 <template>
   <div class="step-content">
-    <h2>Información de Contacto</h2>
-    <form @submit.prevent="submitForm">
-      <div class="form-group">
-        <CrushTextField
-          label="Tu número celular 📲"
-          placeholder="Número de Celular"
-          :value="form.cellphone"
-          :valid-rules="rules.cellphone"
-          @update:modelValue="handleInput($event, 'cellphone')"
-          class="form-group-text-field" />
-      </div>
-      <div class="form-actions">
-        <button
-          type="submit"
-          :disabled="!isFormValid"
-          :style="{ cursor: isFormValid ? 'pointer' : 'not-allowed' }">
-          Siguiente
-        </button>      
-      </div>
+    <h2>
+      Información de Contacto
+    </h2>
+    <form 
+      @submit.prevent="submitForm">
+        <div class="form-group">
+          <CrushTextField label="Tu número celular 📲" 
+            :value="form.cellphone"
+            :valid-rules="rules.cellphone" 
+            @update:modelValue="handleInput($event, 'cellphone')"
+            placeholder="Número de Celular" 
+            class="form-group-text-field" />
+        </div>
+        <div class="form-actions">
+          <button 
+            :disabled="!isFormValid" 
+            :style="{ cursor: isFormValid ? 'pointer' : 'not-allowed' }"
+            type="submit">
+              Siguiente
+          </button>
+        </div>
     </form>
   </div>
 </template>
-
 
 <style lang="scss" scoped>
 .step-content {
   width: 100%;
 }
-
 .form-group {
   margin-bottom: 20px;
   padding: 20px 0;
-  :deep(.crush-text-field-label-text){
+  :deep(.crush-text-field-label-text) {
     color: $black;
     font-family: $font;
-  };
+  }
   :deep(.form-group-text-field .crush-text-field-input) {
     color: $black;
     font-family: $font;
@@ -79,13 +80,11 @@ function submitForm(): void {
     border-color: $green;
   }
 }
-
 label {
   display: block;
   margin-bottom: 8px;
   font-weight: bold;
 }
-
 input {
   width: 100%;
   padding: 10px;
@@ -93,7 +92,6 @@ input {
   border-radius: 5px;
   box-sizing: border-box;
 }
-
 #map {
   height: 300px;
   width: 100%;
@@ -101,12 +99,10 @@ input {
   border: 1px solid #ccc;
   border-radius: 5px;
 }
-
 .form-actions {
   display: flex;
   justify-content: flex-end;
 }
-
 button {
   padding: 10px 20px;
   border: none;
@@ -115,7 +111,6 @@ button {
   color: white;
   cursor: pointer;
 }
-
 button:hover {
   background-color: $light-green;
 }

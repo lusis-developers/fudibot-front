@@ -2,49 +2,56 @@
 import { computed, ref } from 'vue';
 import CrushTextField from '@nabux-crush/crush-text-field';
 import CrushUpload from '@nabux-crush/crush-upload'
+
+import useRestaurantStore from '@/store/restaurant';
 import { managerNameRules, websiteOrInstagramRules } from '@/utils/validations';
 
 const emit = defineEmits(['next']);
 
+const restaurantStore = useRestaurantStore();
 const form = ref({
-  managerName: '',
-  websiteOrInstagram: '',
-  logo: null as File | null,
+  manager: '',
+  website: '',
+  logo: '',
 });
-
-
 const rules = {
-  managerName: managerNameRules,
-  websiteOrInstagram: websiteOrInstagramRules
+  manager: managerNameRules,
+  website: websiteOrInstagramRules
 };
 const isFormValid = computed(() => {
-  const isManagerNameValid = managerNameRules.every(rule => rule.validate(form.value.managerName));
-  const isWebsiteOrInstagramValid = websiteOrInstagramRules.every(rule => rule.validate(form.value.websiteOrInstagram));
-  return isManagerNameValid && isWebsiteOrInstagramValid && form.value.logo !== null;
+  const isManagerNameValid = managerNameRules.every(rule => rule.validate(form.value.manager));
+  const isWebsiteOrInstagramValid = websiteOrInstagramRules.every(rule => rule.validate(form.value.website));
+  return isManagerNameValid && isWebsiteOrInstagramValid && form.value.logo !== '';
 });
-
-// function handleFileUpload(event: Event) {
-//   const target = event.target as HTMLInputElement;
-//   if (target.files && target.files.length > 0) {
-//     form.value.logo = target.files[0];
-//   }
-// }
 
 function handleInput(event: string, type: string): void {
   if (type === 'managerName') {
-    form.value.managerName = event;
+    form.value.manager = event;
   }
   if (type === 'websiteOrInstagram') {
-    form.value.websiteOrInstagram = event;
+    form.value.website = event;
   }
 }
-function handleFileSelected(file: File): void {
-  form.value.logo = file;
-  console.log('file: ', file)
+async function handleFileSelected(target: File) {
+  const formData = new FormData();
+  formData.append('data', target);
+  try {
+    const response = await fetch('https://primary-production-559e.up.railway.app/webhook/post-logo', {
+      method: 'POST',
+      body: formData
+    });
+    if (response.ok) {
+      const jsonResponse = await response.json();
+      const selfLink = jsonResponse[0].selfLink;
+      form.value.logo = selfLink;
+    }
+  } catch (error) {
+    console.error('Error al enviar la solicitud', error);
+  }
 }
-
 function submitForm(): void {
   emit('next', form.value);
+  restaurantStore.addSettings(form.value);
 }
 </script>
 
@@ -56,8 +63,8 @@ function submitForm(): void {
         <CrushTextField
           label="Nombre del Manager del Restaurante:"
           placeholder="Nombre del Manager"
-          :value="form.managerName"
-          :valid-rules="rules.managerName"
+          :value="form.manager"
+          :valid-rules="rules.manager"
           @update:modelValue="handleInput($event, 'managerName')"
           class="form-group-text-field"
         />
@@ -66,8 +73,8 @@ function submitForm(): void {
         <CrushTextField
           label="Sitio Web o link de el Instagram del Restaurante:"
           placeholder="Sitio Web o Instagram"
-          :value="form.websiteOrInstagram"
-          :valid-rules="rules.websiteOrInstagram"
+          :value="form.website"
+          :valid-rules="rules.website"
           @update:modelValue="handleInput($event, 'websiteOrInstagram')"
           class="form-group-text-field"
         />

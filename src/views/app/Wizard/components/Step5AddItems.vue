@@ -1,19 +1,19 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { useRestaurantStore } from '@/store/restaurant';
 import CrushTextField from '@nabux-crush/crush-text-field';
 import CrushSelect from '@nabux-crush/crush-select';
+
+// import useMenuStore from '@/store/menu';
 import { priceRules, productNameRules } from '@/utils/validations';
 
 const emit = defineEmits(['next']);
-const restaurantStore = useRestaurantStore();
 
+// const menuStore = useMenuStore();
 const form = ref({
   productName: '',
   price: '',
   category: ''
 });
-
 const categories = ['Bebidas', 'Platillos'];
 
 const isFormValid = computed(() => {
@@ -33,13 +33,6 @@ function handleInput(event: string, type: string): void {
     form.value.category = event;
   }
 }
-
-function submitForm(): void {
-  if (isFormValid.value) {
-    emit('next', form.value);
-  }
-}
-
 function addMeal(): void {
   if (isFormValid.value && form.value.category === 'Platillos') {
     const newMeal = {
@@ -47,8 +40,12 @@ function addMeal(): void {
       name: form.value.productName,
       price: parseFloat(form.value.price)
     };
-    restaurantStore.addMeal(newMeal);
     console.log('Platillo agregado:', newMeal);
+  }
+}
+function submitForm(): void {
+  if (isFormValid.value) {
+    emit('next', form.value);
   }
 }
 </script>
@@ -102,14 +99,6 @@ function addMeal(): void {
 
     <h3>Productos</h3>
     <div class="products">
-      <div v-for="meal in restaurantStore.restaurant.meals" :key="meal.id" class="product-card">
-        <h4>{{ meal.name }}</h4>
-        <p>Precio: ${{ meal.price }}</p>
-      </div>
-      <div v-for="drink in restaurantStore.restaurant.drinks" :key="drink.id" class="product-card">
-        <h4>{{ drink.name }}</h4>
-        <p>Precio: ${{ drink.price }}</p>
-      </div>
     </div>
      <div class="form-actions">
        <button 
