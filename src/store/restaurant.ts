@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 
 // import RestaurantService from '@/services/restaurant';
-import type { BasicInfo, CompanyInfo, ContactInfo, Restaurant, Settings } from '@/types/restaurant.interface';
+import type { BankSettings, BasicInfo, CompanyInfo, ContactInfo, Restaurant, Settings } from '@/types/restaurant.interface';
 
 interface RootState {
   restaurant: Restaurant;
@@ -41,7 +41,8 @@ const useRestaurantStore = defineStore('RestaurantStore', {
       drinks: [],
       countryCode: '+593',
       enable: false,
-      deleted: false
+      deleted: false,
+      bankSettings: [] as unknown as BankSettings,
     },
     error: null,
     isLoading: false

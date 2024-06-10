@@ -2,16 +2,16 @@ import { Drink, Meal } from "@/types/menu.interface";
 import APIBase from "./base";
 
 class MenuService extends APIBase {
-  async addMeals(meals: Meal) {
+  async addMeals(meal: Meal) {
     try {
-      return this.post('meals', meals);
+      return this.post('meals', meal);
     } catch (error) {
       console.error(error);
     }
   }  
-  async addDrinks(drinks: Drink) {
+  async addDrinks(drink: Drink) {
     try {
-      return this.post('drinks', drinks);
+      return this.post('drinks', drink);
     } catch (error) {
       console.error(error);
     }

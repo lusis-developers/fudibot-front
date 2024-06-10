@@ -2,17 +2,21 @@
 import { ref, computed } from 'vue';
 import CrushTextField from '@nabux-crush/crush-text-field';
 import CrushSelect from '@nabux-crush/crush-select';
-
-// import useMenuStore from '@/store/menu';
+import useMenuStore from '@/store/menu';
 import { priceRules, productNameRules } from '@/utils/validations';
+import { Meal } from '@/types/menu.interface';
+import { Drink } from '@/types/menu.interface';
 
 const emit = defineEmits(['next']);
+const menuStore = useMenuStore();
 
-// const menuStore = useMenuStore();
 const form = ref({
   productName: '',
   price: '',
-  category: ''
+  category: '',
+  image: '',
+  currency: 'USD',
+  description: ''
 });
 const categories = ['Bebidas', 'Platillos'];
 
@@ -28,24 +32,61 @@ function handleInput(event: string, type: string): void {
   }
   if (type === 'price') {
     form.value.price = event;
-  }
+  } 
   if (type === 'category') {
     form.value.category = event;
   }
-}
-function addMeal(): void {
-  if (isFormValid.value && form.value.category === 'Platillos') {
-    const newMeal = {
-      id: Date.now().toString(),
-      name: form.value.productName,
-      price: parseFloat(form.value.price)
-    };
-    console.log('Platillo agregado:', newMeal);
+  if (type === 'image') {
+    form.value.image = event;
+  }
+  if (type === 'description') {
+    form.value.description = event;
   }
 }
-function submitForm(): void {
+
+async function addMealOrDrink(): Promise<void> {
   if (isFormValid.value) {
-    emit('next', form.value);
+    const newItem = {
+      id: Date.now().toString(),
+      item: form.value.productName,
+      price: parseFloat(form.value.price),
+      image: form.value.image,
+      currency: form.value.currency,
+      description: form.value.description,
+    };
+
+    if (form.value.category === 'Platillos') {
+      await menuStore.addMeal(newItem as Meal);
+      console.log('Platillo agregado:', newItem);
+    } else if (form.value.category === 'Bebidas') {
+      await menuStore.addDrink(newItem as Drink);
+      console.log('Bebida agregada:', newItem);
+    }
+    form.value = {
+      productName: '',
+      price: '',
+      category: '',
+      image: '',
+      currency: 'USD',
+      description: ''
+    };
+  }
+}
+async function handleFileSelected(target: File) {
+  const formData = new FormData();
+  formData.append('data', target);
+  try {
+    const response = await fetch('https://primary-production-559e.up.railway.app/webhook/post-logo', {
+      method: 'POST',
+      body: formData
+    });
+    if (response.ok) {
+      const jsonResponse = await response.json();
+      const selfLink = jsonResponse[0].selfLink;
+      form.value.image  = selfLink;
+    }
+  } catch (error) {
+    console.error('Error al enviar la solicitud', error);
   }
 }
 </script>
@@ -53,7 +94,7 @@ function submitForm(): void {
 <template>
   <div class="step-content">
     <h2>Agregar Productos</h2>
-    <form @submit.prevent="submitForm">
+    <form @submit.prevent="addMealOrDrink">
       <div class="form-group">
         <CrushSelect
           label="Categoría:"
@@ -84,14 +125,29 @@ function submitForm(): void {
           class="form-group-text-field"
         />
       </div>
+      <div class="form-group">
+        <label for="logo">Subir imagen:</label>
+        <CrushUpload
+          @file-selected="handleFileSelected"
+        />
+      </div>
+      <div class="form-group">
+        <CrushTextField
+          label="Descripción:"
+          placeholder="Descripción del Producto"
+          :value="form.description"
+          @update:modelValue="handleInput($event, 'description')"
+          class="form-group-text-field"
+        />
+      </div>
       <div class="form-actions">
         <button 
           type="button"
-          @click="addMeal"
-          :disabled="!isFormValid || form.category !== 'Platillos'"
-          :style="{ cursor: isFormValid && form.category === 'Platillos' ? 'pointer' : 'not-allowed' }"
+          @click="addMealOrDrink"
+          :disabled="!isFormValid"
+          :style="{ cursor: isFormValid ? 'pointer' : 'not-allowed' }"
           class="add-meal-button">
-          Agregar Platillo
+          Agregar Producto
         </button>
         
       </div>
@@ -99,12 +155,17 @@ function submitForm(): void {
 
     <h3>Productos</h3>
     <div class="products">
+      <div v-for="(meal, index) in menuStore.items" :key="index" class="product-card">
+        <h4>{{ meal.item }}</h4>
+        <p>{{ meal.price }}</p>
+        <p>{{ meal.description.length > 50 ? meal.description.substring(0, 50) + '...' : meal.description }}</p>
+      </div>
     </div>
      <div class="form-actions">
        <button 
          type="submit"
-         :disabled="!isFormValid"
-         :style="{ cursor: isFormValid ? 'pointer' : 'not-allowed' }">
+         :disabled="menuStore.items.length < 1"
+         :style="{ cursor: menuStore.items.length > 0 ? 'pointer' : 'not-allowed' }">
          Siguiente
        </button>
      </div>
@@ -120,7 +181,7 @@ function submitForm(): void {
 }
 
 .form-group {
-  padding: 20px 0;
+  padding-bottom: 20px;
   :deep(.crush-text-field-label-text){
     color: $black;
     font-family: $font;
@@ -146,6 +207,25 @@ function submitForm(): void {
   :deep(.crush-text-field .input-container .content) {
     color: black;
     font-family: $font;
+  }
+  :deep(.container div label) {
+    color: $black;
+  }
+  :deep(.input-name ul) {
+    color: $black;
+  }
+  :deep(.crush-text-field .input-container.active) {
+    border-color: $green;
+  }
+  :deep(.input-name ul::before) {
+    color: $green;
+  }
+  :deep(.container) {
+    border-color: $green;
+    color: $black;
+  }
+  :deep(input) {
+    color: $black;
   }
 }
 
@@ -177,40 +257,45 @@ button {
   cursor: pointer;
 }
 
-button:hover {
-  background-color: $green;
-}
-
 .add-meal-button {
   background-color: $blue;
 }
 
-.add-meal-button:hover {
-  background-color: $green;
+button:disabled {
+  background-color: $gray;
+  cursor: not-allowed;
 }
 
 .products {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 20px;
   justify-content: center;
-}
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
 
-.product-card {
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 10px;
-  width: 150px;
-  text-align: center;
-  background-color: #f9f9f9;
-}
+  .product-card {
+    border: 1px solid $green;
+    padding: 16px;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
 
-.product-card h4 {
-  margin: 0 0 10px;
-}
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
 
-.product-card p {
-  margin: 0;
+    h4 {
+      margin: 0 0 8px 0;
+      color: $green;
+      font-size: 1.2em;
+    }
+
+    p {
+      margin: 0;
+      color: #333;
+    }
+  }
 }
 </style>

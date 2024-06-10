@@ -48,3 +48,14 @@ export const priceRules = [
     message: 'El precio debe ser un número válido con hasta dos decimales'
   }
 ];
+
+export const phoneRules = [
+  {
+    validate: (value: string) => value.length > 9,
+    message: 'El número de teléfono debe tener más de 9 dígitos 📞'
+  },
+  {
+    validate: (value: string) => /^[0-9]+$/.test(value),
+    message: 'El número de teléfono solo debe contener números 📞'
+  }
+]

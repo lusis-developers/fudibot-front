@@ -4,6 +4,7 @@ export interface Restaurant {
   companyInfo:    CompanyInfo;
   settings:       Settings;
   currency:       string;
+  bankSettings: BankSettings;
   meals?:        any;
   drinks?:       any;
   countryCode:    string;
@@ -37,4 +38,14 @@ export interface Settings {
   manager:        string;
   website:        string;
   logo:           string;
+}
+
+export interface BankSettings {
+  bankName: string;
+  accountType: 'Ahorros' | 'Corriente';
+  accountNumber: string;
+  accountHolderName: string;
+  identification: string;
+  email: string;
+  phone: string;
 }
