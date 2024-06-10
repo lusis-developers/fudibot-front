@@ -89,12 +89,15 @@ async function handleFileSelected(target: File) {
     console.error('Error al enviar la solicitud', error);
   }
 }
+function submitForm(): void {
+  emit('next', form.value);
+}
 </script>
 
 <template>
   <div class="step-content">
     <h2>Agregar Productos</h2>
-    <form @submit.prevent="addMealOrDrink">
+    <form @submit.prevent="submitForm">
       <div class="form-group">
         <CrushSelect
           label="Categoría:"
@@ -151,24 +154,24 @@ async function handleFileSelected(target: File) {
         </button>
         
       </div>
+      <h3>Productos</h3>
+      <div class="products">
+        <div v-for="(meal, index) in menuStore.items" :key="index" class="product-card">
+          <h4>{{ meal.item }}</h4>
+          <p>{{ meal.price }}</p>
+          <p>{{ meal.description.length > 50 ? meal.description.substring(0, 50) + '...' : meal.description }}</p>
+        </div>
+      </div>
+       <div class="form-actions">
+         <button 
+           type="submit"
+           :disabled="menuStore.items.length < 1"
+           :style="{ cursor: menuStore.items.length > 0 ? 'pointer' : 'not-allowed' }">
+           Siguiente
+         </button>
+       </div>
     </form>
 
-    <h3>Productos</h3>
-    <div class="products">
-      <div v-for="(meal, index) in menuStore.items" :key="index" class="product-card">
-        <h4>{{ meal.item }}</h4>
-        <p>{{ meal.price }}</p>
-        <p>{{ meal.description.length > 50 ? meal.description.substring(0, 50) + '...' : meal.description }}</p>
-      </div>
-    </div>
-     <div class="form-actions">
-       <button 
-         type="submit"
-         :disabled="menuStore.items.length < 1"
-         :style="{ cursor: menuStore.items.length > 0 ? 'pointer' : 'not-allowed' }">
-         Siguiente
-       </button>
-     </div>
   </div>
 </template>
 

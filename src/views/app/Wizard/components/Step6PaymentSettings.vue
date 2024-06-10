@@ -50,7 +50,7 @@ function submitForm(): void {
       email: form.value.email,
       phone: form.value.phone
     };
-    // restaurantStore.addPaymentSettings(paymentSettings);
+    restaurantStore.addBankSettings(paymentSettings);
   } else {
     console.log('faltan datos');
   }
@@ -162,6 +162,17 @@ function submitForm(): void {
   }
   :deep(.crush-text-field .input-container.active) {
     border-color: $green;
+  }
+  :deep(.form-container-label-select){
+    color: $black;
+    border-color: $green;
+  }
+  :deep(.form-container-label-select){
+    color: $black;
+    border-color: $green;
+  }
+  :deep(.form-container-label) {
+    color: $black;
   }
 }
 
