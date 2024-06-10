@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import MenuService from "@/services/menu";
+// import MenuService from "@/services/menu";
 import type { Drink, Meal } from "@/types/menu.interface";
 
 interface RootState {

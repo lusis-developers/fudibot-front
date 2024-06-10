@@ -42,7 +42,7 @@ const useRestaurantStore = defineStore('RestaurantStore', {
       countryCode: '+593',
       enable: false,
       deleted: false,
-      bankSettings: [] as unknown as BankSettings,
+      bankSettings: [] as BankSettings[],
     },
     error: null,
     isLoading: false
@@ -65,6 +65,10 @@ const useRestaurantStore = defineStore('RestaurantStore', {
       this.restaurant.settings = settings;
       console.log('Settings added:', settings);
       // await restaurantService.createRestaurant(this.restaurant);
+    },
+    addBankSettings(bankSetting: BankSettings) {
+      this.restaurant.bankSettings = [...this.restaurant.bankSettings, bankSetting];
+      console.log('Bank Setting added:', bankSetting);
     }
   }
 });

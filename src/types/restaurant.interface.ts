@@ -4,7 +4,7 @@ export interface Restaurant {
   companyInfo:    CompanyInfo;
   settings:       Settings;
   currency:       string;
-  bankSettings: BankSettings;
+  bankSettings: BankSettings[];
   meals?:        any;
   drinks?:       any;
   countryCode:    string;
