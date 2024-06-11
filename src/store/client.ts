@@ -20,6 +20,9 @@ export const useClientStore = defineStore('ClientStore', {
       this.user = user;
       console.log('Usuario establecido en ClientStore:', this.user);
     },
+    getUser(): User | null {
+      return this.user;
+    }
   }
 });
 

@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 
-// import RestaurantService from '@/services/restaurant';
+import RestaurantService from '@/services/restaurant';
 import type { BankSettings, BasicInfo, CompanyInfo, ContactInfo, Restaurant, Settings } from '@/types/restaurant.interface';
 
 interface RootState {
@@ -9,7 +9,7 @@ interface RootState {
   isLoading: boolean;
 }
 
-// const restaurantService = new RestaurantService();
+const restaurantService = new RestaurantService();
 
 const useRestaurantStore = defineStore('RestaurantStore', {
   state: (): RootState => ({
@@ -32,17 +32,19 @@ const useRestaurantStore = defineStore('RestaurantStore', {
         schedule: ''
       },
       settings: {
+        logo: '',
         manager: '',
         website: '',
-        logo: ''
       },
-      currency: 'USD',
-      meals: [],
-      drinks: [],
-      countryCode: '+593',
-      enable: false,
-      deleted: false,
-      bankSettings: [] as BankSettings[],
+      others: {
+        currency: 'USD',
+        meals: [],
+        drinks: [],
+        countryCode: '+593',
+        enable: false,
+        deleted: false,
+      },
+      bankSettings: [] as BankSettings[],  
     },
     error: null,
     isLoading: false
@@ -63,8 +65,21 @@ const useRestaurantStore = defineStore('RestaurantStore', {
     },
     async addSettings(settings: Settings) {
       this.restaurant.settings = settings;
+      const newRestaurant = Object.assign(
+        {}, 
+        this.restaurant.basicInfo,
+        this.restaurant.contactInfo, 
+        this.restaurant.companyInfo, 
+        this.restaurant.settings,
+        this.restaurant.others,
+        this.restaurant.bankSettings
+      );
       console.log('Settings added:', settings);
-      // await restaurantService.createRestaurant(this.restaurant);
+      await restaurantService.createRestaurant(newRestaurant);
+    },
+    async addLogo(image: any) {
+      const logo = await restaurantService.addRestaurantLogo(image);
+      return logo;
     },
     addBankSettings(bankSetting: BankSettings) {
       this.restaurant.bankSettings = [...this.restaurant.bankSettings, bankSetting];

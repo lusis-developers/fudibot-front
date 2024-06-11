@@ -1,3 +1,4 @@
+// import axios from "axios";
 import APIBase from "./base";
 
 class RestaurantService extends APIBase {
@@ -10,7 +11,17 @@ class RestaurantService extends APIBase {
   }
   async createRestaurant(data: any) {
     try {
-      return this.post('restaurants', data);
+      return this.post('restaurant', data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  async addRestaurantLogo(image: any) {
+    try {
+      const headers = {
+        'Content-Type': 'multipart/form-data'
+      }
+      return this.post(`restaurant-logo`, image, headers);
     } catch (error) {
       console.error(error);
     }

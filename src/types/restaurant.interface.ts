@@ -3,13 +3,8 @@ export interface Restaurant {
   contactInfo:    ContactInfo;
   companyInfo:    CompanyInfo;
   settings:       Settings;
-  currency:       string;
+  others:         Others;
   bankSettings: BankSettings[];
-  meals?:        any;
-  drinks?:       any;
-  countryCode:    string;
-  enable:         boolean;
-  deleted:        boolean;
 }
 
 export interface Location {
@@ -36,8 +31,8 @@ export interface CompanyInfo {
 
 export interface Settings {
   manager:        string;
-  website:        string;
   logo:           string;
+  website:        string;
 }
 
 export interface BankSettings {
@@ -48,4 +43,13 @@ export interface BankSettings {
   identification: string;
   email: string;
   phone: string;
+}
+
+export interface Others {
+  currency:       string;
+  meals:          any[];
+  drinks:         any[];
+  countryCode:    string;
+  enable:         boolean;
+  deleted:        boolean;
 }

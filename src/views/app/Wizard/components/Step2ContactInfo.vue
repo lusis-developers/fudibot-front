@@ -1,15 +1,17 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import CrushTextField from '@nabux-crush/crush-text-field'
 
 import useRestaurantStore from '@/store/restaurant';
+import useClientStore from '@/store/client';
 import { cellphoneRules, emailRules } from '@/utils/validations';
 
 const emit = defineEmits(['next']);
 
 const restaurantStore = useRestaurantStore();
+const clientStore = useClientStore();
 const form = ref({
-  email: 'asdasdas@gmail.com',
+  email: '',
   cellphone: '',
 });
 const rules = {
@@ -32,6 +34,13 @@ function submitForm(): void {
   emit('next');
   restaurantStore.addContactInfo(form.value);
 }
+function getEmail() {
+  const user = clientStore.getUser();
+  if(!user?.email) return;
+  form.value.email = user.email;
+}
+
+onMounted(getEmail)
 </script>
 
 <template>

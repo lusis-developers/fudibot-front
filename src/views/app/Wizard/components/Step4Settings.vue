@@ -12,7 +12,7 @@ const restaurantStore = useRestaurantStore();
 const form = ref({
   manager: '',
   website: '',
-  logo: '',
+  logo: ''
 });
 const rules = {
   manager: managerNameRules,
@@ -21,7 +21,7 @@ const rules = {
 const isFormValid = computed(() => {
   const isManagerNameValid = managerNameRules.every(rule => rule.validate(form.value.manager));
   const isWebsiteOrInstagramValid = websiteOrInstagramRules.every(rule => rule.validate(form.value.website));
-  return isManagerNameValid && isWebsiteOrInstagramValid && form.value.logo !== '';
+  return isManagerNameValid && isWebsiteOrInstagramValid;
 });
 
 function handleInput(event: string, type: string): void {
@@ -34,24 +34,12 @@ function handleInput(event: string, type: string): void {
 }
 async function handleFileSelected(target: File) {
   const formData = new FormData();
-  formData.append('data', target);
-  try {
-    const response = await fetch('https://primary-production-559e.up.railway.app/webhook/post-logo', {
-      method: 'POST',
-      body: formData
-    });
-    if (response.ok) {
-      const jsonResponse = await response.json();
-      const selfLink = jsonResponse[0].selfLink;
-      form.value.logo = selfLink;
-    }
-  } catch (error) {
-    console.error('Error al enviar la solicitud', error);
-  }
+  formData.append('file', target);
+  form.value.logo = await restaurantStore.addLogo(formData) as string;
 }
-function submitForm(): void {
+async function submitForm() {
   emit('next', form.value);
-  restaurantStore.addSettings(form.value);
+  await restaurantStore.addSettings(form.value);
 }
 </script>
 

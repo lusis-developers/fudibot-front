@@ -40,11 +40,11 @@ class APIBase {
     }
   }
 
-  protected async post<T>(endpoint: string, data: any): Promise<T> {
+  protected async post<T>(endpoint: string, data: any, headers?: {[key: string]: string}): Promise<T> {
     const url = this.buildUrl(endpoint);
     try {
       const response: AxiosResponse<T> = await axios.post(url, data, {
-        headers: this.getHeaders()
+        headers: headers ? headers : this.getHeaders()
       });
       return response.data;
     } catch (error: any) {

@@ -9,7 +9,7 @@ const emit = defineEmits(['next']);
 
 const restaurantStore = useRestaurantStore();
 const form = ref({
-  restaurantName: '',
+  companyName: 'Restaurantdsae22',
   openingHours: {
     start: '',
     end: '',
@@ -33,7 +33,7 @@ function updateSelectedDays(days: string[]) {
 }
 function handleInput(event: string, type: string): void {
   if (type === 'restaurantName') {
-    form.value.restaurantName = event;
+    form.value.companyName = event;
   }
   if (type === 'start') {
     form.value.openingHours.start = event;
@@ -47,18 +47,19 @@ function handleInput(event: string, type: string): void {
     form.value.openingHours.days = event;
   }
 }
-function submitForm(): void {
+async function submitForm() {
   if (isFormValid.value) {
     emit('next', form.value);
+    await updateCompanyInfo();
     console.log('Formulario enviado exitosamente:', form.value);
   } else {
     console.log('faltan datos');
   }
 }
-function updateCompanyInfo() {
+async function updateCompanyInfo() {
   const schedule = `${form.value.openingHours.start} - ${form.value.openingHours.end}`;
   const newForm = {
-    companyName: form.value.restaurantName,
+    companyName: form.value.companyName,
     schedule,
   };
   restaurantStore.addCompanyInfo(newForm)
@@ -96,7 +97,6 @@ function updateCompanyInfo() {
       <div class="form-actions">
         <button 
           type="submit"
-          @click="updateCompanyInfo"
           :style="{ cursor: isFormValid ? 'pointer' : 'not-allowed' }">
           Siguiente
         </button>
