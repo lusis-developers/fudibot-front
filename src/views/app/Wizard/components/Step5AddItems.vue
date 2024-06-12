@@ -74,19 +74,11 @@ async function addMealOrDrink(): Promise<void> {
 }
 async function handleFileSelected(target: File) {
   const formData = new FormData();
-  formData.append('data', target);
-  try {
-    const response = await fetch('https://primary-production-559e.up.railway.app/webhook/post-logo', {
-      method: 'POST',
-      body: formData
-    });
-    if (response.ok) {
-      const jsonResponse = await response.json();
-      const selfLink = jsonResponse[0].selfLink;
-      form.value.image  = selfLink;
-    }
-  } catch (error) {
-    console.error('Error al enviar la solicitud', error);
+  formData.append('file', target);
+  if(form.value.category === 'Platillos') {
+    form.value.image = await menuStore.addMealImage(formData) as string;
+  } else if(form.value.category === 'Bebidas') {
+    form.value.image = await menuStore.addDrinkImage(formData) as string;
   }
 }
 function submitForm(): void {
