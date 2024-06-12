@@ -9,7 +9,7 @@ const emit = defineEmits(['next']);
 
 const restaurantStore = useRestaurantStore();
 const form = ref({
-  companyName: 'Restaurantdsae22',
+  companyName: '',
   openingHours: {
     start: '',
     end: '',
@@ -70,6 +70,16 @@ async function updateCompanyInfo() {
   <div class="step-content">
     <h2>Información del Negocio</h2>
     <form @submit.prevent="submitForm">
+
+      <div class="form-group">
+        <CrushTextField
+          label="Nombre del Restaurante:"
+          placeholder="Nombre del Restaurante"
+          :value="form.companyName"
+          @update:modelValue="handleInput($event, 'restaurantName')"
+          class="form-group-text-field"
+        />
+      </div>
 
       <div class="form-group">
         <CrushSelect
