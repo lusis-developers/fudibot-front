@@ -81,8 +81,16 @@ const useRestaurantStore = defineStore('RestaurantStore', {
       const logo = await restaurantService.addRestaurantLogo(image);
       return logo;
     },
-    addBankSettings(bankSetting: BankSettings) {
+    async addBankSettings(bankSetting: BankSettings) {
       this.restaurant.bankSettings = [...this.restaurant.bankSettings, bankSetting];
+      for (const bank of this.restaurant.bankSettings) {
+        const newBank = Object.assign(
+          {},
+          bank,
+          { companyName: this.restaurant.companyInfo.companyName }
+        )
+        await restaurantService.createBank(newBank);
+      }
       console.log('Bank Setting added:', bankSetting);
     }
   }

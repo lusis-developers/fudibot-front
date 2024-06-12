@@ -26,6 +26,13 @@ class RestaurantService extends APIBase {
       console.error(error);
     }
   }
+  async createBank(data: any) {
+    try {
+      return this.post('bank', data)
+    } catch (error) {
+      console.error(error);
+    }
+  }
 }
 
 export default RestaurantService;
