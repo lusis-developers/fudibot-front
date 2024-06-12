@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-// import MenuService from "@/services/menu";
+import MenuService from "@/services/menu";
 import type { Drink, Meal } from "@/types/menu.interface";
 
 interface RootState {
@@ -8,6 +8,8 @@ interface RootState {
   drinks: Drink[];
   error: string | null;
 }
+
+const menuService = new MenuService();
 
 const useMenuStore = defineStore("MenuStore", {
   state: (): RootState => ({
@@ -20,7 +22,7 @@ const useMenuStore = defineStore("MenuStore", {
   actions: {
     async addMeal(meal: Meal) {
       try {
-        // await menuService.addMeals(meal);
+        await menuService.addMeals(meal);
         this.meals.push(meal);
         this.items.push(meal);
       } catch (error: any) {
@@ -29,7 +31,7 @@ const useMenuStore = defineStore("MenuStore", {
     },
     async addDrink(drink: Drink) {
       try {
-        // await menuService.addDrinks(drink);
+        await menuService.addDrinks(drink);
         this.drinks.push(drink);
         this.items.push(drink);
       } catch (error: any) {
@@ -53,7 +55,21 @@ const useMenuStore = defineStore("MenuStore", {
       } catch (error: any) {
         this.error = error.message;
       }
-    }
+    },
+    async addMealImage(image: any) {
+      try {
+        return await menuService.addMealImage(image);
+      } catch (error: any) {
+        this.error = error.message;
+      }
+    },
+    async addDrinkImage(image: any) {
+      try {
+        return await menuService.addDrinkImage(image);
+      } catch (error: any) {
+        this.error = error.message;
+      }
+    },
   },
 });
 
