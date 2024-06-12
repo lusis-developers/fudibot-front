@@ -16,16 +16,16 @@ class MenuService extends APIBase {
       console.error(error);
     }
   }
-  async addMealImage(image: any, mealId: string) {
+  async addMealImage(image: any) {
     try {
-      return this.post(`meals-image/${mealId}`, image);
+      return this.post(`meals-image`, image);
     } catch (error) {
       console.error(error);
     }
   }
-  async addDrinkImage(image: any, drinkId: string) {
+  async addDrinkImage(image: any) {
     try {
-      return this.post(`drinks-image/${drinkId}`, image);
+      return this.post(`drinks-image`, image);
     } catch (error) {
       console.error(error);
     }
