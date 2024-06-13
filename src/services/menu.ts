@@ -18,14 +18,20 @@ class MenuService extends APIBase {
   }
   async addMealImage(image: any) {
     try {
-      return this.post(`meals-image`, image);
+      const headers = {
+        'Content-Type': 'multipart/form-data'
+      }
+      return this.post(`meals-image`, image, headers);
     } catch (error) {
       console.error(error);
     }
   }
   async addDrinkImage(image: any) {
     try {
-      return this.post(`drinks-image`, image);
+      const headers = {
+        'Content-Type': 'multipart/form-data'
+      }
+      return this.post(`drinks-image`, image, headers);
     } catch (error) {
       console.error(error);
     }
