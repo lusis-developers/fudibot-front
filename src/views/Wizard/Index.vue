@@ -30,67 +30,86 @@ function completeWizard() {
 </script>
 
 <template>
-  <div class="wizard-wrap">
-    <div class="wizard-header">
-      <h1>Setup Wizard</h1>
-      <div class="steps">
-        Step {{ currentStep }} of 6
+  <div class="container">
+    <div class="wizard-wrap">
+      <div class="wizard-header">
+        <h1>Setup Wizard</h1>
+        <div class="steps">
+          Step {{ currentStep }} of 6
+        </div>
       </div>
-    </div>
-    <div class="wizard-content">
-      <Step1BasicInfo
-        v-if="currentStep === 1"
-        @next="nextStep" />
-      <Step2ContactInfo
-        v-if="currentStep === 2"
-        @next="nextStep"
-        @prev="prevStep" />
-      <Step3CompanyInfo
-        v-if="currentStep === 3"
-        @next="nextStep"
-        @prev="prevStep" />
-      <Step4Settings
-        v-if="currentStep === 4"
-        @next="nextStep"
-        @prev="prevStep" />
-      <Step5AddItems
-        v-if="currentStep === 5"
-        @next="nextStep"
-        @prev="prevStep" />
-      <Step6PaymentSettings
-        v-if="currentStep === 6"
-        @next="nextStep"
-        @prev="prevStep"
-        @complete="completeWizard" />
+      <div class="wizard-content">
+        <Step1BasicInfo
+          v-if="currentStep === 1"
+          @next="nextStep" />
+        <Step2ContactInfo
+          v-if="currentStep === 2"
+          @next="nextStep"
+          @prev="prevStep" />
+        <Step3CompanyInfo
+          v-if="currentStep === 3"
+          @next="nextStep"
+          @prev="prevStep" />
+        <Step4Settings
+          v-if="currentStep === 4"
+          @next="nextStep"
+          @prev="prevStep" />
+        <Step5AddItems
+          v-if="currentStep === 5"
+          @next="nextStep"
+          @prev="prevStep" />
+        <Step6PaymentSettings
+          v-if="currentStep === 6"
+          @next="nextStep"
+          @prev="prevStep"
+          @complete="completeWizard" />
+      </div>
     </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
-.wizard-wrap {
+.container {
+  height: 100vh;
+  width: 100%;
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  width: 100%;
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
-  background-color: #f9f9f9;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
+  .wizard-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 800px;
+    height: 90vh;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 15px 25px rgba(19, 209, 191, 0.2), 0 10px 10px rgba(37, 165, 99, 0.15);
+    border: 1px solid #e0e0e0;
+    position: relative;
+    z-index: 10;
+    transition: all 0.3s ease-in-out;
+  }
 
-.wizard-header {
-  text-align: center;
-  margin-bottom: 20px;
-}
+  .wizard-wrap:hover {
+    box-shadow: 0 15px 25px rgba(19, 209, 191, 0.3), 0 10px 10px rgba(37, 165, 99, 0.2);
+    transform: translateY(-5px);
+  }
 
-.steps {
-  font-size: 16px;
-  color: #666;
-}
+  .wizard-header {
+    text-align: center;
+    margin-bottom: 20px;
+  }
 
-.wizard-content {
-  width: 100%;
+  .steps {
+    font-size: 16px;
+    color: #666;
+  }
+
+  .wizard-content {
+    width: 100%;
+  }
 }
 </style>
