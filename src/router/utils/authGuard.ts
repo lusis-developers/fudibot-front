@@ -14,10 +14,10 @@ export async function googleAuthGuard(
 
   const isAuthenticated = authStore.user !== null;
 
-  if (isAuthenticated && (to.name === 'Login' || to.name === 'Register' || to.name === 'Authorize')) {
+  if (isAuthenticated && (to.name === 'Login' || to.name === 'Register' || to.name === 'Authorize' || to.name === 'Home')) {
     next({ path: '/app/restaurant-info' });
     return;
-  } else if (!isAuthenticated && to.path.startsWith('/app')) {
+  } else if (!isAuthenticated && (to.path.startsWith('/app') || to.name === 'Home')) {
     next({ path: '/login' });
     return;
   } else {

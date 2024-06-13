@@ -10,14 +10,20 @@ const AppLayout = () => import('@/layouts/AppLayout.vue');
 const Login = () => import('@/views/Login.vue');
 const Register = () => import('@/views/Register.vue');
 const Authorize = () => import('@/views/Authorize.vue');
-const Wizard = () => import('@/views/app/Wizard/Index.vue');
+const Wizard = () => import('@/views/Wizard/Index.vue');
 const RestaurantInfo = () => import('@/views/app/RestaurantInfo/Index.vue');
 const InvoiceHistory = () => import('@/views/app/InvoiceHistory.vue');
 const OrderHistory = () => import('@/views/app/OrderHistory.vue');
 const DeliverySetup = () => import('@/views/app/DeliverySetup.vue');
 const Integrations = () => import('@/views/app/Integrations.vue');
+const Home = () => import('@/views/index.vue');
 
 const routes: Array<RouteRecordRaw> = [
+  {
+    path: '/',
+    name: 'Home',
+    component: Home,
+  },
   {
     path: '/login',
     name: 'Login',
@@ -43,18 +49,18 @@ const routes: Array<RouteRecordRaw> = [
     },
   },
   {
+    path: '/wizard',
+    name: 'Wizard',
+    component: Wizard,
+    meta: {
+      title: 'Primeros Pasos',
+    },
+  },
+  {
     path: '/app',
     name: 'App',
     component: AppLayout,
     children: [
-      {
-        path: 'wizard',
-        name: 'Wizard',
-        component: Wizard,
-        meta: {
-          title: 'Primeros Pasos',
-        },
-      },
       {
         path: 'restaurant-info',
         name: 'Restaurant Info',
