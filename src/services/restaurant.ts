@@ -1,4 +1,3 @@
-// import axios from "axios";
 import APIBase from "./base";
 
 class RestaurantService extends APIBase {
