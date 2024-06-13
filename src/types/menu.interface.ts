@@ -1,5 +1,5 @@
 export interface Meal {
-  id: string;
+  companyName: string;
   item: string;
   price: number;
   image: string;
@@ -8,6 +8,7 @@ export interface Meal {
 }
 
 export interface Drink {
+  companyName: string;
   item: string;
   price: number;
   image: string;
