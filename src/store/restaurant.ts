@@ -53,15 +53,12 @@ const useRestaurantStore = defineStore('RestaurantStore', {
   actions: {
     addBasicInfo(basicInfo: BasicInfo) {
       this.restaurant.basicInfo = basicInfo;
-      console.log('Basic Info added:', basicInfo);
     },
     addContactInfo(contactInfo: ContactInfo) {
       this.restaurant.contactInfo = contactInfo;
-      console.log('Contact Info added:', contactInfo);
     },
     addCompanyInfo(companyInfo: CompanyInfo) {
       this.restaurant.companyInfo = companyInfo;
-      console.log('Company Info added:', companyInfo);
     },
     async addSettings(settings: Settings) {
       this.restaurant.settings = settings;
@@ -74,11 +71,11 @@ const useRestaurantStore = defineStore('RestaurantStore', {
         this.restaurant.others,
         this.restaurant.bankSettings
       );
-      console.log('Settings added:', settings);
       await restaurantService.createRestaurant(newRestaurant);
     },
     async addLogo(image: any) {
       const logo = await restaurantService.addRestaurantLogo(image);
+      this.restaurant.settings.logo = logo as string;
       return logo;
     },
     async addBankSettings(bankSetting: BankSettings) {
@@ -91,7 +88,17 @@ const useRestaurantStore = defineStore('RestaurantStore', {
         )
         await restaurantService.createBank(newBank);
       }
-      console.log('Bank Setting added:', bankSetting);
+    },
+    async getRestaurant(id: string) {
+      try {
+        this.isLoading = true;
+        const restaurant = await restaurantService.getRestaurant(id);
+        return restaurant;
+      } catch (error: any) {
+        this.error = error.message;
+      } finally {
+        this.isLoading = false;
+      }
     }
   }
 });
