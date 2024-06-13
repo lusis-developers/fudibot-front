@@ -3,7 +3,7 @@ import APIBase from "./base";
 class RestaurantService extends APIBase {
   async getRestaurant(id: string) {
     try {
-      return this.get(`restaurants/${id}`);
+      return this.get(`restaurant/${id}`);
     } catch (error) {
       console.error(error);
     }
