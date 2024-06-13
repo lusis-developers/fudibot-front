@@ -1,15 +1,19 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import CrushTextField from '@nabux-crush/crush-text-field';
 import CrushSelect from '@nabux-crush/crush-select';
+import CrushUpload from '@nabux-crush/crush-upload';
+import CrushTextField from '@nabux-crush/crush-text-field';
+
 import useMenuStore from '@/store/menu';
+import useRestaurantStore from '@/store/restaurant';
 import { priceRules, productNameRules } from '@/utils/validations';
-import { Meal } from '@/types/menu.interface';
-import { Drink } from '@/types/menu.interface';
 
 const emit = defineEmits(['next']);
-const menuStore = useMenuStore();
 
+const menuStore = useMenuStore();
+const restaurantStore = useRestaurantStore();
+
+const crushUpload = ref(null);
 const form = ref({
   productName: '',
   price: '',
@@ -19,7 +23,6 @@ const form = ref({
   description: ''
 });
 const categories = ['Bebidas', 'Platillos'];
-
 const isFormValid = computed(() => {
   const isProductNameValid = productNameRules.every(rule => rule.validate(form.value.productName));
   const isPriceValid = priceRules.every(rule => rule.validate(form.value.price));
@@ -43,25 +46,23 @@ function handleInput(event: string, type: string): void {
     form.value.description = event;
   }
 }
-
 async function addMealOrDrink(): Promise<void> {
   if (isFormValid.value) {
     const newItem = {
-      id: Date.now().toString(),
       item: form.value.productName,
       price: parseFloat(form.value.price),
       image: form.value.image,
       currency: form.value.currency,
       description: form.value.description,
+      companyName: restaurantStore.restaurant.companyInfo.companyName
     };
 
     if (form.value.category === 'Platillos') {
-      await menuStore.addMeal(newItem as Meal);
-      console.log('Platillo agregado:', newItem);
+      await menuStore.addMeal(newItem);
     } else if (form.value.category === 'Bebidas') {
-      await menuStore.addDrink(newItem as Drink);
-      console.log('Bebida agregada:', newItem);
+      await menuStore.addDrink(newItem);
     }
+
     form.value = {
       productName: '',
       price: '',
@@ -88,7 +89,9 @@ function submitForm(): void {
 
 <template>
   <div class="step-content">
-    <h2>Agregar Productos</h2>
+    <h2>
+      Agregar Productos
+    </h2>
     <form @submit.prevent="submitForm">
       <div class="form-group">
         <CrushSelect
@@ -122,9 +125,7 @@ function submitForm(): void {
       </div>
       <div class="form-group">
         <label for="logo">Subir imagen:</label>
-        <CrushUpload
-          @file-selected="handleFileSelected"
-        />
+        <CrushUpload :ref="crushUpload" @file-selected="handleFileSelected"/>
       </div>
       <div class="form-group">
         <CrushTextField
@@ -137,33 +138,43 @@ function submitForm(): void {
       </div>
       <div class="form-actions">
         <button 
-          type="button"
-          @click="addMealOrDrink"
           :disabled="!isFormValid"
           :style="{ cursor: isFormValid ? 'pointer' : 'not-allowed' }"
+          @click="addMealOrDrink"
+          type="button"
           class="add-meal-button">
-          Agregar Producto
+            Agregar Producto
         </button>
         
       </div>
       <h3>Productos</h3>
       <div class="products">
-        <div v-for="(meal, index) in menuStore.items" :key="index" class="product-card">
-          <h4>{{ meal.item }}</h4>
-          <p>{{ meal.price }}</p>
-          <p>{{ meal.description.length > 50 ? meal.description.substring(0, 50) + '...' : meal.description }}</p>
+        <div 
+          v-for="(meal, index) in menuStore.items" 
+          :key="index" 
+          class="product-card">
+            <h4>
+              {{ meal.item }}
+            </h4>
+            <p>
+              {{ meal.price }}
+            </p>
+            <p>
+              {{ meal.description.length > 50 ? 
+                meal.description.substring(0, 50) + '...' : 
+                meal.description }}
+            </p>
         </div>
       </div>
        <div class="form-actions">
          <button 
-           type="submit"
-           :disabled="menuStore.items.length < 1"
-           :style="{ cursor: menuStore.items.length > 0 ? 'pointer' : 'not-allowed' }">
-           Siguiente
+            type="submit"
+            :disabled="menuStore.items.length < 1"
+            :style="{ cursor: menuStore.items.length > 0 ? 'pointer' : 'not-allowed' }">
+              Siguiente
          </button>
        </div>
     </form>
-
   </div>
 </template>
 

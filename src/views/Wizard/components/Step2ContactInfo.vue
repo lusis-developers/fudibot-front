@@ -2,8 +2,8 @@
 import { ref, computed, onMounted } from 'vue';
 import CrushTextField from '@nabux-crush/crush-text-field'
 
-import useRestaurantStore from '@/store/restaurant';
 import useClientStore from '@/store/client';
+import useRestaurantStore from '@/store/restaurant';
 import { cellphoneRules, emailRules } from '@/utils/validations';
 
 const emit = defineEmits(['next']);

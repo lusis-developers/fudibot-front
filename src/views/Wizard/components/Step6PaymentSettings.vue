@@ -9,6 +9,7 @@ import { emailRules, phoneRules } from '@/utils/validations';
 const emit = defineEmits(['next']);
 
 const restaurantStore = useRestaurantStore();
+
 const form = ref({
   bankName: '',
   accountType: '',
@@ -23,7 +24,6 @@ const rules = {
   email: emailRules,
   phone: phoneRules
 };
-
 const isFormValid = computed(() => {
   return form.value.bankName !== '' &&
          form.value.accountType !== '' &&
@@ -37,7 +37,6 @@ const isFormValid = computed(() => {
 function handleInput(event: string, type: string): void {
   (form.value as any)[type] = event;
 }
-
 function submitForm(): void {
   if (isFormValid.value) {
     emit('next', form.value);
@@ -59,7 +58,9 @@ function submitForm(): void {
 
 <template>
   <div class="step-content">
-    <h2>Configuración de Pago</h2>
+    <h2>
+      Configuración de Pago
+    </h2>
     <form @submit.prevent="submitForm">
       <div class="form-group">
         <CrushTextField
@@ -138,7 +139,7 @@ function submitForm(): void {
           type="submit"
           :disabled="!isFormValid"
           :style="{ cursor: isFormValid ? 'pointer' : 'not-allowed' }">
-          Siguiente
+            Siguiente
         </button>
       </div>
     </form>

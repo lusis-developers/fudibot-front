@@ -134,6 +134,24 @@ async function updateCompanyInfo() {
     color: $black;
     border-color: $green;
   }
+  :deep(.form-group-text-field .crush-text-field-input) {
+    color: $black;
+    font-family: $font;
+  }
+  :deep(.crush-text-field .input-container.active) {
+    border-color: $green;
+  }
+  :deep(.form-group-text-field .crush-text-field-input) {
+    color: $black;
+    font-family: $font;
+  }
+  :deep(.crush-text-field .input-container.active) {
+    border-color: $green;
+  }
+  :deep(.crush-text-field-label-text){
+    color: $black;
+    font-family: $font;
+  };
 }
 
 label {

@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-import Step1BasicInfo from '@/views/app/Wizard/components/Step1BasicInfo.vue';
-import Step2ContactInfo from '@/views/app/Wizard/components/Step2ContactInfo.vue';
-import Step3CompanyInfo from '@/views/app/Wizard/components/Step3CompanyInfo.vue';
-import Step4Settings from '@/views/app/Wizard/components/Step4Settings.vue';
 import Step5AddItems from './components/Step5AddItems.vue';
 import Step6PaymentSettings from './components/Step6PaymentSettings.vue';
+import Step4Settings from '@/views/Wizard/components/Step4Settings.vue';
+import Step1BasicInfo from '@/views/Wizard/components/Step1BasicInfo.vue';
+import Step2ContactInfo from '@/views/Wizard/components/Step2ContactInfo.vue';
+import Step3CompanyInfo from '@/views/Wizard/components/Step3CompanyInfo.vue';
 
 const emit = defineEmits(['completed']);
 
