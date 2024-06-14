@@ -63,11 +63,13 @@ onMounted(getEmail)
         </div>
         <div class="form-actions">
           <button
+            class="action-button prev-button"
             type="button"
             @click="goBack">
               Retroceder
           </button>
           <button 
+            class="action-button next-button"
             :disabled="!isFormValid" 
             :style="{ cursor: isFormValid ? 'pointer' : 'not-allowed' }"
             type="submit">
@@ -120,6 +122,34 @@ input {
   display: flex;
   justify-content: space-between;
 }
+
+.action-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #28a745; 
+  color: white;
+  cursor: pointer;
+  transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out;
+}
+
+.action-button:hover {
+  background-color: #81c784; 
+}
+
+.action-button.prev-button:active {
+  transform: translateX(-10px);
+}
+
+.action-button.next-button:active {
+  transform: translateX(10px);
+}
+
+.action-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
 button {
   padding: 10px 20px;
   border: none;

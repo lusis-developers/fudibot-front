@@ -15,7 +15,7 @@ const form = ref({
   botName: '',
   location: {
     lat: 0,
-    radius: 10,
+    radius: '10',
     lng: 0,
     fullAdress: ''
   }
@@ -81,10 +81,15 @@ function getUserLocation(): void {
 function handleInput(event: string, type: string): void {
   if (type === 'botName') {
     form.value.botName = event;
+    console.log('botname: ', form.value.botName)
   }
   if (type === 'location') {
     form.value.location.fullAdress = event;
   } 
+  if (type === 'radius') {
+    form.value.location.radius = Number(event).toString();
+    console.log('radio de atencion: ', form.value.location.radius)
+  }
 }
 function submitForm(): void {
   emit('next', form.value);
@@ -106,6 +111,16 @@ onMounted(() => {
           placeholder="Superbot"
           :value="form.botName"
           @update:modelValue="handleInput($event, 'botName')"
+          class="form-group-text-field"
+        />
+      </div>
+
+      <div class="form-group">
+        <CrushTextField
+          label="Radio de atención"
+          placeholder="Radio de atención en Kilómetros"
+          :value="form.location.radius"
+          @update:modelValue="handleInput($event, 'radius')"
           class="form-group-text-field"
         />
       </div>

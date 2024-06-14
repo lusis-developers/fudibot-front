@@ -10,7 +10,7 @@ export interface Restaurant {
 export interface Location {
   lat:        number;
   lng:        number;
-  radius:     number;
+  radius:     string;
   fullAdress: string;
 }
 

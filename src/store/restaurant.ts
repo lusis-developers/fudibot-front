@@ -18,7 +18,7 @@ const useRestaurantStore = defineStore('RestaurantStore', {
         location: {
           lat: 0,
           lng: 0,
-          radius: 0,
+          radius: '',
           fullAdress: ''
         },
         botName: ''
