@@ -1,13 +1,17 @@
 import { defineStore } from 'pinia';
 
+import useClientStore from './client';
 import RestaurantService from '@/services/restaurant';
-import type { BankSettings, BasicInfo, CompanyInfo, ContactInfo, Restaurant, Settings } from '@/types/restaurant.interface';
+import type { BankSettings, BasicInfo, ContactInfo, Restaurant, Schedule, Settings } from '@/types/restaurant.interface';
 
 interface RootState {
   restaurant: Restaurant;
   error: string | null;
   isLoading: boolean;
 }
+
+const { getUser } = useClientStore();
+const userSub = getUser()?.sub;
 
 const restaurantService = new RestaurantService();
 
@@ -27,10 +31,8 @@ const useRestaurantStore = defineStore('RestaurantStore', {
         email: '',
         cellphone: ''
       },
-      companyInfo: {
-        companyName: '',
-        schedule: ''
-      },
+      companyName: '',
+      schedule: [] as Schedule[],
       settings: {
         logo: '',
         manager: '',
@@ -57,8 +59,11 @@ const useRestaurantStore = defineStore('RestaurantStore', {
     addContactInfo(contactInfo: ContactInfo) {
       this.restaurant.contactInfo = contactInfo;
     },
-    addCompanyInfo(companyInfo: CompanyInfo) {
-      this.restaurant.companyInfo = companyInfo;
+    addCompanyName(companyName: string) {
+      this.restaurant.companyName = companyName;
+    },
+    async addSchedule(schedule: Schedule) {
+      this.restaurant.schedule = [...this.restaurant.schedule, schedule];
     },
     async addSettings(settings: Settings) {
       this.restaurant.settings = settings;
@@ -66,8 +71,8 @@ const useRestaurantStore = defineStore('RestaurantStore', {
         {}, 
         this.restaurant.basicInfo,
         this.restaurant.contactInfo, 
-        this.restaurant.companyInfo, 
         this.restaurant.settings,
+        { companyName: this.restaurant.companyName, userSub },
         this.restaurant.others,
         this.restaurant.bankSettings
       );
@@ -84,7 +89,7 @@ const useRestaurantStore = defineStore('RestaurantStore', {
         const newBank = Object.assign(
           {},
           bank,
-          { companyName: this.restaurant.companyInfo.companyName }
+          { companyName: this.restaurant.companyName }
         )
         await restaurantService.createBank(newBank);
       }

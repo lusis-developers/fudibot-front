@@ -1,10 +1,11 @@
 export interface Restaurant {
+  companyName:    string;
   basicInfo:      BasicInfo;
   contactInfo:    ContactInfo;
-  companyInfo:    CompanyInfo;
   settings:       Settings;
   others:         Others;
   bankSettings: BankSettings[];
+  schedule: Schedule[];
 }
 
 export interface Location {
@@ -24,9 +25,10 @@ export interface ContactInfo {
   cellphone:      string;
 }
 
-export interface CompanyInfo {
-  companyName:    string;
-  schedule:       string;
+export interface Schedule {
+  day:    string;
+  open:   string;
+  close:  string;
 }
 
 export interface Settings {
