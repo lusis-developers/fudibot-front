@@ -72,11 +72,14 @@ function completeWizard() {
 
 <style lang="scss" scoped>
 .container {
-  height: 100vh;
+  margin: 24px 0;
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
+  @media (min-width: $desktop-lower-breakpoint) {
+    height: 100vh;
+  }
   .wizard-wrap {
     display: flex;
     flex-direction: column;
@@ -85,18 +88,10 @@ function completeWizard() {
     max-width: 800px;
     margin: 0 auto;
     padding: 20px;
-    background-color: #ffffff;
-    border-radius: 15px;
-    box-shadow: 0 15px 25px rgba(19, 209, 191, 0.2), 0 10px 10px rgba(37, 165, 99, 0.15);
-    border: 1px solid #e0e0e0;
+    background-color: $white;
     position: relative;
     z-index: 10;
     transition: all 0.3s ease-in-out;
-  }
-
-  .wizard-wrap:focus-within {
-    box-shadow: 0 15px 25px rgba(19, 209, 191, 0.3), 0 10px 10px rgba(37, 165, 99, 0.2);
-    transform: translateY(-5px);
   }
 
   .wizard-header {
