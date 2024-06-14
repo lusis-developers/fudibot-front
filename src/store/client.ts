@@ -7,6 +7,7 @@ interface RootState {
   user: User | null;
   error: string | null;
   isLoading: boolean;
+  clientCreated: boolean;
 }
 
 const clientService = new ClientService();
@@ -16,12 +17,16 @@ export const useClientStore = defineStore('ClientStore', {
     user: null,
     error: null,
     isLoading: false,
+    clientCreated: false
   }),
 
   actions: {
     setUser(user: User): void {
       this.user = user;
-      clientService.createClient(user);
+      if(!this.clientCreated){
+        clientService.createClient(user);
+        this.clientCreated = true;
+      }
       console.log('Usuario establecido en ClientStore:', this.user);
     },
     getUser(): User | null {
