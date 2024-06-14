@@ -10,48 +10,44 @@ const emit = defineEmits(['next', 'prev']);
 const restaurantStore = useRestaurantStore();
 const form = ref({
   companyName: '',
-  openingHours: {
-    start: '',
-    end: '',
+  schedule: {
+    open: '',
+    close: '',
     days: [] as any
   }
 });
 const timeOptions = [
   '6:00', '7:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', 
-  '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00'
+  '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00'
 ];
 
 const isFormValid = computed(() => {
-  return form.value.openingHours.start !== '' && 
-         form.value.openingHours.end !== '' && 
-         form.value.openingHours.days.length > 0;
+  return form.value.schedule.open !== '' && 
+         form.value.schedule.close !== '' && 
+         form.value.schedule.days.length > 0;
 });
 
 function updateSelectedDays(days: string[]) {
-  form.value.openingHours.days = days;
-  console.log('Días seleccionados:', days);
+  form.value.schedule.days = days;
 }
 function handleInput(event: string, type: string): void {
   if (type === 'restaurantName') {
     form.value.companyName = event;
   }
-  if (type === 'start') {
-    form.value.openingHours.start = event;
-    console.log('Hora de Apertura:', form.value.openingHours.start);
+  if (type === 'open') {
+    form.value.schedule.open = event;
   }
-  if (type === 'end') {
-    form.value.openingHours.end = event;
-    console.log('Hora de Cierre:', form.value.openingHours.end);
+  if (type === 'close') {
+    form.value.schedule.close = event;
   }
   if (type === 'days') {
-    form.value.openingHours.days = event;
+    form.value.schedule.days = event;
   }
 }
 async function submitForm() {
   if (isFormValid.value) {
     emit('next', form.value);
     await updateCompanyInfo();
-    console.log('Formulario enviado exitosamente:', form.value);
   } else {
     console.log('faltan datos');
   }
@@ -60,12 +56,15 @@ function goBack(): void {
   emit('prev')
 }
 async function updateCompanyInfo() {
-  const schedule = `${form.value.openingHours.start} - ${form.value.openingHours.end}`;
-  const newForm = {
-    companyName: form.value.companyName,
-    schedule,
-  };
-  restaurantStore.addCompanyInfo(newForm)
+  await restaurantStore.addCompanyName(form.value.companyName)
+  for(let day of form.value.schedule.days){
+    await restaurantStore.addSchedule({
+      day: day,
+      open: form.value.schedule.open,
+      close: form.value.schedule.close
+    })
+  }
+
 }
 </script>
 
@@ -88,8 +87,8 @@ async function updateCompanyInfo() {
         <CrushSelect
           label="Hora de Apertura:"
           :options="timeOptions"
-          :value="form.openingHours.start"
-          @update:value="handleInput($event, 'start')"
+          :value="form.schedule.open"
+          @update:value="handleInput($event, 'open')"
           class="form-group-select"
         />
       </div>
@@ -98,8 +97,8 @@ async function updateCompanyInfo() {
         <CrushSelect
           label="Hora de Cierre:"
           :options="timeOptions"
-          :value="form.openingHours.end"
-          @update:value="handleInput($event, 'end')"
+          :value="form.schedule.close"
+          @update:value="handleInput($event, 'close')"
           class="form-group-select"
         />
       </div>

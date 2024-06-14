@@ -54,7 +54,7 @@ async function addMealOrDrink(): Promise<void> {
       image: form.value.image,
       currency: form.value.currency,
       description: form.value.description,
-      companyName: restaurantStore.restaurant.companyInfo.companyName
+      companyName: restaurantStore.restaurant.companyName
     };
 
     if (form.value.category === 'Platillos') {
