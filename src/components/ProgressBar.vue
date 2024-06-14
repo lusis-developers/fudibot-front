@@ -13,7 +13,8 @@ const props = defineProps({
 })
 
 const progressPercentage = computed(() => {
-  return (props.currentSectionIndex/props.totalSections) * 100
+  if(props.currentSectionIndex === 1) return 0
+  return (props.currentSectionIndex/props.totalSections) * 100 
 })
 </script>
 
