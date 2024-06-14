@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
+import ProgressBar from '@/components/ProgressBar.vue'
+
 import Step5AddItems from './components/Step5AddItems.vue';
 import Step6PaymentSettings from './components/Step6PaymentSettings.vue';
 import Step4Settings from '@/views/Wizard/components/Step4Settings.vue';
@@ -33,9 +35,9 @@ function completeWizard() {
   <div class="container">
     <div class="wizard-wrap">
       <div class="wizard-header">
-        <h1>Setup Wizard</h1>
+        <h1>Estamos a punto de iniciar...</h1>
         <div class="steps">
-          Step {{ currentStep }} of 6
+          <ProgressBar :currentSectionIndex="currentStep" :totalSections="6"/>
         </div>
       </div>
       <div class="wizard-content">
@@ -81,7 +83,6 @@ function completeWizard() {
     align-items: center;
     width: 100%;
     max-width: 800px;
-    height: 90vh;
     margin: 0 auto;
     padding: 20px;
     background-color: #ffffff;
@@ -93,7 +94,7 @@ function completeWizard() {
     transition: all 0.3s ease-in-out;
   }
 
-  .wizard-wrap:hover {
+  .wizard-wrap:focus-within {
     box-shadow: 0 15px 25px rgba(19, 209, 191, 0.3), 0 10px 10px rgba(37, 165, 99, 0.2);
     transform: translateY(-5px);
   }

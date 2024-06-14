@@ -6,7 +6,7 @@ import CrushUpload from '@nabux-crush/crush-upload'
 import useRestaurantStore from '@/store/restaurant';
 import { managerNameRules, websiteOrInstagramRules } from '@/utils/validations';
 
-const emit = defineEmits(['next']);
+const emit = defineEmits(['next', 'prev']);
 
 const restaurantStore = useRestaurantStore();
 const form = ref({
@@ -41,6 +41,9 @@ async function submitForm() {
   emit('next', form.value);
   await restaurantStore.addSettings(form.value);
 }
+function goBack(): void {
+  emit('prev')
+}
 </script>
 
 <template>
@@ -72,6 +75,11 @@ async function submitForm() {
         <CrushUpload @file-selected="handleFileSelected"/>
       </div>
       <div class="form-actions">
+        <button
+          type="button"
+          @click="goBack">
+            Retroceder
+        </button>
         <button 
           type="submit"
           :disabled="!isFormValid"
@@ -135,7 +143,7 @@ input {
 
 .form-actions {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
 }
 
 button {

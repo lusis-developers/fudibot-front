@@ -5,7 +5,7 @@ import CrushSelect from '@nabux-crush/crush-select';
 import useRestaurantStore from '@/store/restaurant';
 import SelectDaysIsOpen from '@/components/SelectDaysIsOpen.vue';
 
-const emit = defineEmits(['next']);
+const emit = defineEmits(['next', 'prev']);
 
 const restaurantStore = useRestaurantStore();
 const form = ref({
@@ -56,6 +56,9 @@ async function submitForm() {
     console.log('faltan datos');
   }
 }
+function goBack(): void {
+  emit('prev')
+}
 async function updateCompanyInfo() {
   const schedule = `${form.value.openingHours.start} - ${form.value.openingHours.end}`;
   const newForm = {
@@ -105,6 +108,11 @@ async function updateCompanyInfo() {
         <SelectDaysIsOpen @update:selectedDays="updateSelectedDays"/>
       </div>
       <div class="form-actions">
+        <button
+          type="button"
+          @click="goBack">
+            Retroceder
+        </button>
         <button 
           type="submit"
           :style="{ cursor: isFormValid ? 'pointer' : 'not-allowed' }">
@@ -170,7 +178,7 @@ input {
 
 .form-actions {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
 }
 
 button {

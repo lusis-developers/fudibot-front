@@ -8,7 +8,7 @@ import useMenuStore from '@/store/menu';
 import useRestaurantStore from '@/store/restaurant';
 import { priceRules, productNameRules } from '@/utils/validations';
 
-const emit = defineEmits(['next']);
+const emit = defineEmits(['next', 'prev']);
 
 const menuStore = useMenuStore();
 const restaurantStore = useRestaurantStore();
@@ -84,6 +84,9 @@ async function handleFileSelected(target: File) {
 }
 function submitForm(): void {
   emit('next', form.value);
+}
+function goBack(): void {
+  emit('prev')
 }
 </script>
 
@@ -167,12 +170,17 @@ function submitForm(): void {
         </div>
       </div>
        <div class="form-actions">
-         <button 
-            type="submit"
-            :disabled="menuStore.items.length < 1"
-            :style="{ cursor: menuStore.items.length > 0 ? 'pointer' : 'not-allowed' }">
-              Siguiente
-         </button>
+        <button
+          type="button"
+          @click="goBack">
+            Retroceder
+        </button>
+        <button 
+          type="submit"
+          :disabled="menuStore.items.length < 1"
+          :style="{ cursor: menuStore.items.length > 0 ? 'pointer' : 'not-allowed' }">
+            Siguiente
+        </button>
        </div>
     </form>
   </div>

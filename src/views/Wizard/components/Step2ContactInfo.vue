@@ -6,7 +6,7 @@ import useClientStore from '@/store/client';
 import useRestaurantStore from '@/store/restaurant';
 import { cellphoneRules, emailRules } from '@/utils/validations';
 
-const emit = defineEmits(['next']);
+const emit = defineEmits(['next', 'prev']);
 
 const restaurantStore = useRestaurantStore();
 const clientStore = useClientStore();
@@ -34,6 +34,9 @@ function submitForm(): void {
   emit('next');
   restaurantStore.addContactInfo(form.value);
 }
+function goBack(): void {
+  emit('prev')
+}
 function getEmail() {
   const user = clientStore.getUser();
   if(!user?.email) return;
@@ -59,6 +62,11 @@ onMounted(getEmail)
             class="form-group-text-field" />
         </div>
         <div class="form-actions">
+          <button
+            type="button"
+            @click="goBack">
+              Retroceder
+          </button>
           <button 
             :disabled="!isFormValid" 
             :style="{ cursor: isFormValid ? 'pointer' : 'not-allowed' }"
@@ -110,7 +118,7 @@ input {
 }
 .form-actions {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
 }
 button {
   padding: 10px 20px;
