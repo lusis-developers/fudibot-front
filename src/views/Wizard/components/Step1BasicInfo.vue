@@ -1,25 +1,28 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 import { Loader } from '@googlemaps/js-api-loader';
+import CrushTextField from '@nabux-crush/crush-text-field'
+
+import useRestaurantStore from '@/store/restaurant';
+
 
 const emit = defineEmits(['next']);
+
+const restaurantStore = useRestaurantStore();
 
 const apiKey = 'AIzaSyA-m3u-eZGtvXPnO4Z3bQ_L_iybWOwQgdY';
 const map = ref<google.maps.Map | null>(null);
 const marker = ref<google.maps.Marker | null>(null);
 const form = ref({
   botName: '',
-  location: '',
-  coordinates: {
-    latitude: 0,
-    longitude: 0,
-    radius: 10
+  location: {
+    lat: 0,
+    radius: '10',
+    lng: 0,
+    fullAdress: ''
   }
 });
-
-function submitForm(): void {
-  emit('next', form.value);
-}
+const isFormValid = computed(() => form.value.botName && form.value.location.fullAdress && form.value.location.radius);
 
 function initializeMap(lat: number, lng: number): void {
   const loader = new Loader({
@@ -47,29 +50,28 @@ function initializeMap(lat: number, lng: number): void {
       const center = map.value!.getCenter();
       if (center) {
         marker.value!.setPosition(center);
-        form.value.coordinates.latitude = center.lat();
-        form.value.coordinates.longitude = center.lng();
+        form.value.location.lat = center.lat();
+        form.value.location.lng = center.lng();
       }
     });
 
     google.maps.event.addListener(map.value, 'idle', () => {
       const center = map.value!.getCenter();
       if (center) {
-        form.value.coordinates.latitude = center.lat();
-        form.value.coordinates.longitude = center.lng();
+        form.value.location.lat = center.lat();
+        form.value.location.lng = center.lng();
       }
     });
   });
 }
-
 function getUserLocation(): void {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const { latitude, longitude } = position.coords;
         initializeMap(latitude, longitude);
-        form.value.coordinates.latitude = latitude;
-        form.value.coordinates.longitude = longitude;
+        form.value.location.lat = latitude;
+        form.value.location.lng = longitude;
       },
       () => {
         initializeMap(-2.170998, -79.922356); // Guayaquil coordinates
@@ -79,63 +81,73 @@ function getUserLocation(): void {
     initializeMap(-2.170998, -79.922356); // Guayaquil coordinates
   }
 }
-
 function handleInput(event: string, type: string): void {
-  if (type === 'sport') {
-    bet.sport = event;
+  if (type === 'botName') {
+    form.value.botName = event;
+    console.log('botname: ', form.value.botName)
   }
-  if (type === 'league') {
-    bet.league = event;
-  }
-  if (type === 'teamA') {
-    bet.teamA = event;
-  }
-  if (type === 'teamB') {
-    bet.teamB = event;
-  }
-  if (type === 'date') {
-    bet.date = event;
-  }
-  if (type === 'percentage') {
-    bet.percentage = event;
-  }
-  if (type === 'description') {
-    bet.description = event;
+  if (type === 'location') {
+    form.value.location.fullAdress = event;
+  } 
+  if (type === 'radius') {
+    form.value.location.radius = Number(event).toString();
+    console.log('radio de atencion: ', form.value.location.radius)
   }
 }
+function submitForm(): void {
+  emit('next', form.value);
+  restaurantStore.addBasicInfo(form.value);
+}
 
-onMounted(() => {
-  getUserLocation();
-});
+onMounted(getUserLocation);
 </script>
 
 <template>
   <div class="step-content">
-    <h2>Información Básica</h2>
+    <h2>
+      Información Básica
+    </h2>
     <form @submit.prevent="submitForm">
       <div class="form-group">
-        <label for="botName">Nombre del Bot:</label>
-        <input id="botName" v-model="form.botName" required />
-        <CrushInput
-          label="Nombre del Bot:"
-          placeholder="Superbot"
+        <CrushTextField
           :value="form.botName"
-          @update:modelValue="handleInput($event, 'botName')"
-           />
+          placeholder="Superbot"
+          label="Nombre del Bot:"
+          class="form-group-text-field"
+          @update:modelValue="handleInput($event, 'botName')" />
       </div>
 
       <div class="form-group">
-        <label for="location">Ubicación del Restaurante:</label>
-        <input id="location" v-model="form.location" required />
+        <CrushTextField
+          :value="form.location.radius"
+          placeholder="Radio de atención en Kilómetros"
+          label="Radio de atención"
+          class="form-group-text-field"
+          @update:modelValue="handleInput($event, 'radius')" />
       </div>
 
       <div class="form-group">
-        <label for="coordinates">Coordenadas:</label>
+        <CrushTextField
+          :value="form.location.fullAdress"
+          placeholder="Dirección"
+          label="Ubicación del Restaurante:"
+          class="form-group-text-field"
+          @update:modelValue="handleInput($event, 'location')" />
+      </div>
+
+      <div class="form-group">
+        <label for="coordinates">
+          Coordenadas:
+        </label>
         <div id="map"></div>
       </div>
 
       <div class="form-actions">
-        <button type="submit">Siguiente</button>
+        <button 
+          :disabled="!isFormValid"
+          type="submit">
+            Siguiente
+        </button>
       </div>
     </form>
   </div>
@@ -145,17 +157,25 @@ onMounted(() => {
 .step-content {
   width: 100%;
 }
-
 .form-group {
   margin-bottom: 20px;
+  :deep(.crush-text-field-label-text){
+    color: $black;
+    font-family: $font;
+  };
+  :deep(.form-group-text-field .crush-text-field-input) {
+    color: $black;
+    font-family: $font;
+  }
+  :deep(.crush-text-field .input-container.active) {
+    border-color: $green;
+  }
 }
-
 label {
   display: block;
   margin-bottom: 8px;
   font-weight: bold;
 }
-
 input {
   width: 100%;
   padding: 10px;
@@ -163,7 +183,6 @@ input {
   border-radius: 5px;
   box-sizing: border-box;
 }
-
 #map {
   height: 300px;
   width: 100%;
@@ -171,12 +190,10 @@ input {
   border: 1px solid #ccc;
   border-radius: 5px;
 }
-
 .form-actions {
   display: flex;
   justify-content: flex-end;
 }
-
 button {
   padding: 10px 20px;
   border: none;
@@ -184,9 +201,12 @@ button {
   background-color: $green;
   color: white;
   cursor: pointer;
-}
-
-button:hover {
-  background-color: $light-green;
+  &:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  &:not(:disabled):hover {
+    background-color: $light-green;
+  }
 }
 </style>
