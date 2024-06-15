@@ -3,7 +3,6 @@ import { ref } from 'vue';
 
 const emit = defineEmits(['update:selectedDays']);
 
-
 const daysOfWeek = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
 const selectedDays = ref<string[]>([]);
 
@@ -11,10 +10,8 @@ function toggleDay(day: string) {
   const index = selectedDays.value.indexOf(day);
   if (index === -1) {
     selectedDays.value.push(day);
-    console.log(`Se agrego el día: ${day}.`, 'grupo de dias: ', selectedDays);
   } else {
     selectedDays.value.splice(index, 1);
-    console.log(`Se eliminó el día: ${day}.`, 'grupo de dias: ', selectedDays);
   }
   emit('update:selectedDays', selectedDays.value);
 }
@@ -22,14 +19,16 @@ function toggleDay(day: string) {
       
 <template>
   <div class="select-days">
-    <h3>Selecciona los días que tu local se encuentra abierto:</h3>
+    <h3>
+      Selecciona los días que tu local se encuentra abierto:
+    </h3>
     <div class="select-days-days-container">
       <div
         v-for="day in daysOfWeek"
         :key="day"
-        @click="toggleDay(day)" 
-        :class="['day', { selected: selectedDays.includes(day) }]">
-        {{ day }}
+        :class="['day', { selected: selectedDays.includes(day) }]"
+        @click="toggleDay(day)">
+          {{ day }}
       </div>
     </div>
   </div>

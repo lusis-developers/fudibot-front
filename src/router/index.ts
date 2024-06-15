@@ -7,16 +7,16 @@ import { wizardGuard } from './utils/wizardGuard';
 const AppLayout = () => import('@/layouts/AppLayout.vue');
 
 // import web views
+const Home = () => import('@/views/index.vue');
 const Login = () => import('@/views/Login.vue');
 const Register = () => import('@/views/Register.vue');
 const Authorize = () => import('@/views/Authorize.vue');
 const Wizard = () => import('@/views/Wizard/Index.vue');
-const RestaurantInfo = () => import('@/views/app/RestaurantInfo/Index.vue');
-const InvoiceHistory = () => import('@/views/app/InvoiceHistory.vue');
+const Integrations = () => import('@/views/app/Integrations.vue');
 const OrderHistory = () => import('@/views/app/OrderHistory.vue');
 const DeliverySetup = () => import('@/views/app/DeliverySetup.vue');
-const Integrations = () => import('@/views/app/Integrations.vue');
-const Home = () => import('@/views/index.vue');
+const InvoiceHistory = () => import('@/views/app/InvoiceHistory.vue');
+const RestaurantInfo = () => import('@/views/app/RestaurantInfo/Index.vue');
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -100,7 +100,7 @@ const routes: Array<RouteRecordRaw> = [
         meta: {
           title: 'Integraciones',
         },
-      },
+      }
     ],
   },
 ];

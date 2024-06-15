@@ -8,12 +8,12 @@ import useMenuStore from '@/store/menu';
 import useRestaurantStore from '@/store/restaurant';
 import { priceRules, productNameRules } from '@/utils/validations';
 
+
 const emit = defineEmits(['next', 'prev']);
 
 const menuStore = useMenuStore();
 const restaurantStore = useRestaurantStore();
 
-const crushUpload = ref(null);
 const form = ref({
   productName: '',
   price: '',
@@ -98,59 +98,64 @@ function goBack(): void {
     <form @submit.prevent="submitForm">
       <div class="form-group">
         <CrushSelect
-          label="Categoría:"
           :options="categories"
           :value="form.category"
-          @update:value="handleInput($event, 'category')"
+          label="Categoría:"
           class="form-group-select"
-        />
+          @update:value="handleInput($event, 'category')" />
       </div>
+
       <div class="form-group">
         <CrushTextField
-          label="Nombre del Producto:"
-          placeholder="Nombre del Producto"
           :value="form.productName"
           :valid-rules="productNameRules"
-          @update:modelValue="handleInput($event, 'productName')"
+          placeholder="Nombre del Producto"
+          label="Nombre del Producto:"
           class="form-group-text-field"
-        />
+          @update:modelValue="handleInput($event, 'productName')" />
       </div>
+
       <div class="form-group">
         <CrushTextField
-          label="Precio:"
-          placeholder="Precio"
-          :value="form.price"
-          :valid-rules="priceRules"
-          prependContent="$" 
-          @update:modelValue="handleInput($event, 'price')"
-          class="form-group-text-field"
-        />
+        :value="form.price"
+        :valid-rules="priceRules"
+        placeholder="Precio"
+        prependContent="$" 
+        label="Precio:"
+        class="form-group-text-field"
+        @update:modelValue="handleInput($event, 'price')" />
       </div>
+
       <div class="form-group">
-        <label for="logo">Subir imagen:</label>
-        <CrushUpload :ref="crushUpload" @file-selected="handleFileSelected"/>
+        <label for="logo">
+          Subir imagen:
+        </label>
+        <CrushUpload @file-selected="handleFileSelected"/>
       </div>
+
       <div class="form-group">
         <CrushTextField
-          label="Descripción:"
-          placeholder="Descripción del Producto"
           :value="form.description"
-          @update:modelValue="handleInput($event, 'description')"
+          placeholder="Descripción del Producto"
+          label="Descripción:"
           class="form-group-text-field"
-        />
+          @update:modelValue="handleInput($event, 'description')" />
       </div>
+
       <div class="form-actions">
         <button 
           :disabled="!isFormValid"
           :style="{ cursor: isFormValid ? 'pointer' : 'not-allowed' }"
-          @click="addMealOrDrink"
           type="button"
-          class="add-meal-button">
+          class="add-meal-button"
+          @click="addMealOrDrink">
             Agregar Producto
         </button>
         
       </div>
-      <h3>Productos</h3>
+      <h3>
+        Productos
+      </h3>
       <div class="products">
         <div 
           v-for="(meal, index) in menuStore.items" 

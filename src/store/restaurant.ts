@@ -73,6 +73,7 @@ const useRestaurantStore = defineStore('RestaurantStore', {
         this.restaurant.contactInfo, 
         this.restaurant.settings,
         { companyName: this.restaurant.companyName, userSub },
+        { schedule: this.restaurant.schedule },
         this.restaurant.others,
         this.restaurant.bankSettings
       );

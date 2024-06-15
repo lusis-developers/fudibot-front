@@ -6,10 +6,12 @@ import useClientStore from '@/store/client';
 import useRestaurantStore from '@/store/restaurant';
 import { cellphoneRules, emailRules } from '@/utils/validations';
 
+
 const emit = defineEmits(['next', 'prev']);
 
 const restaurantStore = useRestaurantStore();
 const clientStore = useClientStore();
+
 const form = ref({
   email: '',
   cellphone: '',
@@ -18,7 +20,6 @@ const rules = {
   cellphone: cellphoneRules,
   email: emailRules
 };
-
 const isFormValid = computed(() => {
   const isCellphoneValid = cellphoneRules.every(rule => rule.validate(form.value.cellphone));
   return isCellphoneValid;
@@ -26,7 +27,6 @@ const isFormValid = computed(() => {
 
 function handleInput(event: string, type: string): void {
   if (type === 'cellphone') {
-    console.log('cellphone: ', form.value.cellphone)
     form.value.cellphone = event;
   }
 }
@@ -51,31 +51,31 @@ onMounted(getEmail)
     <h2>
       Información de Contacto
     </h2>
-    <form 
-      @submit.prevent="submitForm">
-        <div class="form-group">
-          <CrushTextField label="Tu número celular 📲" 
-            :value="form.cellphone"
-            :valid-rules="rules.cellphone" 
-            @update:modelValue="handleInput($event, 'cellphone')"
-            placeholder="Número de Celular" 
-            class="form-group-text-field" />
-        </div>
-        <div class="form-actions">
-          <button
-            class="action-button prev-button"
-            type="button"
-            @click="goBack">
-              Retroceder
-          </button>
-          <button 
-            class="action-button next-button"
-            :disabled="!isFormValid" 
-            :style="{ cursor: isFormValid ? 'pointer' : 'not-allowed' }"
-            type="submit">
-              Siguiente
-          </button>
-        </div>
+    <form @submit.prevent="submitForm">
+      <div class="form-group">
+        <CrushTextField 
+          :value="form.cellphone"
+          :valid-rules="rules.cellphone" 
+          placeholder="Número de Celular" 
+          label="Tu número celular 📲" 
+          class="form-group-text-field" 
+          @update:modelValue="handleInput($event, 'cellphone')" />
+      </div>
+      <div class="form-actions">
+        <button
+          class="action-button prev-button"
+          type="button"
+          @click="goBack">
+            Retroceder
+        </button>
+        <button 
+          :disabled="!isFormValid" 
+          :style="{ cursor: isFormValid ? 'pointer' : 'not-allowed' }"
+          class="action-button next-button"
+          type="submit">
+            Siguiente
+        </button>
+      </div>
     </form>
   </div>
 </template>
@@ -122,7 +122,6 @@ input {
   display: flex;
   justify-content: space-between;
 }
-
 .action-button {
   padding: 10px 20px;
   border: none;
@@ -132,24 +131,19 @@ input {
   cursor: pointer;
   transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out;
 }
-
 .action-button:hover {
   background-color: #81c784; 
 }
-
 .action-button.prev-button:active {
   transform: translateX(-10px);
 }
-
 .action-button.next-button:active {
   transform: translateX(10px);
 }
-
 .action-button:disabled {
   background-color: #ccc;
   cursor: not-allowed;
 }
-
 button {
   padding: 10px 20px;
   border: none;
@@ -157,8 +151,8 @@ button {
   background-color: $green;
   color: white;
   cursor: pointer;
-}
-button:hover {
+  &:hover {
   background-color: $light-green;
+  }
 }
 </style>

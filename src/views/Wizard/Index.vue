@@ -2,13 +2,13 @@
 import { ref } from 'vue';
 
 import ProgressBar from '@/components/ProgressBar.vue'
-
 import Step5AddItems from './components/Step5AddItems.vue';
 import Step6PaymentSettings from './components/Step6PaymentSettings.vue';
 import Step4Settings from '@/views/Wizard/components/Step4Settings.vue';
 import Step1BasicInfo from '@/views/Wizard/components/Step1BasicInfo.vue';
 import Step2ContactInfo from '@/views/Wizard/components/Step2ContactInfo.vue';
 import Step3CompanyInfo from '@/views/Wizard/components/Step3CompanyInfo.vue';
+
 
 const emit = defineEmits(['completed']);
 
@@ -19,13 +19,11 @@ function nextStep(): void {
     currentStep.value++;
   }
 }
-
 function prevStep(): void {
   if (currentStep.value > 1) {
     currentStep.value--;
   }
 }
-
 function completeWizard() {
   emit('completed')
 }
@@ -35,9 +33,13 @@ function completeWizard() {
   <div class="container">
     <div class="wizard-wrap">
       <div class="wizard-header">
-        <h1>Estamos a punto de iniciar...</h1>
+        <h1>
+          Estamos a punto de iniciar...
+        </h1>
         <div class="steps">
-          <ProgressBar :currentSectionIndex="currentStep" :totalSections="6"/>
+          <ProgressBar 
+            :currentSectionIndex="currentStep" 
+            :totalSections="6" />
         </div>
       </div>
       <div class="wizard-content">

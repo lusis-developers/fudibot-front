@@ -26,11 +26,10 @@ const menu = [
     name: 'Integraciones',
     path: 'integrations',
     icon: 'fa-solid fa-circle-nodes'
-  },
+  }
 ];
 
 const isOpen = ref(false);
-
 const isDektop = computed(() => window.innerWidth > 1280)
 
 function toggleNav(): void {
@@ -46,18 +45,18 @@ onMounted(() => {
 
 <template>
   <nav
-    class="nav"
-    :class="[{ 'nav-open': isOpen }]">
+    :class="[{ 'nav-open': isOpen }]"
+    class="nav">
     <div class="nav-button-wrapper">
       <img
         src="../assets//fudi-isologo-color.png"
         alt="fudibot"
-        class="logo">
+        class="logo" />
         <button
           v-if="!isDektop"
           class="button"
           @click="toggleNav">
-          <i class="fa-solid fa-bars"></i>
+            <i class="fa-solid fa-bars"></i>
         </button>
     </div>
     <div class="nav-wrapper">
@@ -66,10 +65,10 @@ onMounted(() => {
         :key="index"
         :to="`/app/${item.path}`"
         class="nav-item">
-        <i :class="item.icon"></i>
-        <span class="nav-text">
-          {{ item.name }}
-        </span>
+          <i :class="item.icon"></i>
+          <span class="nav-text">
+            {{ item.name }}
+          </span>
       </router-link>
     </div>
   </nav>
@@ -79,7 +78,6 @@ onMounted(() => {
 :deep(.button) {
   background-color: $white;
 }
-
 .nav {
   position: fixed;
   bottom: 0;
@@ -92,7 +90,6 @@ onMounted(() => {
   box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
   z-index: 10;
   transition: all 0.3s ease;
-
   &-button-wrapper {
     display: none;
     width: 24px;
@@ -100,13 +97,11 @@ onMounted(() => {
       display: none;
     }
   }
-
   &-wrapper {
     width: 100%;
     display: flex;
     justify-content: space-evenly;
   }
-
   .nav-item {
     display: flex;
     flex-direction: column;
@@ -117,17 +112,14 @@ onMounted(() => {
     text-decoration: none;
     font-size: 14px;
     transition: all 0.3s ease;
-
     i {
       font-size: 18px;
     }
-
     .nav-text {
       display: block;
       color: $grey;
       transition: all 0.3s ease;
     }
-
     &.router-link-exact-active,
     &:hover {
       color: $green;
@@ -137,7 +129,6 @@ onMounted(() => {
       }
     }
   }
-
   @media (min-width: $tablet-upper-breakpoint) {
     position: relative;
     width: 64px;
@@ -147,7 +138,6 @@ onMounted(() => {
     justify-content: flex-start;
     gap: 24px;
     z-index: 0;
-
     &-button-wrapper {
       width: 100%;
       display: flex;
@@ -168,38 +158,31 @@ onMounted(() => {
         }
       }
     }
-
     &-wrapper {
       width: 100%;
       flex-direction: column;
       gap: 12px;
     }
-
     .nav-item {
       width: 100%;
       flex-direction: row;
       justify-content: center;
-
       i {
         margin-right: 10px;
       }
-
       .nav-text {
         display: none;
       }
     }
   }
-
   @media (max-width: $mobile-upper-breakpoint) {
     .nav-item .nav-text {
       display: none;
     }
   }
-
   @media (min-width: $desktop-lower-breakpoint) {
     max-width: $crush-container-max-width;
   }
-
   &.nav-open {
     width: 160px;
     .nav-item {

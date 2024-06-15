@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import CrushSelect from '@nabux-crush/crush-select';
+import CrushTextField from '@nabux-crush/crush-text-field'
 
 import useRestaurantStore from '@/store/restaurant';
 import SelectDaysIsOpen from '@/components/SelectDaysIsOpen.vue';
 
+
 const emit = defineEmits(['next', 'prev']);
 
 const restaurantStore = useRestaurantStore();
+
 const form = ref({
   companyName: '',
   schedule: {
@@ -20,7 +23,6 @@ const timeOptions = [
   '6:00', '7:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', 
   '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00'
 ];
-
 const isFormValid = computed(() => {
   return form.value.schedule.open !== '' && 
          form.value.schedule.close !== '' && 
@@ -45,12 +47,8 @@ function handleInput(event: string, type: string): void {
   }
 }
 async function submitForm() {
-  if (isFormValid.value) {
-    emit('next', form.value);
-    await updateCompanyInfo();
-  } else {
-    console.log('faltan datos');
-  }
+  emit('next', form.value);
+  await updateCompanyInfo();
 }
 function goBack(): void {
   emit('prev')
@@ -64,48 +62,46 @@ async function updateCompanyInfo() {
       close: form.value.schedule.close
     })
   }
-
 }
 </script>
 
 <template>
   <div class="step-content">
-    <h2>Información del Negocio</h2>
+    <h2>
+      Información del Negocio
+    </h2>
     <form @submit.prevent="submitForm">
-
       <div class="form-group">
         <CrushTextField
-          label="Nombre del Restaurante:"
-          placeholder="Nombre del Restaurante"
           :value="form.companyName"
-          @update:modelValue="handleInput($event, 'restaurantName')"
+          placeholder="Nombre del Restaurante"
+          label="Nombre del Restaurante:"
           class="form-group-text-field"
-        />
+          @update:modelValue="handleInput($event, 'restaurantName')" />
       </div>
 
       <div class="form-group">
         <CrushSelect
-          label="Hora de Apertura:"
           :options="timeOptions"
           :value="form.schedule.open"
-          @update:value="handleInput($event, 'open')"
+          label="Hora de Apertura:"
           class="form-group-select"
-        />
+          @update:value="handleInput($event, 'open')" />
       </div>
 
       <div class="form-group">
         <CrushSelect
-          label="Hora de Cierre:"
           :options="timeOptions"
           :value="form.schedule.close"
-          @update:value="handleInput($event, 'close')"
+          label="Hora de Cierre:"
           class="form-group-select"
-        />
+          @update:value="handleInput($event, 'close')" />
       </div>
 
       <div class="form-group">
-        <SelectDaysIsOpen @update:selectedDays="updateSelectedDays"/>
+        <SelectDaysIsOpen @update:selectedDays="updateSelectedDays" />
       </div>
+
       <div class="form-actions">
         <button
           type="button"
@@ -113,9 +109,9 @@ async function updateCompanyInfo() {
             Retroceder
         </button>
         <button 
-          type="submit"
-          :style="{ cursor: isFormValid ? 'pointer' : 'not-allowed' }">
-          Siguiente
+          :disabled="!isFormValid"
+          type="submit">
+            Siguiente
         </button>
       </div>
     </form>
@@ -126,7 +122,6 @@ async function updateCompanyInfo() {
 .step-content {
   width: 100%;
 }
-
 .form-group {
   margin-bottom: 20px;
   :deep(.form-container-label){
@@ -160,13 +155,11 @@ async function updateCompanyInfo() {
     font-family: $font;
   };
 }
-
 label {
   display: block;
   margin-bottom: 8px;
   font-weight: bold;
 }
-
 input {
   width: 100%;
   padding: 10px;
@@ -174,12 +167,10 @@ input {
   border-radius: 5px;
   box-sizing: border-box;
 }
-
 .form-actions {
   display: flex;
   justify-content: space-between;
 }
-
 button {
   padding: 10px 20px;
   border: none;
@@ -187,9 +178,12 @@ button {
   background-color: $green;
   color: white;
   cursor: pointer;
-}
-
-button:hover {
-  background-color: $light-green;
+  &:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  &:not(:disabled):hover {
+    background-color: $light-green;
+  }
 }
 </style>

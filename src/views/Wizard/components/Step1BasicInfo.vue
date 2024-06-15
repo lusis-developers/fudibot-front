@@ -1,13 +1,15 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 import { Loader } from '@googlemaps/js-api-loader';
 import CrushTextField from '@nabux-crush/crush-text-field'
 
 import useRestaurantStore from '@/store/restaurant';
 
+
 const emit = defineEmits(['next']);
 
 const restaurantStore = useRestaurantStore();
+
 const apiKey = 'AIzaSyA-m3u-eZGtvXPnO4Z3bQ_L_iybWOwQgdY';
 const map = ref<google.maps.Map | null>(null);
 const marker = ref<google.maps.Marker | null>(null);
@@ -20,6 +22,7 @@ const form = ref({
     fullAdress: ''
   }
 });
+const isFormValid = computed(() => form.value.botName && form.value.location.fullAdress && form.value.location.radius);
 
 function initializeMap(lat: number, lng: number): void {
   const loader = new Loader({
@@ -93,46 +96,43 @@ function handleInput(event: string, type: string): void {
 }
 function submitForm(): void {
   emit('next', form.value);
-  restaurantStore.addBasicInfo(form.value)
+  restaurantStore.addBasicInfo(form.value);
 }
 
-onMounted(() => {
-  getUserLocation();
-});
+onMounted(getUserLocation);
 </script>
 
 <template>
   <div class="step-content">
-    <h2>Información Básica</h2>
+    <h2>
+      Información Básica
+    </h2>
     <form @submit.prevent="submitForm">
       <div class="form-group">
         <CrushTextField
-          label="Nombre del Bot:"
-          placeholder="Superbot"
           :value="form.botName"
-          @update:modelValue="handleInput($event, 'botName')"
+          placeholder="Superbot"
+          label="Nombre del Bot:"
           class="form-group-text-field"
-        />
+          @update:modelValue="handleInput($event, 'botName')" />
       </div>
 
       <div class="form-group">
         <CrushTextField
-          label="Radio de atención"
-          placeholder="Radio de atención en Kilómetros"
           :value="form.location.radius"
-          @update:modelValue="handleInput($event, 'radius')"
+          placeholder="Radio de atención en Kilómetros"
+          label="Radio de atención"
           class="form-group-text-field"
-        />
+          @update:modelValue="handleInput($event, 'radius')" />
       </div>
 
       <div class="form-group">
         <CrushTextField
-          label="Ubicación del Restaurante:"
-          placeholder="Dirección"
           :value="form.location.fullAdress"
-          @update:modelValue="handleInput($event, 'location')"
+          placeholder="Dirección"
+          label="Ubicación del Restaurante:"
           class="form-group-text-field"
-        />
+          @update:modelValue="handleInput($event, 'location')" />
       </div>
 
       <div class="form-group">
@@ -143,8 +143,10 @@ onMounted(() => {
       </div>
 
       <div class="form-actions">
-        <button type="submit">
-          Siguiente
+        <button 
+          :disabled="!isFormValid"
+          type="submit">
+            Siguiente
         </button>
       </div>
     </form>
@@ -155,7 +157,6 @@ onMounted(() => {
 .step-content {
   width: 100%;
 }
-
 .form-group {
   margin-bottom: 20px;
   :deep(.crush-text-field-label-text){
@@ -170,13 +171,11 @@ onMounted(() => {
     border-color: $green;
   }
 }
-
 label {
   display: block;
   margin-bottom: 8px;
   font-weight: bold;
 }
-
 input {
   width: 100%;
   padding: 10px;
@@ -184,7 +183,6 @@ input {
   border-radius: 5px;
   box-sizing: border-box;
 }
-
 #map {
   height: 300px;
   width: 100%;
@@ -192,12 +190,10 @@ input {
   border: 1px solid #ccc;
   border-radius: 5px;
 }
-
 .form-actions {
   display: flex;
   justify-content: flex-end;
 }
-
 button {
   padding: 10px 20px;
   border: none;
@@ -205,9 +201,12 @@ button {
   background-color: $green;
   color: white;
   cursor: pointer;
-}
-
-button:hover {
-  background-color: $light-green;
+  &:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  &:not(:disabled):hover {
+    background-color: $light-green;
+  }
 }
 </style>
