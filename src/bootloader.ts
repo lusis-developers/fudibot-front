@@ -1,7 +1,6 @@
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 import { getAnalytics } from 'firebase/analytics';
-import VueGoogleMaps from '@fawmi/vue-google-maps';
 
 import App from './App.vue';
 import router from './router';
