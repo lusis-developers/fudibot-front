@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
+import useAuthStore from '@/store/auth';
 import ProgressBar from '@/components/ProgressBar.vue'
 import Step5AddItems from './components/Step5AddItems.vue';
 import Step6PaymentSettings from './components/Step6PaymentSettings.vue';
@@ -9,6 +10,7 @@ import Step1BasicInfo from '@/views/Wizard/components/Step1BasicInfo.vue';
 import Step2ContactInfo from '@/views/Wizard/components/Step2ContactInfo.vue';
 import Step3CompanyInfo from '@/views/Wizard/components/Step3CompanyInfo.vue';
 
+const authStore = useAuthStore()
 
 const emit = defineEmits(['completed']);
 
@@ -31,6 +33,7 @@ function completeWizard() {
 
 <template>
   <div class="container">
+    <button @click="authStore.signOut">logout</button>
     <div class="wizard-wrap">
       <div class="wizard-header">
         <h1>
