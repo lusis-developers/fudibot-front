@@ -16,8 +16,8 @@ class Auth0Service {
   private async init(): Promise<void> {
     try {
       const config: Auth0ClientOptions = {
-        domain: 'dev-rtlzfsmq8fzuo8xt.us.auth0.com', // Usa tu dominio Auth0 real aquí
-        clientId: 'MKec3hnxog79HvHqal3Mh3G1am5N6qFU',
+        domain: 'dev-fzn3icmi5a20c452.us.auth0.com', // Usa tu dominio Auth0 real aquí
+        clientId: 'FiKCHkexkbJoCRRyIDDBslvfguV2beQK',
         authorizationParams: {
           grandType: 'authorization_code',
           redirect_uri: window.location.origin + '/authorize',
