@@ -54,4 +54,46 @@ export interface Others {
   countryCode:    string;
   enable:         boolean;
   deleted:        boolean;
+  uuid:           string;
+}
+
+export interface CreatedRestaurant {
+  botId: string;
+  botName: string;
+  cellphone: string;
+  companyName: string;
+  website: string;
+  countryCode: string;
+  createdAt: Date;
+  updatedAt: Date;
+  currency: string;
+  deleted: boolean;
+  delivery: string;
+  drinks: string[];
+  meals: string[];
+  email: string;
+  enable: boolean;
+  location: Location;
+  logo: string;
+  manager: string;
+  menu: string;
+  uuid: string;
+  paymentMethods: string;
+  schedule: Schedule[];
+  bankSettings: string[];
+}
+
+export interface PickerData {
+  token: string;
+  message: string;
+  statusCode: number;
+}
+
+export interface Picker {
+  data: PickerData;
+}
+
+export interface RestaurantResponse {
+  picker: Picker;
+  restaurant: CreatedRestaurant;
 }

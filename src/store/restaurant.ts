@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 
 import useClientStore from './client';
 import RestaurantService from '@/services/restaurant';
-import type { BankSettings, BasicInfo, ContactInfo, Restaurant, Schedule, Settings } from '@/types/restaurant.interface';
+import type { BankSettings, BasicInfo, ContactInfo, Restaurant, Schedule, Settings, RestaurantResponse } from '@/types/restaurant.interface';
 
 interface RootState {
   restaurant: Restaurant;
@@ -45,6 +45,7 @@ const useRestaurantStore = defineStore('RestaurantStore', {
         countryCode: '+593',
         enable: false,
         deleted: false,
+        uuid: '',
       },
       bankSettings: [] as BankSettings[],  
     },
@@ -77,7 +78,8 @@ const useRestaurantStore = defineStore('RestaurantStore', {
         this.restaurant.others,
         this.restaurant.bankSettings
       );
-      await restaurantService.createRestaurant(newRestaurant);
+      const createdRestaurant = await restaurantService.createRestaurant(newRestaurant) as RestaurantResponse;
+      this.restaurant.others.uuid = createdRestaurant.restaurant.uuid;
     },
     async addLogo(image: any) {
       const logo = await restaurantService.addRestaurantLogo(image);
@@ -90,7 +92,7 @@ const useRestaurantStore = defineStore('RestaurantStore', {
         const newBank = Object.assign(
           {},
           bank,
-          { companyName: this.restaurant.companyName }
+          { uuid: this.restaurant.others.uuid }
         )
         await restaurantService.createBank(newBank);
       }

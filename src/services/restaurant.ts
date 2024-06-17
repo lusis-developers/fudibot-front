@@ -1,3 +1,4 @@
+import { RestaurantResponse } from "@/types/restaurant.interface";
 import APIBase from "./base";
 
 class RestaurantService extends APIBase {
@@ -10,7 +11,7 @@ class RestaurantService extends APIBase {
   }
   async createRestaurant(data: any) {
     try {
-      return this.post('restaurant', data);
+      return this.post<RestaurantResponse>('restaurant', data);
     } catch (error) {
       console.error(error);
     }
