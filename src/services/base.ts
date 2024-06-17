@@ -4,7 +4,7 @@ class APIBase {
   private baseUrl: string;
 
   constructor() {
-    this.baseUrl = 'http://localhost:8100/api';
+    this.baseUrl = import.meta.env.VITE_FUDIBOT_API || 'http://localhost:8100/api';
   }
 
   private buildUrl(endpoint: string): string {
