@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { useRouter } from 'vue-router'
 import CrushTextField from '@nabux-crush/crush-text-field';
 import CrushSelect from '@nabux-crush/crush-select';
 
 import useRestaurantStore from '@/store/restaurant';
 import { emailRules, phoneRules } from '@/utils/validations';
+
+const router = useRouter()
 
 const emit = defineEmits(['next']);
 
@@ -50,6 +53,7 @@ function submitForm(): void {
       phone: form.value.phone
     };
     restaurantStore.addBankSettings(paymentSettings);
+    router.push('/')
   } else {
     console.log('faltan datos');
   }
