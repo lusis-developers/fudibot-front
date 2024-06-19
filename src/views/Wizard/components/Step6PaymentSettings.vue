@@ -3,7 +3,7 @@ import { ref, computed } from 'vue';
 import CrushTextField from '@nabux-crush/crush-text-field';
 import CrushSelect from '@nabux-crush/crush-select';
 
-import useRestaurantStore from '@/store/restaurant';
+import useRestaurantStore from '@/store/restaurantDeprecated';
 import { emailRules, phoneRules } from '@/utils/validations';
 
 const emit = defineEmits(['next']);

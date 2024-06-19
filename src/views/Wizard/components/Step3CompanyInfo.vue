@@ -3,7 +3,7 @@ import { computed, ref } from 'vue';
 import CrushSelect from '@nabux-crush/crush-select';
 import CrushTextField from '@nabux-crush/crush-text-field'
 
-import useRestaurantStore from '@/store/restaurant';
+import useRestaurantStore from '@/store/restaurantDeprecated';
 import SelectDaysIsOpen from '@/components/SelectDaysIsOpen.vue';
 
 

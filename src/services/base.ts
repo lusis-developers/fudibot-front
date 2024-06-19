@@ -24,13 +24,12 @@ class APIBase {
     return headers;
   }
 
-  protected async get<T>(endpoint: string): Promise<T> {
+  protected async get<T>(endpoint: string): Promise<AxiosResponse<T>> {
     const url = this.buildUrl(endpoint);
     try {
-      const response: AxiosResponse<T> = await axios.get(url, {
+      return await axios.get<T>(url, {
         headers: this.getHeaders()
-      });
-      return response.data;
+      })
     } catch (error: any) {
       const errorDetails = {
         status: error.response.status,
@@ -40,13 +39,12 @@ class APIBase {
     }
   }
 
-  protected async post<T>(endpoint: string, data: any, headers?: {[key: string]: string}): Promise<T> {
+  protected async post<T>(endpoint: string, data: any, headers?: {[key: string]: string}): Promise<AxiosResponse<T>> {
     const url = this.buildUrl(endpoint);
     try {
-      const response: AxiosResponse<T> = await axios.post(url, data, {
+      return await axios.post<T>(url, data, {
         headers: headers ? headers : this.getHeaders()
       });
-      return response.data;
     } catch (error: any) {
       const errorDetails = {
         status: error.response.status,
@@ -56,13 +54,12 @@ class APIBase {
     }
   }
 
-  protected async put<T>(endpoint: string, data: any): Promise<T> {
+  protected async put<T>(endpoint: string, data: any): Promise<AxiosResponse<T>> {
     const url = this.buildUrl(endpoint);
     try {
-      const response: AxiosResponse<T> = await axios.put(url, data, {
+      return await axios.put<T>(url, data, {
         headers: this.getHeaders()
       });
-      return response.data;
     } catch (error: any) {
       const errorDetails = {
         status: error.response.status,
@@ -72,13 +69,12 @@ class APIBase {
     }
   }
 
-  protected async patch<T>(endpoint: string, data: any): Promise<T> {
+  protected async patch<T>(endpoint: string, data: any): Promise<AxiosResponse<T>> {
     const url = this.buildUrl(endpoint);
     try {
-      const response: AxiosResponse<T> = await axios.patch(url, data, {
+      return await axios.patch<T>(url, data, {
         headers: this.getHeaders()
       });
-      return response.data;
     } catch (error: any) {
       const errorDetails = {
         status: error.response.status,
@@ -88,13 +84,12 @@ class APIBase {
     }
   }
 
-  protected async delete<T>(endpoint: string): Promise<T> {
+  protected async delete<T>(endpoint: string): Promise<AxiosResponse<T>> {
     const url = this.buildUrl(endpoint);
     try {
-      const response: AxiosResponse<T> = await axios.delete(url, {
+      return await axios.delete<T>(url, {
         headers: this.getHeaders()
       });
-      return response.data;
     } catch (error: any) {
       const errorDetails = {
         status: error.response.status,

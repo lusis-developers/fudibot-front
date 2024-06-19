@@ -1,3 +1,5 @@
+import { AccountType } from '@/enum/bank.enum';
+
 export interface Restaurant {
   companyName:    string;
   basicInfo:      BasicInfo;
@@ -9,37 +11,37 @@ export interface Restaurant {
 }
 
 export interface Location {
-  lat:        number;
-  lng:        number;
-  radius:     string;
+  latitude: number;
+  longitude: number;
+  radius: string;
   fullAdress: string;
 }
 
 export interface BasicInfo {
-  location:       Location;
-  botName:        string;
+  location: Location;
+  botName: string;
 }
 
 export interface ContactInfo {
-  email:          string;
-  cellphone:      string;
+  email: string;
+  cellphone: string;
 }
 
 export interface Schedule {
-  day:    string;
-  open:   string;
-  close:  string;
+  day: string;
+  open: string;
+  close: string;
 }
 
 export interface Settings {
-  manager:        string;
-  logo:           string;
-  website:        string;
+  manager: string;
+  logo: string;
+  website: string;
 }
 
 export interface BankSettings {
   bankName: string;
-  accountType: 'Ahorros' | 'Corriente';
+  accountType: AccountType;
   accountNumber: string;
   accountHolderName: string;
   identification: string;

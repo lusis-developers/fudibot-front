@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { onMounted, ref, computed } from 'vue';
 import { Loader } from '@googlemaps/js-api-loader';
-import CrushTextField from '@nabux-crush/crush-text-field'
 
 import useRestaurantStore from '@/store/restaurant';
-
+import CrushTextField from '@nabux-crush/crush-text-field'
 
 const emit = defineEmits(['next']);
 
@@ -16,9 +15,9 @@ const marker = ref<google.maps.Marker | null>(null);
 const form = ref({
   botName: '',
   location: {
-    lat: 0,
+    latitude: 0,
     radius: '10',
-    lng: 0,
+    longitude: 0,
     fullAdress: ''
   }
 });
@@ -50,16 +49,16 @@ function initializeMap(lat: number, lng: number): void {
       const center = map.value!.getCenter();
       if (center) {
         marker.value!.setPosition(center);
-        form.value.location.lat = center.lat();
-        form.value.location.lng = center.lng();
+        form.value.location.latitude = center.lat();
+        form.value.location.longitude = center.lng();
       }
     });
 
     google.maps.event.addListener(map.value, 'idle', () => {
       const center = map.value!.getCenter();
       if (center) {
-        form.value.location.lat = center.lat();
-        form.value.location.lng = center.lng();
+        form.value.location.latitude = center.lat();
+        form.value.location.longitude = center.lng();
       }
     });
   });
@@ -70,8 +69,8 @@ function getUserLocation(): void {
       (position) => {
         const { latitude, longitude } = position.coords;
         initializeMap(latitude, longitude);
-        form.value.location.lat = latitude;
-        form.value.location.lng = longitude;
+        form.value.location.latitude = latitude;
+        form.value.location.longitude = longitude;
       },
       () => {
         initializeMap(-2.170998, -79.922356); // Guayaquil coordinates
@@ -86,7 +85,7 @@ function handleInput(event: string, type: string): void {
     form.value.botName = event;
     console.log('botname: ', form.value.botName)
   }
-  if (type === 'location') {
+  if (type === 'fullAddress') {
     form.value.location.fullAdress = event;
   } 
   if (type === 'radius') {
@@ -96,10 +95,12 @@ function handleInput(event: string, type: string): void {
 }
 function submitForm(): void {
   emit('next', form.value);
-  restaurantStore.addBasicInfo(form.value);
+  // restaurantStore.addBasicInfo(form.value);
 }
 
-onMounted(getUserLocation);
+onMounted(() => {
+  getUserLocation();
+});
 </script>
 
 <template>
@@ -132,12 +133,12 @@ onMounted(getUserLocation);
           placeholder="Dirección"
           label="Ubicación del Restaurante:"
           class="form-group-text-field"
-          @update:modelValue="handleInput($event, 'location')" />
+          @update:modelValue="handleInput($event, 'fullAddress')" />
       </div>
 
       <div class="form-group">
         <label for="coordinates">
-          Coordenadas:
+          Coordenadas: {{ form.location.latitude }}, {{ form.location.longitude }}
         </label>
         <div id="map"></div>
       </div>
@@ -152,7 +153,7 @@ onMounted(getUserLocation);
     </form>
   </div>
 </template>
-
+  
 <style lang="scss" scoped>
 .step-content {
   width: 100%;

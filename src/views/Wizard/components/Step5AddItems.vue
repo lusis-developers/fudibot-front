@@ -5,7 +5,7 @@ import CrushUpload from '@nabux-crush/crush-upload';
 import CrushTextField from '@nabux-crush/crush-text-field';
 
 import useMenuStore from '@/store/menu';
-import useRestaurantStore from '@/store/restaurant';
+import useRestaurantStore from '@/store/restaurantDeprecated';
 import { priceRules, productNameRules } from '@/utils/validations';
 
 

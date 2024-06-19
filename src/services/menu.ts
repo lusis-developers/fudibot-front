@@ -1,5 +1,5 @@
 import APIBase from "./base";
-import { Drink, Meal } from "@/types/menu.interface";
+import { Drink, Meal } from "@/interfaces/menu.interface";
 
 class MenuService extends APIBase {
   async addMeals(meal: Meal) {

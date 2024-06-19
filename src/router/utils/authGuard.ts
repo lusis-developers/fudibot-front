@@ -10,14 +10,13 @@ export async function googleAuthGuard(
 
   const authStore = useAuthStore();
 
-  await authStore.checkAuth();
+  const isAuthenticated = await authStore.checkAuth();
 
-  const isAuthenticated = authStore.user !== null;
-
-  if (isAuthenticated && (to.name === 'Login' || to.name === 'Register' || to.name === 'Authorize' || to.name === 'Home')) {
+  if (isAuthenticated && (to.name === 'Login' || to.name === 'Register' || to.name === 'Authorize')) {
     next({ path: '/app/restaurant-info' });
     return;
   } else if (!isAuthenticated && (to.path.startsWith('/app') || to.name === 'Home')) {
+    console.log('segundo condicional para el login')
     next({ path: '/login' });
     return;
   } else {

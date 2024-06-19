@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import MenuService from "@/services/menu";
-import type { Drink, Meal } from "@/types/menu.interface";
+import type { Drink, Meal } from "@/interfaces/menu.interface";
 
 interface RootState {
   items: (Meal | Drink)[];

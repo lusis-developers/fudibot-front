@@ -3,7 +3,7 @@ import { ref, computed, onMounted } from 'vue';
 import CrushTextField from '@nabux-crush/crush-text-field'
 
 import useClientStore from '@/store/client';
-import useRestaurantStore from '@/store/restaurant';
+import useRestaurantStore from '@/store/restaurantDeprecated';
 import { cellphoneRules, emailRules } from '@/utils/validations';
 
 

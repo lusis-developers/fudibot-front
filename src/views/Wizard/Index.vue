@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 import useAuthStore from '@/store/auth';
+import useClientStore from '@/store/client';
 import ProgressBar from '@/components/ProgressBar.vue'
 import Step5AddItems from './components/Step5AddItems.vue';
 import Step6PaymentSettings from './components/Step6PaymentSettings.vue';
@@ -10,7 +12,10 @@ import Step1BasicInfo from '@/views/Wizard/components/Step1BasicInfo.vue';
 import Step2ContactInfo from '@/views/Wizard/components/Step2ContactInfo.vue';
 import Step3CompanyInfo from '@/views/Wizard/components/Step3CompanyInfo.vue';
 
-const authStore = useAuthStore()
+const router = useRouter();
+
+const authStore = useAuthStore();
+const clientStore = useClientStore();
 
 const emit = defineEmits(['completed']);
 
@@ -29,6 +34,21 @@ function prevStep(): void {
 function completeWizard() {
   emit('completed')
 }
+
+onMounted(async () => {
+  const userAuth = await authStore.checkAuth();
+  if (!userAuth || userAuth === undefined) {
+    router.push({ path: '/login' });
+    return;
+  }
+  
+  await clientStore.getClientBySub(userAuth?.sub);
+  if (clientStore.client?.restaurant?.companyName.length) {
+    router.push({ path: '/app/restaurant-info' })
+  }
+  
+  await clientStore.createClient(userAuth);
+});
 </script>
 
 <template>
@@ -49,7 +69,7 @@ function completeWizard() {
         <Step1BasicInfo
           v-if="currentStep === 1"
           @next="nextStep" />
-        <Step2ContactInfo
+        <!-- <Step2ContactInfo
           v-if="currentStep === 2"
           @next="nextStep"
           @prev="prevStep" />
@@ -69,7 +89,7 @@ function completeWizard() {
           v-if="currentStep === 6"
           @next="nextStep"
           @prev="prevStep"
-          @complete="completeWizard" />
+          @complete="completeWizard" /> -->
       </div>
     </div>
   </div>

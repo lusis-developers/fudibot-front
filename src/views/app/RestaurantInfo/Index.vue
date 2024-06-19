@@ -3,20 +3,24 @@ import { onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
 import useClientStore from '@/store/client';
-import useRestaurantStore from '@/store/restaurant';
+import useAuthStore from '@/store/auth';
+// import useRestaurantStore from '@/store/restaurant';
 
-const restaurantStore = useRestaurantStore();
+// const restaurantStore = useRestaurantStore();
+const authStore = useAuthStore();
 const clientStore = useClientStore();
 
 const router = useRouter();
 
-onMounted(async() => {
-  const id = await clientStore.getUserIDRestaurant();
-  if(!id) {
-    router.push('/wizard')
-  } else{
-    const restaurant = await restaurantStore.getRestaurant(id);
-    console.log(restaurant)
+onMounted(async () => {
+  console.log('cliente desde restaurant infor', clientStore.client)
+  
+  const userAuth = await authStore.checkAuth();
+  await clientStore.getClientBySub(userAuth?.sub!);
+
+  if (!clientStore.client) {
+    console.log('del restaurnat al wizard')
+    router.push({ path: '/wizard' });
   }
 })
 </script>
