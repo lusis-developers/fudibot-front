@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router';
 
 import useAuthStore from '@/store/auth';
 import useClientStore from '@/store/client';
+import useRestaurantStore from '@/store/restaurant';
 import ProgressBar from '@/components/ProgressBar.vue'
 import Step5AddItems from './components/Step5AddItems.vue';
 import Step6PaymentSettings from './components/Step6PaymentSettings.vue';
@@ -16,6 +17,7 @@ const router = useRouter();
 
 const authStore = useAuthStore();
 const clientStore = useClientStore();
+const restaurantStore = useRestaurantStore();
 
 const emit = defineEmits(['completed']);
 
@@ -42,12 +44,16 @@ onMounted(async () => {
     return;
   }
   
-  await clientStore.getClientBySub(userAuth?.sub);
+  await clientStore.getClientByEmail(userAuth?.email);
   if (clientStore.client?.restaurant?.companyName.length) {
     router.push({ path: '/app/restaurant-info' })
   }
   
   await clientStore.createClient(userAuth);
+
+  console.log('client wizard index', clientStore.client)
+  await restaurantStore.getRestaurantById(clientStore.client?.restaurant?._id!);
+  console.log(restaurantStore.restaurant);
 });
 </script>
 

@@ -1,4 +1,5 @@
-import { Restaurant } from "./restaurantDeprecated.interface";
+import { Restaurant } from "./restaurant.interface";
+
 
 export interface Client {
   sub: string;

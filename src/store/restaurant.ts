@@ -3,7 +3,7 @@ import { defineStore } from 'pinia';
 import APIRestaurant from '@/services/restaurant/restaurant';
 
 import type { Restaurant } from '@/interfaces/restaurant.interface';
-import { Coordinates } from '@/interfaces/coordinates.interface';
+import type { Coordinates } from '@/interfaces/coordinates.interface';
 
 const restaurantService = new APIRestaurant();
 
@@ -22,10 +22,10 @@ export const useRestaurantStore = defineStore('RestaurantStore', {
   }),
 
   actions: {
-    async getRestaurantById(uuid: string): Promise<void> {
+    async getRestaurantById(id: string): Promise<void> {
       this.isLoading = true;
       try {
-        const response = await restaurantService.getRestaurantById(uuid);
+        const response = await restaurantService.getRestaurantById(id);
         this.restaurant = response.data;
       } catch (error: unknown) {
         this.error = String(error)
@@ -33,9 +33,14 @@ export const useRestaurantStore = defineStore('RestaurantStore', {
         this.isLoading = false
       }
     },
-    addBasicInfo(email: string, location: Coordinates, botName: string) {
-      console.log(email, location, botName)
-    }
+    addBasicInfo(location: Coordinates, botName: string) {
+      console.log(location, botName)
+      if (this.restaurant) {
+        this.restaurant.botName = botName;
+        this.restaurant.location = location
+      }
+    },
+    
   }
 });
 

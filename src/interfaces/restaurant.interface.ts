@@ -5,5 +5,6 @@ export interface Restaurant {
   botName: string,
   location: Coordinates,
   manager: string,
-  email: string
+  email: string,
+  companyName: string
 }

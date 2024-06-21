@@ -25,6 +25,7 @@ export const useClientStore = defineStore('ClientStore', {
       this.isLoading = true;
       try {
         const response = await clientService.createClient(client);
+        console.log(response.data)
         this.client = response?.data;
       } catch (error: unknown) {
         this.error = String(error)
@@ -32,10 +33,10 @@ export const useClientStore = defineStore('ClientStore', {
         this.isLoading = false;
       }
     },
-    async getClientBySub(clientSub: string): Promise<void> {
+    async getClientByEmail(email: string): Promise<void> {
       this.isLoading = true;
       try {
-        const response = await clientService.getClientBySub(clientSub);
+        const response = await clientService.getClientByEmail(email);
         this.client = response.data;
       } catch (error: unknown) {
         this.error = String(error);

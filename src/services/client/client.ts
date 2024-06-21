@@ -9,8 +9,8 @@ class APIClient extends APIBase {
     return await this.post<Client>('client', client);
   }
 
-  async getClientBySub(sub: string): Promise<AxiosResponse<Client>> {
-    return await this.get<Client>(`client/${sub}`);
+  async getClientByEmail(email: string): Promise<AxiosResponse<Client>> {
+    return await this.get<Client>(`client-by-email/${email}`);
   }
 }
 

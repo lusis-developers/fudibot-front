@@ -19,7 +19,7 @@ onMounted(async () => {
       router.push({ path: '/login' });
       return;
     }
-    await clientStore.getClientBySub(userAuth?.sub);
+    await clientStore.getClientByEmail(userAuth?.email);
     router.push({ path: '/app/restaurant-info' });
   } else {
     router.push('/register');
