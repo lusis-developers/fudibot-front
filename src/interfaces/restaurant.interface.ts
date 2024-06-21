@@ -6,5 +6,13 @@ export interface Restaurant {
   location: Coordinates,
   manager: string,
   email: string,
-  companyName: string
+  companyName: string,
+  phone: string,
+  schedule: Schedule[]
+}
+
+export interface Schedule {
+  day: string,
+  open: string,
+  close: string
 }

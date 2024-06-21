@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 
 import APIRestaurant from '@/services/restaurant/restaurant';
 
-import type { Restaurant } from '@/interfaces/restaurant.interface';
+import type { Restaurant, Schedule } from '@/interfaces/restaurant.interface';
 import type { Coordinates } from '@/interfaces/coordinates.interface';
 
 const restaurantService = new APIRestaurant();
@@ -33,14 +33,25 @@ export const useRestaurantStore = defineStore('RestaurantStore', {
         this.isLoading = false
       }
     },
-    addBasicInfo(location: Coordinates, botName: string) {
+    addBasicInfo(location: Coordinates, botName: string): void {
       console.log(location, botName)
       if (this.restaurant) {
         this.restaurant.botName = botName;
         this.restaurant.location = location
       }
     },
-    
+    addContactInfo(email: string, phone: string) {
+      if (this.restaurant) {
+        this.restaurant.email = email;
+        this.restaurant.phone = phone
+      }
+    },
+    addCompanyData(restaurantName: string, schedule: Schedule[]): void {
+      if (this.restaurant) {
+        this.restaurant.companyName = restaurantName,
+        this.restaurant.schedule = schedule
+      }
+    }
   }
 });
 
