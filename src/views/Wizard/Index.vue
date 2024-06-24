@@ -83,7 +83,7 @@ onMounted(async () => {
           v-if="currentStep === 3"
           @next="nextStep"
           @prev="prevStep" />
-        <!-- <Step4Settings
+        <Step4Settings
           v-if="currentStep === 4"
           @next="nextStep"
           @prev="prevStep" />
@@ -91,7 +91,7 @@ onMounted(async () => {
           v-if="currentStep === 5"
           @next="nextStep"
           @prev="prevStep" />
-        <Step6PaymentSettings
+        <!-- <Step6PaymentSettings
           v-if="currentStep === 6"
           @next="nextStep"
           @prev="prevStep"

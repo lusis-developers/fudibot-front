@@ -8,7 +8,9 @@ export interface Restaurant {
   email: string,
   companyName: string,
   phone: string,
-  schedule: Schedule[]
+  schedule: Schedule[],
+  logo: string,
+  website: string
 }
 
 export interface Schedule {

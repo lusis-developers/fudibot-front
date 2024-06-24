@@ -51,6 +51,22 @@ export const useRestaurantStore = defineStore('RestaurantStore', {
         this.restaurant.companyName = restaurantName,
         this.restaurant.schedule = schedule
       }
+    },
+    async postRestaurantLogo(imageFile: File): Promise<void> {
+      try {
+        const response =  await restaurantService.postAddRestaurantLogo(imageFile);
+        if (this.restaurant) {
+          this.restaurant.logo = response.data.url;
+        }
+      } catch (error) {
+        this.error = String(error);
+      }
+    },
+    addWebAndManager(website: string, manager: string) {
+      if (this.restaurant) {
+        this.restaurant.manager = manager;
+        this.restaurant.website = website;
+      }
     }
   }
 });

@@ -1,11 +1,12 @@
 import { defineStore } from "pinia";
 import MenuService from "@/services/menu";
-import type { Drink, Meal } from "@/interfaces/menu.interface";
+
+import type { MenuItem } from "@/interfaces/menu.interface";
 
 interface RootState {
-  items: (Meal | Drink)[];
-  meals: Meal[];
-  drinks: Drink[];
+  items: MenuItem[];
+  meals: MenuItem[];
+  drinks: MenuItem[];
   error: string | null;
 }
 
@@ -20,7 +21,7 @@ const useMenuStore = defineStore("MenuStore", {
   }),
 
   actions: {
-    async addMeal(meal: Meal) {
+    async addMeal(meal: MenuItem) {
       try {
         await menuService.addMeals(meal);
         this.meals.push(meal);
@@ -29,7 +30,7 @@ const useMenuStore = defineStore("MenuStore", {
         this.error = error.message;
       }
     },
-    async addDrink(drink: Drink) {
+    async addDrink(drink: MenuItem) {
       try {
         await menuService.addDrinks(drink);
         this.drinks.push(drink);
@@ -56,18 +57,22 @@ const useMenuStore = defineStore("MenuStore", {
         this.error = error.message;
       }
     },
-    async addMealImage(image: any) {
+    async addMealImage(image: File): Promise<string> {
       try {
-        return await menuService.addMealImage(image);
+        const response = await menuService.addMealImage(image);
+        return response?.data.url;
       } catch (error: any) {
         this.error = error.message;
+        return ''
       }
     },
-    async addDrinkImage(image: any) {
+    async addDrinkImage(image: File): Promise<string> {
       try {
-        return await menuService.addDrinkImage(image);
+        const response = await menuService.addDrinkImage(image);
+        return response?.data.url;
       } catch (error: any) {
         this.error = error.message;
+        return ''
       }
     },
   },

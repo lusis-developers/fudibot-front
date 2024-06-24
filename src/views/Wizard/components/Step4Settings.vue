@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
-import CrushUpload from '@nabux-crush/crush-upload'
-import CrushTextField from '@nabux-crush/crush-text-field';
+import { computed, reactive } from 'vue';
 
 import useRestaurantStore from '@/store/restaurant';
 import { managerNameRules, websiteOrInstagramRules } from '@/utils/validations';
@@ -11,7 +9,7 @@ const emit = defineEmits(['next', 'prev']);
 
 const restaurantStore = useRestaurantStore();
 
-const form = ref({
+const form = reactive({
   manager: '',
   website: '',
   logo: ''
@@ -21,27 +19,28 @@ const rules = {
   website: websiteOrInstagramRules
 };
 const isFormValid = computed(() => {
-  const isManagerNameValid = managerNameRules.every(rule => rule.validate(form.value.manager));
-  const isWebsiteOrInstagramValid = websiteOrInstagramRules.every(rule => rule.validate(form.value.website));
+  const isManagerNameValid = managerNameRules.every(rule => rule.validate(form.manager));
+  const isWebsiteOrInstagramValid = websiteOrInstagramRules.every(rule => rule.validate(form.website));
   return isManagerNameValid && isWebsiteOrInstagramValid;
 });
 
 function handleInput(event: string, type: string): void {
   if (type === 'managerName') {
-    form.value.manager = event;
+    form.manager = event;
   }
   if (type === 'websiteOrInstagram') {
-    form.value.website = event;
+    form.website = event;
   }
 }
 async function handleFileSelected(target: File) {
-  const formData = new FormData();
-  formData.append('file', target);
-  form.value.logo = await restaurantStore.addLogo(formData) as string;
+  restaurantStore.postRestaurantLogo(target);
+  if (restaurantStore.restaurant?.logo.length) {
+    form.logo = restaurantStore.restaurant?.logo;
+  }
 }
 async function submitForm() {
-  emit('next', form.value);
-  await restaurantStore.addSettings(form.value);
+  restaurantStore.addWebAndManager(form.website, form.manager);
+  emit('next');
 }
 function goBack(): void {
   emit('prev')
@@ -53,7 +52,7 @@ function goBack(): void {
     <h2>
       Configuración del Restaurante
     </h2>
-    <form @submit.prevent="submitForm">
+    <div class="form">
       <div class="form-group">
         <CrushTextField
           :value="form.manager"
@@ -88,11 +87,11 @@ function goBack(): void {
         </button>
         <button 
           :disabled="!isFormValid"
-          type="submit">
+          @click="submitForm">
             Siguiente
         </button>
       </div>
-    </form>
+    </div>
   </div>
 </template>
 

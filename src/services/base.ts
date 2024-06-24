@@ -54,6 +54,27 @@ class APIBase {
     }
   }
 
+  protected async uploadFile<T>(endpoint: string, file: File): Promise<AxiosResponse<T>> {
+    const url = this.buildUrl(endpoint);
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      return await axios.post<T>(url, formData, {
+        headers: {
+          ...this.getHeaders(),
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+    } catch (error: any) {
+      const errorDetails = {
+        status: error.response?.status,
+        message: error.response?.data?.message || error.message
+      };
+      throw errorDetails;
+    }
+  }
+
   protected async put<T>(endpoint: string, data: any): Promise<AxiosResponse<T>> {
     const url = this.buildUrl(endpoint);
     try {
