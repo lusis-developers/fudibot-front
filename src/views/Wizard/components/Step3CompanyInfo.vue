@@ -26,7 +26,6 @@ const isFormValid = computed(() => {
 });
 
 function updateSelectedDays(days: string[]) {
-  console.log(days)
   form.schedule.days = days;
 }
 function handleInput(event: string, type: string): void {

@@ -25,7 +25,6 @@ export const useClientStore = defineStore('ClientStore', {
       this.isLoading = true;
       try {
         const response = await clientService.createClient(client);
-        console.log(response.data)
         this.client = response?.data;
       } catch (error: unknown) {
         this.error = String(error)

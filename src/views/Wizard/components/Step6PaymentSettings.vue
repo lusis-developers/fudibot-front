@@ -51,8 +51,6 @@ function submitForm(): void {
     };
     const uuid = restaurantStore.restaurant?.uuid!;
     bankStore.postBank(paymentSettings, uuid);
-  } else {
-    console.log('faltan datos');
   }
   emit('next');
   emit('complete');

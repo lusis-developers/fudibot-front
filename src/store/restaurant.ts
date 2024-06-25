@@ -34,7 +34,6 @@ export const useRestaurantStore = defineStore('RestaurantStore', {
       }
     },
     addBasicInfo(location: Coordinates, botName: string): void {
-      console.log(location, botName)
       if (this.restaurant) {
         this.restaurant.botName = botName;
         this.restaurant.location = location
@@ -71,7 +70,6 @@ export const useRestaurantStore = defineStore('RestaurantStore', {
     async updateRestaurant(): Promise<void> {
       try {
         const { bankSettings, meals, drinks, ...parsedRestaurantData } = this.restaurant!
-        console.log('parsedRestaurantData: ', parsedRestaurantData)
         await restaurantService.patchRestaurantData(parsedRestaurantData!);
         await this.getRestaurantById(this.restaurant?._id!);
       } catch (error: unknown) {

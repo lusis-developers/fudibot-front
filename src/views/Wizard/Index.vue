@@ -34,7 +34,6 @@ function prevStep(): void {
   }
 }
 function completeWizard() {
-  console.log('restaurant Completed', restaurantStore.restaurant);
   restaurantStore.updateRestaurant();
   router.push({ path: '/app/restaurant-info' });
 }
@@ -53,9 +52,7 @@ onMounted(async () => {
   
   await clientStore.createClient(userAuth);
 
-  console.log('client wizard index', clientStore.client)
   await restaurantStore.getRestaurantById(clientStore.client?.restaurant?._id!);
-  console.log(restaurantStore.restaurant);
 });
 </script>
 

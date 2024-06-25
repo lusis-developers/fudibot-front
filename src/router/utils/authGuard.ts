@@ -16,7 +16,6 @@ export async function googleAuthGuard(
     next({ path: '/app/restaurant-info' });
     return;
   } else if (!isAuthenticated && (to.path.startsWith('/app') || to.name === 'Home')) {
-    console.log('segundo condicional para el login')
     next({ path: '/login' });
     return;
   } else {

@@ -67,11 +67,8 @@ async function addMealOrDrink(): Promise<void> {
     if (form.category === Categories.MEAL) {
       await mealStore.addMeal(newItem, restaurantStore.restaurant?.uuid!);
     } else if (form.category === Categories.DRINK) {
-      console.log('ingresamos   ')
       await drinkStore.addDrink(newItem, restaurantStore.restaurant?.uuid!);
     }
-
-    console.log(mealStore.meals)
 
     resetForm();
   }
