@@ -16,7 +16,7 @@ onMounted(async () => {
   const userAuth = await authStore.checkAuth();
   await clientStore.getClientByEmail(userAuth?.email!);
 
-  if (!clientStore.client) {
+  if (!clientStore.client?.restaurant?.companyName) {
     router.push({ path: '/wizard' });
   }
 })

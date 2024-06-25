@@ -1,5 +1,5 @@
 import APIBase from "./base";
-import { MenuItem } from "@/interfaces/menu.interface";
+import { MenuItem } from "@/interfaces/menuDeprecated.interface";
 
 class MenuService extends APIBase {
   

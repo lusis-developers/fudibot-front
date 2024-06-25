@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
-
-
 const props = defineProps({
   item: {
     type: String,
@@ -27,6 +25,7 @@ const displayDescription = computed(() => {
 
 <template>
   <div class="product-card">
+    fdsaafdsafsdaasdfadsgfghfc
     <h4>
       {{ item }}
     </h4>

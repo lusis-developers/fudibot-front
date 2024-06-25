@@ -13,6 +13,10 @@ class APIRestaurant extends APIBase {
   async postAddRestaurantLogo(imageFile: File): Promise<AxiosResponse<Image>> {
     return await this.uploadFile<Image>('restaurant-logo', imageFile)
   }
+
+  async patchRestaurantData(data: Restaurant): Promise<AxiosResponse<Restaurant>> {
+    return await this.patch<Restaurant>('restaurant', data);
+  }
 }
 
 export default APIRestaurant;

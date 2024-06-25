@@ -18,10 +18,10 @@ const form = reactive({
     latitude: 0,
     radius: '',
     longitude: 0,
-    fullAdress: ''
+    fullAddress: ''
   }
 });
-const isFormValid = computed(() => form.botName && form.location.fullAdress && (Number(form.location.radius) > 0));
+const isFormValid = computed(() => form.botName && form.location.fullAddress && (Number(form.location.radius) > 0));
 
 function initializeMap(lat: number, lng: number): void {
   const loader = new Loader({
@@ -85,7 +85,7 @@ function handleInput(event: string, type: string): void {
     form.botName = event;
   }
   if (type === 'fullAddress') {
-    form.location.fullAdress = event;
+    form.location.fullAddress = event;
   } 
   if (type === 'radius') {
     form.location.radius = Number(event).toString();
@@ -131,7 +131,7 @@ onMounted(() => {
 
       <div class="form-group">
         <CrushTextField
-          :value="form.location.fullAdress"
+          :value="form.location.fullAddress"
           placeholder="Dirección"
           label="Ubicación del Restaurante:"
           class="form-group-text-field"

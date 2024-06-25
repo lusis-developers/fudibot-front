@@ -18,19 +18,26 @@ const useMealStore = defineStore("MealStore", {
   }),
 
   actions: {
-    async addMeal(meal: Meal) {
+    async getMeals(uuid: string): Promise<void> {
       try {
-        await mealService.addMeals(meal);
-        this.meals.push(meal);
+        const response = await mealService.getMeals(uuid);
+        this.meals = response.data;
+      } catch (error: unknown) {
+        this.error = String(error)
+      }
+    },
+    async addMeal(meal: Meal, uuid: string) {
+      try {
+        await mealService.addMeals({ ...meal, uuid });
+        this.getMeals(uuid);
       } catch (error: any) {
         this.error = error.message;
       }
     },
-    async removeMeal(item: string) {
+    async removeMeal(mealId: string, uuid: string) {
       try {
-        // // await menuService.removeMeal(mealId);
-        // this.meals = this.meals.filter(meal => meal.item !== item);
-        // this.items = this.items.filter(i => i.item !== item);
+        await mealService.removeMeal(mealId);
+        this.getMeals(uuid);
       } catch (error: any) {
         this.error = error.message;
       }

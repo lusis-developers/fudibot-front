@@ -17,18 +17,26 @@ const useDrinkStore = defineStore("DrinkStore", {
   }),
 
   actions: {
-    async addDrink(drink: Drink): Promise<void> {
+    async getDrinks(uuid: string): Promise<void> {
       try {
-        await drinkService.addDrinks(drink);
-        this.drinks.push(drink);
-        // this.items.push(drink);
+        const response = await drinkService.getDrinks(uuid);
+        this.drinks = response.data;
+      } catch(error: unknown) {
+        this.error = String(error)
+      }
+    },
+    async addDrink(drink: Drink, uuid: string): Promise<void> {
+      try {
+        await drinkService.addDrinks({ ...drink, uuid });
+        this.getDrinks(uuid)
       } catch (error: any) {
         this.error = error.message;
       }
     },
-    async removeDrink(item: string): Promise<void> {
+    async removeDrink(item: string, uuid: string): Promise<void> {
       try {
         this.drinks = this.drinks.filter(drink => drink.item !== item);
+        this.getDrinks(uuid);
       } catch (error: any) {
         this.error = error.message;
       }

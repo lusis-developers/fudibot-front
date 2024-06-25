@@ -7,7 +7,7 @@ import useRestaurantStore from '@/store/restaurant';
 import { priceRules, productNameRules } from '@/utils/validations';
 import { CurrencyEnum } from '@/enum/currency.enum';
 import { Categories } from '@/enum/mealOrDrink.enum';
-import ProductCard from './ProductCard.vue';
+import ProductCard from '@/views/Wizard/components/ProductCard.vue';
 
 const emit = defineEmits(['next', 'prev']);
 
@@ -30,7 +30,7 @@ const isFormValid = computed(() => {
   return isProductNameValid && isPriceValid && form.category !== '';
 });
 const isDisabled = computed(() => {
-  return mealStore.meals.length < 1 || drinkStore.drinks.length < 1
+  return !(mealStore.meals.length < 1 || drinkStore.drinks.length < 1)
 });
 const cursorDiplay = computed(() => {
   return (mealStore.meals.length > 0 || drinkStore.drinks.length > 0) ? 'pointer' : 'not-allowed'
@@ -64,11 +64,14 @@ async function addMealOrDrink(): Promise<void> {
       companyName: restaurantStore.restaurant?.companyName!
     };
 
-    if (form.category === 'Platillos') {
-      await mealStore.addMeal(newItem);
-    } else if (form.category === 'Bebidas') {
-      await drinkStore.addDrink(newItem);
+    if (form.category === Categories.MEAL) {
+      await mealStore.addMeal(newItem, restaurantStore.restaurant?.uuid!);
+    } else if (form.category === Categories.DRINK) {
+      console.log('ingresamos   ')
+      await drinkStore.addDrink(newItem, restaurantStore.restaurant?.uuid!);
     }
+
+    console.log(mealStore.meals)
 
     resetForm();
   }
@@ -125,13 +128,13 @@ function goBack(): void {
 
       <div class="form-group">
         <CrushTextField
-        :value="form.price"
-        :valid-rules="priceRules"
-        placeholder="Precio"
-        prependContent="$" 
-        label="Precio:"
-        class="form-group-text-field"
-        @update:modelValue="handleInput($event, 'price')" />
+          :value="form.price"
+          :valid-rules="priceRules"
+          placeholder="Precio"
+          prependContent="$" 
+          label="Precio:"
+          class="form-group-text-field"
+          @update:modelValue="handleInput($event, 'price')" />
       </div>
 
       <div class="form-group">
@@ -164,19 +167,23 @@ function goBack(): void {
       <h3>
         Productos
       </h3>
-      <div class="products">
+      <div
+        v-if="mealStore.meals.length"
+        class="products">
         <ProductCard
           v-for="(meal, index) in mealStore.meals" 
           :key="index"
-          :item="meal.item",
+          :item="meal.item"
           :price="meal.price"
           :description="meal.description" />
       </div>
-      <div class="products">
+      <div
+        v-if="drinkStore.drinks.length"
+        class="products">
         <ProductCard
           v-for="(drink, index) in drinkStore.drinks" 
           :key="index"
-          :item="drink.item",
+          :item="drink.item"
           :price="drink.price"
           :description="drink.description" />
       </div>

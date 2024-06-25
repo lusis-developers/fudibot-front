@@ -6,4 +6,6 @@ export interface Bank {
   identification: string;
   email: string;
   phone: string;
+  uuid?: string;
+  _id?: string;
 }

@@ -1,4 +1,7 @@
-import { Coordinates } from './coordinates.interface';
+import { Bank } from './bank.interface';
+import type { Coordinates } from './coordinates.interface';
+import type { Drink } from './drink.interface';
+import type { Meal } from './meal.interface';
 
 export interface Restaurant {
   _id: string,
@@ -10,7 +13,11 @@ export interface Restaurant {
   phone: string,
   schedule: Schedule[],
   logo: string,
-  website: string
+  website: string,
+  uuid: string,
+  meals?: Meal[] | string[],
+  drinks?: Drink[] | string[], 
+  bankSettings?: Bank[]| string[],
 }
 
 export interface Schedule {

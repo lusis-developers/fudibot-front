@@ -67,7 +67,17 @@ export const useRestaurantStore = defineStore('RestaurantStore', {
         this.restaurant.manager = manager;
         this.restaurant.website = website;
       }
-    }
+    },
+    async updateRestaurant(): Promise<void> {
+      try {
+        const { bankSettings, meals, drinks, ...parsedRestaurantData } = this.restaurant!
+        console.log('parsedRestaurantData: ', parsedRestaurantData)
+        await restaurantService.patchRestaurantData(parsedRestaurantData!);
+        await this.getRestaurantById(this.restaurant?._id!);
+      } catch (error: unknown) {
+        this.error = String(error);
+      }
+    },
   }
 });
 

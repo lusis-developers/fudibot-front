@@ -17,6 +17,10 @@ class APIMeal extends APIBase {
   async removeMeal(mealId: string) {
     return this.delete(`meals/${mealId}`);
   }
+
+  async getMeals(uuid: string): Promise<AxiosResponse> {
+    return await this.get(`restaurant/${uuid}/meals`);
+  }
 }
 
 export default APIMeal;

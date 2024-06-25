@@ -34,7 +34,9 @@ function prevStep(): void {
   }
 }
 function completeWizard() {
-  emit('completed')
+  console.log('restaurant Completed', restaurantStore.restaurant);
+  restaurantStore.updateRestaurant();
+  router.push({ path: '/app/restaurant-info' });
 }
 
 onMounted(async () => {
@@ -91,11 +93,11 @@ onMounted(async () => {
           v-if="currentStep === 5"
           @next="nextStep"
           @prev="prevStep" />
-        <!-- <Step6PaymentSettings
+        <Step6PaymentSettings
           v-if="currentStep === 6"
           @next="nextStep"
           @prev="prevStep"
-          @complete="completeWizard" /> -->
+          @complete="completeWizard" />
       </div>
     </div>
   </div>

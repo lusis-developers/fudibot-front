@@ -7,4 +7,6 @@ export interface Drink {
   image: string;
   currency: CurrencyEnum;
   description: string;
+  _id?: string;
+  uuid?: string;
 }
