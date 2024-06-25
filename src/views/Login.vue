@@ -7,12 +7,9 @@ import useAuthStore from '@/store/auth';
 const router = useRouter();
 
 const authStore = useAuthStore();
-// const clientStore = useClientStore();
 
 async function loginWithGoogle(): Promise<void> {
   await authStore.loginWithGoogle();
-  // const client = await authStore.checkAuth();
-  // await clientStore.createClient(client!);
 }
 
 // TODO: create facebook login

@@ -11,9 +11,9 @@ function loginWithGoogle(): void {
   authStore.loginWithGoogle();
 }
 
-function loginWithFacebook(): void {
-  authStore.loginWithFacebook();
-}
+// function loginWithFacebook(): void {
+//   authStore.loginWithFacebook();
+// }
 
 function redirect(): void {
   router.push('/login');
@@ -36,13 +36,13 @@ function redirect(): void {
         <i class="fa-brands fa-google"></i>
         Inicia con Google
       </CrushButton>
-      <CrushButton
+      <!-- <CrushButton
         :small="true"
         class="wrapper-login-google"
         @click="loginWithFacebook">
         <i class="fa-brands fa-facebook"></i>
         Inicia con Facebook
-      </CrushButton>
+      </CrushButton> -->
       <div class="wrapper-login-link">
         <CrushButton
           :small="true"
