@@ -59,7 +59,7 @@ const routes: Array<RouteRecordRaw> = [
         name: 'Restaurant Info',
         component: RestaurantInfo,
         meta: {
-          title: 'Información de pedidos',
+          title: 'Información del local',
         },
       },
       {
