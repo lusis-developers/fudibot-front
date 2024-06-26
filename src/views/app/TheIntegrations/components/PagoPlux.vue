@@ -79,7 +79,7 @@ function isActive(event: boolean): void {
         </div>
         <CrushButton
           v-if="pagopluxForm.active"
-          :disabled="isFormValid"
+          :disabled="!isFormValid"
           text="Guardar"
           class="button"/>
       </form>
