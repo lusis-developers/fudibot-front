@@ -18,6 +18,16 @@ const menu = [
     icon: 'fa-solid fa-motorcycle'
   },
   {
+    name: 'Meals',
+    path: 'meals',
+    icon: 'fa-solid fa-bowl-food'
+  },
+  {
+    name: 'Drinks',
+    path: 'drinks',
+    icon: 'fa-solid fa-wine-bottle'
+  },
+  {
     name: 'Integraciones',
     path: 'integrations',
     icon: 'fa-solid fa-circle-nodes'
