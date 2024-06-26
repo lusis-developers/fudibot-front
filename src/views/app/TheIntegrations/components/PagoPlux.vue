@@ -125,6 +125,7 @@ onMounted( async () => {
   font-size: 1rem;
 }
 .expanded {
+  max-width: 680px;
   padding: 32px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
@@ -173,6 +174,7 @@ onMounted( async () => {
     }
     :deep(.crush-text-field) {
       width: 100%;
+      max-width: $tablet-lower-breakpoint;
     }
   }
   .button {
