@@ -84,7 +84,7 @@ function toggle(): void {
 }
 
 .slider.active {
-  background-color: $black; 
+  background-color: $light-green; 
   transform: translateX(30px);
 }
 </style>
