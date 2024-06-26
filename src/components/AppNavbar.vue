@@ -3,11 +3,6 @@ import { onMounted, ref, computed } from 'vue';
 
 const menu = [
   {
-    name: 'Info',
-    path: 'restaurant-info',
-    icon: 'fa-solid fa-receipt'
-  },
-  {
     name: 'Ordenes',
     path: 'order-history',
     icon: 'fas fa-history'
@@ -23,10 +18,25 @@ const menu = [
     icon: 'fa-solid fa-motorcycle'
   },
   {
+    name: 'Meals',
+    path: 'meals',
+    icon: 'fa-solid fa-bowl-food'
+  },
+  {
+    name: 'Drinks',
+    path: 'drinks',
+    icon: 'fa-solid fa-wine-bottle'
+  },
+  {
     name: 'Integraciones',
     path: 'integrations',
     icon: 'fa-solid fa-circle-nodes'
-  }
+  },
+  {
+    name: 'Info',
+    path: 'restaurant-info',
+    icon: 'fa-solid fa-receipt'
+  },
 ];
 
 const isOpen = ref(false);

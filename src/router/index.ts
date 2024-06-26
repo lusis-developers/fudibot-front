@@ -10,8 +10,10 @@ const Login = () => import('@/views/Login.vue');
 const Register = () => import('@/views/Register.vue');
 const Authorize = () => import('@/views/Authorize.vue');
 const Wizard = () => import('@/views/Wizard/Index.vue');
+const Meals = () => import('@/views/app/MealsView/Index.vue');
+const Drinks = () => import('@/views/app/DrinksView/Index.vue');
 const Integrations = () => import('@/views/app/TheIntegrations/index.vue');
-const OrderHistory = () => import('@/views/app/OrderHistory.vue');
+const OrderHistory = () => import('@/views/app/OrderHistory/Index.vue');
 const DeliverySetup = () => import('@/views/app/DeliverySetup.vue');
 const InvoiceHistory = () => import('@/views/app/InvoiceHistory.vue');
 const RestaurantInfo = () => import('@/views/app/RestaurantInfo/Index.vue');
@@ -59,7 +61,7 @@ const routes: Array<RouteRecordRaw> = [
         name: 'Restaurant Info',
         component: RestaurantInfo,
         meta: {
-          title: 'Información de pedidos',
+          title: 'Información del local',
         },
       },
       {
@@ -67,7 +69,7 @@ const routes: Array<RouteRecordRaw> = [
         name: 'InvoiceHistory',
         component: InvoiceHistory,
         meta: {
-          title: 'Pedidos',
+          title: 'Facturas',
         },
       },
       {
@@ -84,6 +86,22 @@ const routes: Array<RouteRecordRaw> = [
         component: DeliverySetup,
         meta: {
           title: 'Configuración de pedidos',
+        },
+      },
+      {
+        path: 'meals',
+        name: 'Meals',
+        component: Meals,
+        meta: {
+          title: 'Platillos 🍛',
+        },
+      },
+      {
+        path: 'drinks',
+        name: 'Drinks',
+        component: Drinks,
+        meta: {
+          title: 'Bebidas 🥤',
         },
       },
       {
