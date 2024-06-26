@@ -22,6 +22,6 @@ onMounted( async () => {
   <div class="meals">
     <ProductTable
       v-if="drinksStore.drinks.length"
-      :meals="drinksStore.drinks" />
+      :items="drinksStore.drinks" />
   </div>
 </template>
