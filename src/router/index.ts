@@ -10,7 +10,7 @@ const Login = () => import('@/views/Login.vue');
 const Register = () => import('@/views/Register.vue');
 const Authorize = () => import('@/views/Authorize.vue');
 const Wizard = () => import('@/views/Wizard/Index.vue');
-const Integrations = () => import('@/views/app/Integrations.vue');
+const Integrations = () => import('@/views/app/TheIntegrations/index.vue');
 const OrderHistory = () => import('@/views/app/OrderHistory.vue');
 const DeliverySetup = () => import('@/views/app/DeliverySetup.vue');
 const InvoiceHistory = () => import('@/views/app/InvoiceHistory.vue');
