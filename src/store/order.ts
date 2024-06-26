@@ -1,27 +1,37 @@
 import { defineStore } from 'pinia';
-// import APIDrink from '@/services/drink/drinks';
 
-// import type { Drink } from '@/interfaces/drink.interface';
+import type { Order } from '@/interfaces/order.interface';
+import APIOrder from '@/services/order/order';
 
 interface RootState {
   orders: Order[];
+  currentPage: number;
+  total: number;
+  totalOrders: number;
   error: string | null;
 }
 
-// const drinkService = new APIDrink();
+const orderService = new APIOrder();
 
 const useOrderStore = defineStore("OrderStore", {
   state: (): RootState => ({
     orders: [],
+    currentPage: 1,
+    total: 1,
+    totalOrders: 1,
     error: null,
   }),
 
   actions: {
     async getOrders(restaurantId: string): Promise<void> {
       try {
-        console.log(restaurantId);
+        const response = await orderService.getOrders(restaurantId);
+        this.orders = response.data.orders;
+        this.currentPage = response.data.currentPage;
+        this.total = response.data.total;
+        this.totalOrders = response.data.totalOrders;
       } catch (error) {
-        console.log(error);
+        this.error = String(error);
       }
     }
   },

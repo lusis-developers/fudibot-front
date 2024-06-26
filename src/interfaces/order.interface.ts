@@ -11,3 +11,14 @@ export interface Order {
   phone: string,
   order: OrderItem[]
 }
+
+export interface OrderResponse {
+  currentPage: number,
+  total: number,
+  totalOrders: number,
+  orders: Order[],
+  hasNextPage: boolean,
+  nextPage: number | null,
+  hasPreviousPage: boolean
+  previousPage: number | null,
+}
