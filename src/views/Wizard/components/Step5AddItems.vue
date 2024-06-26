@@ -4,6 +4,7 @@ import { reactive, computed } from 'vue';
 import useMealStore from '@/store/meal';
 import useDrinkStore from '@/store/drink';
 import useRestaurantStore from '@/store/restaurant';
+import { formatNumberToSave, formatPriceToDisplay } from '@/utils/inputFormats';
 import { priceRules, productNameRules } from '@/utils/validations';
 import { CurrencyEnum } from '@/enum/currency.enum';
 import { Categories } from '@/enum/mealOrDrink.enum';
@@ -41,8 +42,8 @@ function handleInput(event: string, type: string): void {
     form.productName = event;
   }
   if (type === 'price') {
-    form.price = event;
-  } 
+    form.price = formatPriceToDisplay(event);
+  }
   if (type === 'category') {
     form.category = event;
   }
@@ -57,7 +58,7 @@ async function addMealOrDrink(): Promise<void> {
   if (isFormValid.value) {
     const newItem = {
       item: form.productName,
-      price: parseFloat(form.price),
+      price: formatNumberToSave(form.price),
       image: form.image,
       currency: CurrencyEnum.USD,
       description: form.description,
