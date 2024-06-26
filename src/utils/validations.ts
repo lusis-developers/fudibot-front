@@ -58,4 +58,41 @@ export const phoneRules = [
     validate: (value: string) => /^[0-9]+$/.test(value),
     message: 'El número de teléfono solo debe contener números 📞'
   }
-]
+];
+
+export const rucRules = [
+  {
+    validate: (value: string) => value.length > 11,
+    message: 'El RUC debe tener más de 11 dígitos'
+  },
+  {
+    validate: (value: string) => /^[0-9]+$/.test(value),
+    message: 'El RUC solo debe contener números'
+  },
+  {
+    validate: (value: string) => value.endsWith('001'),
+    message: 'El RUC debe terminar en 001'
+  }
+];
+
+export const pagopluxClientIdRules = [
+  {
+    validate: (value: string) => /^[a-zA-Z0-9]+$/.test(value),
+    message: 'El Client ID de PagoPlux solo debe contener caracteres alfanuméricos'
+  },
+  {
+    validate: (value: string) => value.length > 20,
+    message: 'El Client ID de PagoPlux debe tener más de 20 dígitos'
+  }
+];
+
+export const pagopluxSecretKeyRules = [
+  {
+    validate: (value: string) => /^[a-zA-Z0-9]+$/.test(value),
+    message: 'La clave secreta de PagoPlux solo debe contener caracteres alfanuméricos'
+  },
+  {
+    validate: (value: string) => value.length > 35,
+    message: 'La clave secreta de PagoPlux debe tener más de 35 caracteres'
+  }
+];
