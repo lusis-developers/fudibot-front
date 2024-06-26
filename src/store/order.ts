@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia';
-// import APIDrink from '@/services/drink/drinks';
 
-// import type { Drink } from '@/interfaces/drink.interface';
+import type { Order } from '@/interfaces/order.interface';
 
 interface RootState {
   orders: Order[];
