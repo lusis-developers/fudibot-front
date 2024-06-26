@@ -73,6 +73,11 @@ onMounted( async () => {
 </script>
 
 <template>
+  <p class="title">
+    <li>
+      Configura tu cuenta de pagoplux 😊
+    </li>
+  </p>
   <Card :class="{ expanded: pagopluxForm.active }">
     <template #title>
       <div class="form-integration">
@@ -115,6 +120,10 @@ onMounted( async () => {
 </template>
 
 <style lang="scss" scoped>
+.title {
+  width: 100%;
+  font-size: 1rem;
+}
 .expanded {
   padding: 32px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
