@@ -4,7 +4,7 @@ import { onMounted } from 'vue';
 import useMealStore from '@/store/meal';
 import useClientStore from '@/store/client';
 import useAuthStore from '@/store/auth';
-import ProductTable from '@/components/TableItems/ProductTable.vue'; 
+import ProductTable from '@/components/Tables/ProductTable.vue'; 
 
 const authStore = useAuthStore();
 const mealStore = useMealStore();

@@ -1,11 +1,14 @@
 <script setup lang="ts">
-import ProductRow from '@/components/TableItems/ProductRow.vue';
 import { PropType } from 'vue';
-import Card from '../Card.vue';
+
+import Card from '@/components/Card.vue';
+import OrderRow from '@/components/Tables/OrderRow.vue';
+
+import type { Order } from '@/interfaces/order.interface';
 
 const props = defineProps({
-  items: {
-    type: Array as PropType<any[]>,
+  orders: {
+    type: Array as PropType<Order[]>,
     required: true
   }
 })
@@ -21,15 +24,17 @@ const props = defineProps({
           <div>Descripcion</div>
           <div>Precio</div>
         </div>
+
+        {{ orders }}
         
-        <ProductRow
+        <!-- <OrderRow
           v-for="(meal, index) in items"
           :key="index"
           :item="meal.item"
           :price="meal.price"
           :description="meal.description"
           :image="meal.image"
-          class="product-table-body" />
+          class="product-table-body" /> -->
       
       </div>
     </template>

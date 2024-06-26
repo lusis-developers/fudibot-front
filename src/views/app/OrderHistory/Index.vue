@@ -4,7 +4,9 @@ import { onMounted } from 'vue';
 import useOrderStore from '@/store/order';
 import useAuthStore from '@/store/auth';
 import useClientStore from '@/store/client';
-import ProductTable from '@/components/TableItems/ProductTable.vue'; 
+
+import OrderTable from '@/components/Tables/OrderTable.vue';
+// import ProductTable from '@/components/TableItems/ProductTable.vue'; 
 
 const authStore = useAuthStore();
 const orderStore = useOrderStore();
@@ -20,8 +22,10 @@ onMounted( async () => {
 
 <template>
   <div class="meals">
-    <ProductTable
+    <!-- <ProductTable
       v-if="orderStore.orders.length"
-      :items="orderStore.orders" />
+      :items="orderStore.orders" /> -->
+      <OrderTable
+        :orders="orderStore.orders" />
   </div>
 </template>
