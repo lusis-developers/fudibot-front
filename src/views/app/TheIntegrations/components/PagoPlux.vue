@@ -19,9 +19,9 @@ const clientStore = useClientStore();
 const paymentMethodsStore = usePaymentMethodsStore();
 
 const pagopluxForm = reactive({
-  ruc: "",
-  clientId: "",
-  secretKey: "",
+  ruc: '',
+  clientId: '',
+  secretKey: '',
   active: false,
   formVisible: false,
 });
