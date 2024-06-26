@@ -1,7 +1,8 @@
 import { defineStore } from "pinia";
 
-import { type Pagoplux, type PaymentMethods } from "@/interfaces/paymentMethods.interface";
 import APIPaymentMethods from "@/services/paymentMethods/paymentMethods";
+
+import type { Pagoplux, PaymentMethods } from "@/interfaces/paymentMethods.interface";
 
 const paymentMethodsService = new APIPaymentMethods();
 

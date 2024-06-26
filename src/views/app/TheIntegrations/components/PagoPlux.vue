@@ -7,11 +7,11 @@ import {
   rucRules
 } from '@/utils/validations'
 
-import pagopluxImage from "@/assets/integrations/pagoplux.png";
+import pagopluxImage from '@/assets/integrations/pagoplux.png';
 import usePaymentMethodsStore from '@/store/paymentMethods';
-import ToggleInput from "@/components/ToggleInput.vue";
+import ToggleInput from '@/components/ToggleInput.vue';
 import useClientStore from '@/store/client'
-import Card from "@/components/Card.vue";
+import Card from '@/components/Card.vue';
 import useAuthStore from '@/store/auth';
 
 const authStore = useAuthStore();
@@ -29,6 +29,9 @@ const pagopluxForm = reactive({
 const toggleText = computed(() => {
   return pagopluxForm.active ? "Desactivar" : "Activar";
 });
+const isFormVisibled = computed(() => 
+  pagopluxForm.active && pagopluxForm.formVisible
+)
 
 const rules = {
   ruc: rucRules,
@@ -54,13 +57,19 @@ function isActive(event: boolean): void {
 };
 
 async function sendPagoPluxData () {
-  const data = {
-    restaurantRUC: pagopluxForm.ruc,
-    clientToken: `${pagopluxForm.clientId}:${pagopluxForm.secretKey}`
-  };
-  const restaurantUuid = clientStore.client?.restaurant?.uuid;
-  await paymentMethodsStore.putPagopluxData(data, restaurantUuid!);
-  pagopluxForm.formVisible = false;
+  try {
+    const data = {
+      restaurantRUC: pagopluxForm.ruc,
+      clientToken: `${pagopluxForm.clientId}:${pagopluxForm.secretKey}`
+    };
+    const restaurantUuid = clientStore.client?.restaurant?.uuid;
+    const response = await paymentMethodsStore.putPagopluxData(data, restaurantUuid!);
+    console.log('response: ', response)
+    pagopluxForm.formVisible = false;
+    paymentMethodsStore.paymentMethods?.pagoplux
+  } catch(e) {
+    console.error('error: ', e)
+  }
 }
 
 onMounted( async () => {
@@ -91,7 +100,7 @@ onMounted( async () => {
           v-model:value="pagopluxForm.active"
           :text="toggleText"
           @update:modelValue="isActive" />
-        <div class="form-content" v-show="pagopluxForm.active && pagopluxForm.formVisible">
+        <div class="form-content" v-show="isFormVisibled">
           <CrushTextField
             v-model="pagopluxForm.ruc"
             :valid-rules="rules.ruc"
@@ -109,11 +118,11 @@ onMounted( async () => {
             placeholder="pV5uMhA7oyQr0yXqB2bmoQkCtBfwivb5IVVz7pSUCCAWSDp3" />
         </div>
         <CrushButton
-          v-if="pagopluxForm.active && pagopluxForm.formVisible"
+          v-if="isFormVisibled"
           :disabled="!isFormValid"
-          @click.prevent="sendPagoPluxData"
           text="Guardar"
-          class="button"/>
+          class="button"
+          @click="sendPagoPluxData" />
       </form>
     </template>
   </Card>
