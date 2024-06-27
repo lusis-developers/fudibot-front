@@ -14,11 +14,11 @@ export interface Order {
 
 export interface OrderResponse {
   currentPage: number,
-  total: number,
+  totalPages: number,
   totalOrders: number,
   orders: Order[],
   hasNextPage: boolean,
   nextPage: number | null,
-  hasPreviousPage: boolean
+  hasPreviousPage: boolean, 
   previousPage: number | null,
 }
