@@ -50,7 +50,7 @@ const props = defineProps({
   &-head {
     width: 100%;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-evenly;
     align-items: center;
     padding: 12px;
 
@@ -66,6 +66,17 @@ const props = defineProps({
       justify-content: center;
       align-items: center;
     }
+
+    div:nth-of-type(3), div:nth-of-type(2), div:nth-of-type(4) {
+      width: 25%;
+      display: none;
+
+      @media (min-width: $tablet-upper-breakpoint) {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+  }
   }
   &-body {
     padding: 12px 0;

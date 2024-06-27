@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, PropType } from 'vue';
 
+import { OrderStatus } from '@/enum/order.enum';
 import { formatToCurrency } from '@/utils/inputFormats';
 import { OrderItem } from '@/interfaces/order.interface';
 
@@ -24,6 +25,24 @@ const props = defineProps({
 });
 
 const formattedTotal = computed(() => formatToCurrency(props.total));
+const statusClass = computed(() => {
+  switch (props.status) {
+    case OrderStatus.OPEN:
+      return 'status-open';
+    case OrderStatus.PREPARING:
+      return 'status-preparing';
+    case OrderStatus.ON_THE_WAY:
+      return 'status-on-the-way';
+    case OrderStatus.DELIVERED:
+      return 'status-delivered';
+    case OrderStatus.CANCELLED_BY_RESTAURANT:
+      return 'status-cancelled-by-restaurant';
+    case OrderStatus.FAILED_DELIVERY:
+      return 'status-failed-delivery';
+    default:
+      return '';
+  }
+});
 </script>
 
 <template>
@@ -39,10 +58,12 @@ const formattedTotal = computed(() => formatToCurrency(props.total));
       {{ formattedTotal }}
     </div>
     <div class="product-item-delivery">
-      {{ deliveryCost }}
+      ${{ deliveryCost }}
     </div>
     <div class="product-item-status">
-      {{ status }}
+      <span :class="[statusClass]">
+        {{ status }}
+      </span>
     </div>
     <div class="product-item-actions">
       Acciones
@@ -55,7 +76,7 @@ const formattedTotal = computed(() => formatToCurrency(props.total));
   border-top: 1px solid $grey;
   width: 100%;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
   align-items: center;
   
   @media (min-width: $tablet-upper-breakpoint) {
@@ -65,11 +86,17 @@ const formattedTotal = computed(() => formatToCurrency(props.total));
   }
 
   &-order {
-    width: 20%;
+    width: 50%;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: flex-start;
+    align-items: center;
+    
+    @media (min-width: $tablet-upper-breakpoint) {
+      width: 20%;
+      justify-content: center;
+      align-items: flex-start;
+    }
 
     span {
       display: block;
@@ -80,32 +107,58 @@ const formattedTotal = computed(() => formatToCurrency(props.total));
     }
   }
 
-  &-cost {
+  &-cost, &-delivery, &-status {
     width: 20%;
-    display: flex;
+    display: none;
     justify-content: center;
     align-items: center;
-  }
-  
-  &-delivery {
-    width: 20%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    
+    @media (min-width: $tablet-upper-breakpoint) {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
   }
 
   &-status {
-    width: 20%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    span {
+      padding: 4px 8px;
+      border-radius: 8px;
+    }
   }
 
   &-actions {
-    width: 20%;
+    width: 50%;
     display: flex;
     justify-content: center;
-    align-items: center;
+    
+    @media (min-width: $tablet-upper-breakpoint) {
+      width: 20%;
+    }
   }
+}
+
+.status-open {
+  background-color: lightblue;
+}
+
+.status-preparing {
+  background-color: yellow;
+}
+
+.status-on-the-way {
+  background-color: orange;
+}
+
+.status-delivered {
+  background-color: lightgreen;
+}
+
+.status-cancelled-by-restaurant {
+  background-color: lightcoral;
+}
+
+.status-failed-delivery {
+  background-color: darkred;
 }
 </style>
