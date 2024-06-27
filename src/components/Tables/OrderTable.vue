@@ -4,13 +4,13 @@ import { PropType } from 'vue';
 import Card from '@/components/Card.vue';
 import OrderRow from '@/components/Tables/OrderRow.vue';
 
-import type { Order } from '@/interfaces/order.interface';
+import type { OrdersRequested } from '@/interfaces/order.interface';
 
 const props = defineProps({
   orders: {
-    type: Array as PropType<Order[]>,
+    type: Array as PropType<OrdersRequested[]>,
     required: true
-  }
+  },
 })
 </script>
 
@@ -19,23 +19,22 @@ const props = defineProps({
     <template #content>
       <div class="product-table">
         <div class="product-table-head">
-          <div>Imagen</div>
-          <div>Nombre</div>
-          <div>Descripcion</div>
-          <div>Precio</div>
+          <div>Pedido</div>
+          <div>Total</div>
+          <div>Flete</div>
+          <div>Estado del pedido</div>
+          <div>Acciones</div>
         </div>
-
-        {{ orders }}
         
-        <!-- <OrderRow
-          v-for="(meal, index) in items"
+        <OrderRow
+          v-for="(order, index) in orders"
           :key="index"
-          :item="meal.item"
-          :price="meal.price"
-          :description="meal.description"
-          :image="meal.image"
-          class="product-table-body" /> -->
-      
+          :deliveryCost="order.deliveryCost"
+          :items="order.items"
+          :total="order.totalOrder"
+          :status="order.orderStatus"
+          class="product-table-body">
+        </OrderRow>      
       </div>
     </template>
   </Card>
@@ -62,27 +61,14 @@ const props = defineProps({
     }    
     
     div {
-      width: 25%;
+      width: 20%;
       display: flex;
       justify-content: center;
       align-items: center;
     }
-
-    div:nth-of-type(3) {
-      width: 25%;
-      display: none;
-
-      @media (min-width: $tablet-upper-breakpoint) {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-    }
   }
-
   &-body {
     padding: 12px 0;
   }
-  
 }
 </style>

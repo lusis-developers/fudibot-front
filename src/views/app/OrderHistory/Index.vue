@@ -29,16 +29,16 @@ onMounted( async () => {
 
 <template>
   <div class="meals">
-      <OrderTable
-        v-if="orderStore.orders.length"
-        :orders="orderStore.orders" />
-      <Pagination
-        :totalPages="orderStore.totalPages"
-        :currentPage="orderStore.currentPage"
-        :hasNextPage="orderStore.hasPreviousPage"
-        :hasPreviousPage="orderStore.hasPreviousPage"
-        :nextPage="nextPage"
-        :previousPage="previousPage"
-        @pageChange="changePage" />
+    <OrderTable
+      v-if="orderStore.orders.length"
+      :orders="orderStore.orders" />
+    <Pagination
+      :totalPages="orderStore.totalPages"
+      :currentPage="orderStore.currentPage"
+      :hasNextPage="orderStore.hasPreviousPage"
+      :hasPreviousPage="orderStore.hasPreviousPage"
+      :nextPage="nextPage"
+      :previousPage="previousPage"
+      @pageChange="changePage" />
   </div>
 </template>

@@ -1,3 +1,5 @@
+import { OrderStatus } from "@/enum/order.enum"
+
 export interface OrderItem {
   item: string,
   quantity: string,
@@ -12,11 +14,21 @@ export interface Order {
   order: OrderItem[]
 }
 
+export interface OrdersRequested {
+  deliveryCost: number,
+  items: OrderItem[],
+  orderStatus: OrderStatus,
+  totalOrder: number,
+  userId: string,
+  restaurantId: string,
+  _id: string
+}
+
 export interface OrderResponse {
   currentPage: number,
   totalPages: number,
   totalOrders: number,
-  orders: Order[],
+  orders: OrdersRequested[],
   hasNextPage: boolean,
   nextPage: number | null,
   hasPreviousPage: boolean, 

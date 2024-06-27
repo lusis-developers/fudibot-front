@@ -1,10 +1,10 @@
 import { defineStore } from 'pinia';
 
-import type { Order } from '@/interfaces/order.interface';
+import type { OrdersRequested } from '@/interfaces/order.interface';
 import APIOrder from '@/services/order/order';
 
 interface RootState {
-  orders: Order[];
+  orders: OrdersRequested[];
   currentPage: number;
   totalPages: number;
   totalOrders: number;

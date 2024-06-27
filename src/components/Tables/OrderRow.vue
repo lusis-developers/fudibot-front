@@ -1,53 +1,56 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, PropType } from 'vue';
 
 import { formatToCurrency } from '@/utils/inputFormats';
-import mealGenericImage from '@/assets/fudi-plato.png';
+import { OrderItem } from '@/interfaces/order.interface';
 
 const props = defineProps({
-  image: {
+  items: {
+    type: Array as PropType<OrderItem[]>,
+    required: true
+  },
+  status: {
     type: String,
     required: true
   },
-  item: {
-    type: String,
-    required: true
-  },
-  description: {
-    type: String,
-    required: true
-  },
-  price: {
+  total: {
     type: Number,
     required: true
-  }
+  },
+  deliveryCost: {
+    type: Number,
+    required: true
+  },
 });
 
-const formattedPrice = computed(() => formatToCurrency(props.price));
-const imageToDisplay = computed(() => props.image.length > 0 ? props.image : mealGenericImage);
+const formattedTotal = computed(() => formatToCurrency(props.total));
 </script>
 
 <template>
   <div class="product-item">
-    <div class="product-item-image">
-      <img
-        :src="imageToDisplay"
-        alt="meal image"
-        class="image">
+    <div class="product-item-order">
+      <span
+        v-for="(item, index) in items"
+        :key="index">
+        {{ item.quantity }} X {{ item.item }} - {{  item.price }}
+      </span>
     </div>
-    <div class="product-item-name">
-      {{ item }}
+    <div class="product-item-cost">
+      {{ formattedTotal }}
     </div>
-    <div class="product-item-description">
-      {{ description }}
+    <div class="product-item-delivery">
+      {{ deliveryCost }}
     </div>
-    <div class="product-item-price">
-      {{ formattedPrice }}
+    <div class="product-item-status">
+      {{ status }}
+    </div>
+    <div class="product-item-actions">
+      Acciones
     </div>
   </div>
 </template>
 
-<style lang="scss"coped>
+<style lang="scss" scoped>
 .product-item {
   border-top: 1px solid $grey;
   width: 100%;
@@ -61,40 +64,45 @@ const imageToDisplay = computed(() => props.image.length > 0 ? props.image : mea
     align-items: center;
   }
 
-  &-image {
-    width: 25%;
+  &-order {
+    width: 20%;
     display: flex;
+    flex-direction: column;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
 
-    .image {
-      width: 64px;
-      height: 64px;
-      object-fit: cover;
-      border-radius: 5px;
+    span {
+      display: block;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      font-size: 14px;
     }
   }
 
-  &-name {
-    width: 25%;
+  &-cost {
+    width: 20%;
     display: flex;
     justify-content: center;
     align-items: center;
   }
   
-  &-description {
-    width: 25%;
-    display: none;
-
-    @media (min-width: $tablet-upper-breakpoint) {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
+  &-delivery {
+    width: 20%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
-  &-price {
-    width: 25%;
+  &-status {
+    width: 20%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &-actions {
+    width: 20%;
     display: flex;
     justify-content: center;
     align-items: center;

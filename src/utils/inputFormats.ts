@@ -1,3 +1,5 @@
+import { OrderItem } from "@/interfaces/order.interface";
+
 export function formatPriceToDisplay(price: string): string {
   let numericValue = 0;
 
