@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 
 import APIDelivery from '@/services/delivery/delivery';
 
-import type { Delivery, HasOwnFleet } from '@/interfaces/delivery.interface';
+import type { AddOrEditFleetDetail, Delivery, HasOwnFleet } from '@/interfaces/delivery.interface';
 
 interface RootState {
   delivery: Delivery | null;
@@ -35,6 +35,14 @@ const useDeliveryStore = defineStore("DeliveryStore", {
       } catch (error) {
         this.error = String(error);
       };
+    },
+    async addFleetDetail(data: AddOrEditFleetDetail) {
+      try {
+        const response = await deliveryService.addFleetDetail(data);
+        this.delivery = response.data;
+      } catch (error) {
+        this.error = String(error);
+      }
     }
   }
 });
