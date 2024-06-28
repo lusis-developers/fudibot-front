@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { watch, defineProps, defineEmits, onMounted, onUnmounted } from 'vue';
-
 const props = defineProps({
   modalValue: {
     type: Boolean,
@@ -34,14 +32,21 @@ function closeModal (): void {
   </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
+$overlay-background-color: rgba(59, 70, 80, 0.2);
+$modal-background-color: white;
+$modal-padding: 20px;
+$modal-border-radius: 8px;
+$modal-transition: transform 0.3s ease-in-out;
+$modal-max-height: 90vh;
+
 .overlay {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(59, 70, 80, 0.2);
+  background: $overlay-background-color;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -52,14 +57,20 @@ function closeModal (): void {
   position: absolute;
   top: 50%;
   left: 50%;
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  max-width: 500px;
-  width: 100%;
-  max-height: 90vh;
+  background: $modal-background-color;
+  padding: $modal-padding;
+  border-radius: $modal-border-radius;
+  width: 95%; // Mobile-first approach
+  max-height: $modal-max-height;
   overflow-y: auto;
-  transition: transform 0.3s ease-in-out;
+  transition: $modal-transition;
   transform: translate(-50%, -50%);
+
+  @media (min-width: 600px) {
+    width: 90%; // For larger screens
+    max-width: 500px;
+    min-width: 320px;
+  }
 }
 </style>
+

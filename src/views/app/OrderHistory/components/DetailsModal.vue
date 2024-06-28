@@ -198,6 +198,10 @@ function isStatusButtonEnabled(status: OrderStatus): boolean {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        
+        @media (min-width: $tablet-upper-breakpoint) {
+          display: none;
+        }
       }
 
       &-status {

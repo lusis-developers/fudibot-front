@@ -76,9 +76,12 @@ function openCloseModal(): void {
       </span>
     </div>
     <div class="product-item-actions">
-      <button @click="openCloseModal">
+      <CrushButton
+        :small="true"
+        variant="secondary"
+        @click="openCloseModal">
         detalles
-      </button>
+      </CrushButton>
     </div> 
   </div>
   <DetailsModal
@@ -92,6 +95,10 @@ function openCloseModal(): void {
 </template>
 
 <style lang="scss" scoped>
+:deep(.crush-secondary) {
+  border: 1px solid $grey;
+  color: $grey;
+}
 .product-item {
   border-top: 1px solid $grey;
   width: 100%;
@@ -145,6 +152,7 @@ function openCloseModal(): void {
     span {
       padding: 4px 8px;
       border-radius: 8px;
+      font-size: 10px;
     }
   }
 
