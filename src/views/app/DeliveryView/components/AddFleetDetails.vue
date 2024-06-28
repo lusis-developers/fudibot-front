@@ -4,7 +4,7 @@ import { onMounted, reactive, computed } from "vue";
 import useAuthStore from '@/store/auth';
 import useClientStore from '@/store/client';
 import useDeliveryStore from '@/store/delivery';
-
+import { formatNumberToSave, formatPriceToDisplay } from '@/utils/inputFormats';
 
 import type {
   FleetDetail,
@@ -31,17 +31,18 @@ const buttonActive = computed(() => {
 
 function handleInput(event: string, type: string): void {
   if (type === 'radius') {
-    deliveryData.radius = event;
+    deliveryData.radius = formatPriceToDisplay(event);
   }
   if (type === 'price') {
-    deliveryData.price = event;
+    deliveryData.price = formatPriceToDisplay(event);
+    console.log("formateado: ", deliveryData.price)
   }
 }
 async function AddFleetDetails(): Promise<void> {
   const data: AddOrEditFleetDetail = {
     id: deliveryStore.delivery?._id!,
-    radius: Number(deliveryData.radius),
-    price: Number(deliveryData.price)
+    radius: formatNumberToSave(String(deliveryData.radius)),
+    price: formatNumberToSave(String(deliveryData.price))
   }
   await deliveryStore.addFleetDetail(data);
   emit('update:visibleForm', false)
