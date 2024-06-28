@@ -22,6 +22,8 @@ export interface OrdersRequested {
   userId: string,
   restaurantId: string,
   _id: string
+  createdAt: string,
+  updatedAt: string,
 }
 
 export interface OrderResponse {

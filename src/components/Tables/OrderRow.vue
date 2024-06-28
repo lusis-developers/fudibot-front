@@ -1,11 +1,16 @@
 <script setup lang="ts">
-import { computed, PropType } from 'vue';
+import { ref, computed, PropType } from 'vue';
 
 import { OrderStatus } from '@/enum/order.enum';
 import { formatToCurrency } from '@/utils/inputFormats';
 import { OrderItem } from '@/interfaces/order.interface';
+import DetailsModal from '@/views/app/OrderHistory/components/DetailsModal.vue';
 
 const props = defineProps({
+  _id: {
+    type: String,
+    required: true
+  },
   items: {
     type: Array as PropType<OrderItem[]>,
     required: true
@@ -24,6 +29,7 @@ const props = defineProps({
   },
 });
 
+const isModalOpen = ref(false);
 const formattedTotal = computed(() => formatToCurrency(props.total));
 const statusClass = computed(() => {
   switch (props.status) {
@@ -43,6 +49,10 @@ const statusClass = computed(() => {
       return '';
   }
 });
+
+function openCloseModal(): void {
+  isModalOpen.value = !isModalOpen.value;
+}
 </script>
 
 <template>
@@ -66,9 +76,19 @@ const statusClass = computed(() => {
       </span>
     </div>
     <div class="product-item-actions">
-      Acciones
-    </div>
+      <button @click="openCloseModal">
+        detalles
+      </button>
+    </div> 
   </div>
+  <DetailsModal
+    :modalValue="isModalOpen"
+    :_id="_id"
+    :deliveryCost="deliveryCost"
+    :items="items"
+    :total="total"
+    :status="status"
+    @update:modalValue="openCloseModal" />
 </template>
 
 <style lang="scss" scoped>
@@ -78,6 +98,7 @@ const statusClass = computed(() => {
   display: flex;
   justify-content: space-evenly;
   align-items: center;
+  padding: 16px 0;
   
   @media (min-width: $tablet-upper-breakpoint) {
     display: flex;

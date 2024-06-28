@@ -11,7 +11,7 @@ const props = defineProps({
     type: Array as PropType<OrdersRequested[]>,
     required: true
   },
-})
+});
 </script>
 
 <template>
@@ -29,11 +29,11 @@ const props = defineProps({
         <OrderRow
           v-for="(order, index) in orders"
           :key="index"
+          :_id="order._id"
           :deliveryCost="order.deliveryCost"
           :items="order.items"
           :total="order.totalOrder"
-          :status="order.orderStatus"
-          class="product-table-body">
+          :status="order.orderStatus">
         </OrderRow>      
       </div>
     </template>
@@ -76,10 +76,7 @@ const props = defineProps({
         justify-content: center;
         align-items: center;
       }
-  }
-  }
-  &-body {
-    padding: 12px 0;
+    }
   }
 }
 </style>
