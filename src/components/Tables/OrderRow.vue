@@ -88,7 +88,7 @@ function openCloseModal(): void {
     :items="items"
     :total="total"
     :status="status"
-    @update:modalValue="openCloseModal" />
+    @closeModal="openCloseModal" />
 </template>
 
 <style lang="scss" scoped>

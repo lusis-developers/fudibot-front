@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { PropType, computed } from 'vue';
+import { PropType, computed, ref } from 'vue';
 
-import { formatToCurrency } from '@/utils/inputFormats';
 import { OrderStatus } from '@/enum/order.enum';
+import { statusAvailable } from '@/utils/order';
+import { formatToCurrency } from '@/utils/inputFormats';
 import Modal from '@/components/Modal.vue';
 
 import type { OrderItem } from '@/interfaces/order.interface';
 
-const emit = defineEmits(['update:modalValue'])
+const emit = defineEmits(['update:modalValue', 'closeModal'])
 
 const props = defineProps({
   modalValue: {
@@ -36,6 +37,7 @@ const props = defineProps({
   },
 });
 
+const statusSelected = ref(props.status);
 const formattedTotal = computed(() => formatToCurrency(props.total));
 const statusClass = computed(() => {
   switch (props.status) {
@@ -56,8 +58,17 @@ const statusClass = computed(() => {
   }
 });
 
+function updateStatus(status: OrderStatus): void {
+  statusSelected.value = status;
+  
+}
+
 function closeModal(): void {
-  emit('update:modalValue');
+  emit('closeModal');
+}
+async function submitStatus(): Promise<void> {
+  // TODO: update oorder status;
+  closeModal();
 }
 </script>
 
@@ -76,23 +87,53 @@ function closeModal(): void {
       </div>
     </template>
     <template #content>
-      <div>
-        <span
-          v-for="(item, index) in items"
-          :key="index">
-          {{ item.quantity }} X {{ item.item }} - {{  item.price }}
-        </span>
-      </div>
-      <div class="item-cost">
-        {{ formattedTotal }}
-      </div>
-      <div class="item-delivery">
-        ${{ deliveryCost }}
-      </div>
-      <div class="item-status">
-        <span :class="[statusClass]">
-          {{ status }}
-        </span>
+      <div class="content">
+        <div class="item-order">
+          <span>
+            Pedido
+          </span>
+          <span
+            v-for="(item, index) in items"
+            :key="index">
+            {{ item.quantity }} X {{ item.item }} - {{  item.price }}
+          </span>
+        </div>
+        <div class="item-total">
+          <span>
+            Total
+          </span>
+          <span>
+            {{ formattedTotal }}
+          </span>
+        </div>
+        <div class="item-delivery">
+          <span>
+            Flete
+          </span>
+          <span>
+            ${{ deliveryCost }}
+          </span>
+        </div>
+        <div class="item-status">
+          <span>
+            Estado
+          </span>
+          <span :class="[statusClass]">
+            {{ status }}
+          </span>
+        </div>
+        <div class="status-actions">
+          <span>
+            Cambiar estado
+          </span>
+          <button
+            v-for="(status, index) in statusAvailable"
+            :key="index"
+            :class="{ active: statusSelected === status.status, [statusClass]: statusSelected === status.status }"
+            @click="updateStatus(status.status)">
+            {{ status.nameDisplayed }}
+          </button>
+        </div>
       </div>
     </template>
     <template #footer>
@@ -103,7 +144,7 @@ function closeModal(): void {
           Cancel
         </CrushButton>
         <CrushButton
-          @click="closeModal">
+          @click="submitStatus">
           Guardar
         </CrushButton>
       </div>
@@ -130,6 +171,48 @@ function closeModal(): void {
     justify-content: space-between;
     align-items: center;
   }
+
+  .content {
+    margin: 12px 0;
+
+    .item {
+      &-order, &-total, &-status, &-delivery {
+        width: 100%;
+        margin: 12px 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      &-status {
+        span:nth-of-type(2) {
+          padding: 4px 8px;
+          border-radius: 8px;
+        }
+      }
+    }
+
+    .status-actions {
+      display: flex;
+      flex-direction: column;
+
+
+      button {
+        width: 128px;
+        background-color: white;
+        border-radius: 8px;
+        padding: 8px 4px;
+        margin: 4px auto;
+
+        &.active {
+          background-color: $green;
+          color: $white;
+        }
+
+      }
+    }
+  }
+
 
   &-footer {
     width: 100%;
