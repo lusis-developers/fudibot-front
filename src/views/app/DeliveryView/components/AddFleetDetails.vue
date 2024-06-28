@@ -1,17 +1,22 @@
 <script setup lang="ts">
 import { onMounted, reactive, computed } from "vue";
 
-import useDeliveryStore from "@/store/delivery";
-
-const emit = defineEmits(['update:visibleForm']);
+import useAuthStore from '@/store/auth';
+import useClientStore from '@/store/client';
+import useDeliveryStore from '@/store/delivery';
 
 
 import type {
   FleetDetail,
   AddOrEditFleetDetail,
-} from "@/interfaces/delivery.interface";
+} from '@/interfaces/delivery.interface';
+
+
+const emit = defineEmits(['update:visibleForm']);
 
 const deliveryStore = useDeliveryStore();
+const clientStore = useClientStore();
+const authStore = useAuthStore();
 
 const deliveryData = reactive({
   fleetDetails: [] as FleetDetail[] | undefined,
@@ -34,7 +39,7 @@ function handleInput(event: string, type: string): void {
 }
 async function AddFleetDetails(): Promise<void> {
   const data: AddOrEditFleetDetail = {
-    id: '667a5e020da963d6fc72797f',
+    id: deliveryStore.delivery?._id!,
     radius: Number(deliveryData.radius),
     price: Number(deliveryData.price)
   }
@@ -43,7 +48,9 @@ async function AddFleetDetails(): Promise<void> {
 }
 
 onMounted(async () => {
-  const deliveryId = "667a5e020da963d6fc72797f";
+  const userAuth = await authStore.checkAuth();
+  await clientStore.getClientByEmail(userAuth?.email!);
+  const deliveryId = clientStore.client?.restaurant?.delivery!;
   await deliveryStore.getDeliveryData(deliveryId);
   deliveryData.fleetDetails = deliveryStore.delivery?.fleetDetails;
   deliveryData.active = true;
