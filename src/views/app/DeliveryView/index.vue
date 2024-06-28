@@ -1,16 +1,21 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
 
+import Card from '@/components/Card.vue';
+import useAuthStore from '@/store/auth';
+import useClientStore from '@/store/client';
 import useDeliveryStore from '@/store/delivery';
 import HasOwnFleetCard from './components/HasOwnFleetCard.vue';
 import AddFleetDetails from './components/AddFleetDetails.vue';
 import FleetDetailCard from './components/FleetDetailCard.vue';
 
-const deliveryStore = useDeliveryStore()
+const deliveryStore = useDeliveryStore();
+const clientStore = useClientStore();
+const authStore = useAuthStore();
 
 const showForm = ref(false);
 const cards = computed(()=> {
-  return !deliveryStore.delivery?.hasOwnFleet
+  return deliveryStore.delivery?.hasOwnFleet
 });
 
 
@@ -21,7 +26,9 @@ function handleVisibleForm (data: boolean) {
   showForm.value = data
 };
 onMounted(async() => {
-  const deliveryId = '667a5e020da963d6fc72797f';
+  const userAuth = await authStore.checkAuth();
+  await clientStore.getClientByEmail(userAuth?.email!);
+  const deliveryId = clientStore.client?.restaurant?.delivery!;
   await deliveryStore.getDeliveryData(deliveryId);
 });
 </script>
@@ -37,11 +44,15 @@ onMounted(async() => {
       v-if="showForm" 
       @update:visibleForm="handleVisibleForm"/> 
     <div class="container-cards" v-if="cards">
-      <FleetDetailCard
-        v-for="(fleetDetail, index) in deliveryStore.delivery.fleetDetails"
-        :key="index"
-        :km="String(fleetDetail.radiusKm)"
-        :price="String(fleetDetail.price)" />
+      <Card class="card">
+        <template #content>
+          <FleetDetailCard
+            v-for="(fleetDetail, index) in deliveryStore.delivery.fleetDetails"
+            :key="index"
+            :km="String(fleetDetail.radiusKm)"
+            :price="String(fleetDetail.price)" />
+        </template>
+      </Card>
     </div>
   </div>
 </template>
@@ -51,20 +62,20 @@ onMounted(async() => {
   width: 100%;
   display: flex;
   flex-direction: column;
-  max-width: $tablet-upper-breakpoint;
-  margin: 0 auto;
   gap: 16px;
   &-button {
-    align-self: flex-end;
     width: 40%;
   }
   &-cards {
     width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     gap: 24px;
     flex-wrap: wrap;
+    .card {
+      & > *:not(:last-child) {
+        border-bottom: 1px solid $green;
+        border-radius: 4px;
+      }
+    }
   }
 }
 </style>
