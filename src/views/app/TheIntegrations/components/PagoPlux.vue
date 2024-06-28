@@ -64,7 +64,6 @@ async function sendPagoPluxData () {
     };
     const restaurantUuid = clientStore.client?.restaurant?.uuid;
     const response = await paymentMethodsStore.putPagopluxData(data, restaurantUuid!);
-    console.log('response: ', response)
     pagopluxForm.formVisible = false;
     paymentMethodsStore.paymentMethods?.pagoplux
   } catch(e) {

@@ -10,7 +10,6 @@ class APIOrder extends APIBase {
   }
 
   async updateOrderStatus(orderId: string, status: string): Promise<AxiosResponse> {
-    console.log('desde el servicio', orderId)
     return await this.patch(`update-order/${orderId}`, { status: status })
   }
 }
