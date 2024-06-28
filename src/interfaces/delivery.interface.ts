@@ -1,4 +1,4 @@
-interface FleetDetail {
+export interface FleetDetail {
   radiusKm: number;
   price: number;
   _id: string;
@@ -18,4 +18,10 @@ export interface Delivery {
 export interface HasOwnFleet {
   id: string,
   hasOwnFleet: boolean
+}
+
+export interface AddOrEditFleetDetail {
+  id: string,
+  radius: number,
+  price: number,
 }
