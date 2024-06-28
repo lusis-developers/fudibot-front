@@ -43,6 +43,14 @@ const useDeliveryStore = defineStore("DeliveryStore", {
       } catch (error) {
         this.error = String(error);
       }
+    },
+    async deleteFleetDetail(deliveryId: string, fleetId: string) {
+      try {
+        const response = await deliveryService.deleteFleetDetail(deliveryId, fleetId);
+        this.delivery = response.data;
+      } catch (error) {
+        this.error = String(error); 
+      };
     }
   }
 });
