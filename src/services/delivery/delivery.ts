@@ -5,6 +5,7 @@ import APIBase from '../base';
 import type {
 	AddOrEditFleetDetail,
 	Delivery,
+	FleetDetail,
 	HasOwnFleet,
 } from '@/interfaces/delivery.interface';
 
@@ -24,7 +25,11 @@ class APIDelivery extends APIBase {
 	}
 
 	async deleteFleetDetail(deliveryId: string, fleetId: string): Promise<AxiosResponse<Delivery>> {
-		return await this.delete<Delivery>(`/delete-fleet-detail/${deliveryId}/${fleetId}`)
+		return await this.delete<Delivery>(`delete-fleet-detail/${deliveryId}/${fleetId}`)
+	}
+
+	async addGeneralDeliveryCost(data: { id: string, generalDeliveryCost: number }): Promise<AxiosResponse<FleetDetail[]>> {
+		return await this.patch<FleetDetail[]>("add-general-delivery-cost", data);
 	}
 }
 
