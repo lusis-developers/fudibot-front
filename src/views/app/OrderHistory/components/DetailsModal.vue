@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { PropType, computed, onMounted, ref } from 'vue';
 
-import { OrderStatus } from '@/enum/order.enum';
-import { statusAvailable } from '@/utils/order';
-import { formatToCurrency } from '@/utils/inputFormats';
 import useAuthStore from '@/store/auth';
 import useOrderStore from '@/store/order';
 import useClientStore from '@/store/client';
+import { OrderStatus } from '@/enum/order.enum';
+import { statusAvailable } from '@/utils/order';
+import { formatToCurrency } from '@/utils/inputFormats';
 import useRestaurantStore from '@/store/restaurant';
 import Modal from '@/components/Modal.vue';
 
@@ -96,18 +96,23 @@ onMounted( async () => {
 
   await restaurantStore.getRestaurantById(clientStore.client?.restaurant?._id!);
 });
+
+// Function to check if a status button should be enabled
+function isStatusButtonEnabled(status: OrderStatus): boolean {
+  if (status === OrderStatus.CANCELLED_BY_RESTAURANT) {
+    return statusSelected.value === OrderStatus.OPEN;
+  }
+  // Check if the transition is valid
+  return validTransitions[statusSelected.value as OrderStatus].includes(status);
+}
 </script>
 
-
 <template>
-  <Modal
-    :modalValue="modalValue">
+  <Modal :modalValue="modalValue">
     <template #header>
       <div class="modal-header">
         <h4>Order Details</h4>
-        <CrushButton
-          variant="secondary"
-          @click="closeModal">
+        <CrushButton variant="secondary" @click="closeModal">
           <i class="fa-solid fa-x"></i>
         </CrushButton>
       </div>
@@ -115,48 +120,36 @@ onMounted( async () => {
     <template #content>
       <div class="content">
         <div class="item-order">
-          <span>
-            Pedido
-          </span>
-          <span
-            v-for="(item, index) in items"
-            :key="index">
-            {{ item.quantity }} X {{ item.item }} - {{  item.price }}
+          <span>Pedido</span>
+          <span v-for="(item, index) in items" :key="index">
+            {{ item.quantity }} X {{ item.item }} - {{ item.price }}
           </span>
         </div>
         <div class="item-total">
-          <span>
-            Total
-          </span>
-          <span>
-            {{ formattedTotal }}
-          </span>
+          <span>Total</span>
+          <span>{{ formattedTotal }}</span>
         </div>
         <div class="item-delivery">
-          <span>
-            Flete
-          </span>
-          <span>
-            ${{ deliveryCost }}
-          </span>
+          <span>Flete</span>
+          <span>${{ deliveryCost }}</span>
         </div>
         <div class="item-status">
-          <span>
-            Estado
-          </span>
-          <span :class="[statusClass]">
-            {{ status }}
-          </span>
+          <span>Estado</span>
+          <span :class="[statusClass]">{{ status }}</span>
         </div>
         <div class="status-actions">
-          <span>
-            Cambiar estado
-          </span>
+          <span>Cambiar estado</span>
           <button
             v-for="(status, index) in statusAvailable"
             :key="index"
-            :class="{ active: statusSelected === status.status, [statusClass]: statusSelected === status.status }"
-            @click="updateStatus(status.status)">
+            :class="{
+              active: statusSelected === status.status,
+              [statusClass]: statusSelected === status.status,
+              disabled: !isStatusButtonEnabled(status.status) && statusSelected !== status.status
+            }"
+            :disabled="!isStatusButtonEnabled(status.status)"
+            @click="isStatusButtonEnabled(status.status) ? updateStatus(status.status) : null"
+          >
             {{ status.nameDisplayed }}
           </button>
         </div>
@@ -164,13 +157,10 @@ onMounted( async () => {
     </template>
     <template #footer>
       <div class="modal-footer">
-        <CrushButton
-          variant="secondary"
-          @click="closeModal">
+        <CrushButton variant="secondary" @click="closeModal">
           Cancel
         </CrushButton>
-        <CrushButton
-          @click="submitStatus">
+        <CrushButton @click="submitStatus">
           Guardar
         </CrushButton>
       </div>
@@ -222,23 +212,27 @@ onMounted( async () => {
       display: flex;
       flex-direction: column;
 
-
       button {
         width: 128px;
         background-color: white;
         border-radius: 8px;
         padding: 8px 4px;
         margin: 4px auto;
+        cursor: pointer;
 
         &.active {
           background-color: $green;
           color: $white;
         }
 
+        &.disabled {
+          background-color: $grey;
+          color: $dark-grey;
+          cursor: not-allowed;
+        }
       }
     }
   }
-
 
   &-footer {
     width: 100%;
