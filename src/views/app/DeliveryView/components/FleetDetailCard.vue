@@ -1,13 +1,7 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
-
-import useAuthStore from '@/store/auth';
-import useClientStore from '@/store/client';
 import useDeliveryStore from '@/store/delivery';
 
 const deliveryStore = useDeliveryStore();
-const clientStore = useClientStore();
-const authStore = useAuthStore();
 
 const props = defineProps({
   km: {
@@ -16,23 +10,22 @@ const props = defineProps({
   },
   price: {
     type: String, 
-    required: true
-  }
+    required: true,
+  },
+  deliveryId: {
+    type: String,
+    required: true,
+  },
+  fleetDetailId: {
+    type: String,
+    required: true,
+  },
 })
 
-// function deleteFleetDetail (): void {
-//   const data = {
-//     deliveryId = deliveryStore.delivery?._id
-//   }
-//   deliveryStore.deleteFleetDetail(deliveryId, fleetId);
-// };
+function deleteFleetDetail (): void {
+  deliveryStore.deleteFleetDetail(props.deliveryId, props.fleetDetailId); 
+};
 
-onMounted(async () => {
-  const userAuth = await authStore.checkAuth();
-  await clientStore.getClientByEmail(userAuth?.email!);
-  const deliveryId = clientStore.client?.restaurant?.delivery!;
-  await deliveryStore.getDeliveryData(deliveryId);
-})
 </script>
 
 <template>
@@ -41,11 +34,14 @@ onMounted(async () => {
       Detalles:
     </h3>
     <div class="card">
+      <button class="principal-close-button" @click="deleteFleetDetail">
+        <i class="fa-brands fa-x principal-close-icon"></i>
+      </button>
       <p class="principal-indicator_distance">
         Kilometros a la redonda: {{ props.km }}
       </p>
       <p class="principal-indicator_price">
-        Costo de viaje: {{ props.price }}
+        Costo de viaje: ${{ props.price }}
       </p>
     </div>
   </div>
@@ -53,8 +49,10 @@ onMounted(async () => {
 
 <style lang="scss" scoped>
 .principal {
+  padding: 24px;
   .card {
-    padding: 24px;
+    display: flex; 
+    flex-direction: column; 
   }
   &-title {
     font-size: $h2-font-size;
@@ -65,6 +63,17 @@ onMounted(async () => {
   &-indicator_price {
     font-size: $h3-font-size;
   }
-
+  &-close-button {
+    align-self: flex-end; 
+    background: none; 
+    border: none; 
+    cursor: pointer; 
+    padding: 0; 
+    margin-bottom: auto; 
+  }
+  &-close-icon {
+    font-size: $h3-font-size;
+    color: $red;
+  }
 }
 </style>

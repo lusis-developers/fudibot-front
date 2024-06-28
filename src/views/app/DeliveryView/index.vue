@@ -50,7 +50,9 @@ onMounted(async() => {
             v-for="(fleetDetail, index) in deliveryStore.delivery.fleetDetails"
             :key="index"
             :km="String(fleetDetail.radiusKm)"
-            :price="String(fleetDetail.price)" />
+            :price="String(fleetDetail.price)"
+            :deliveryId="deliveryStore.delivery._id" 
+            :fleetDetailId="fleetDetail._id"/>
         </template>
       </Card>
     </div>
@@ -73,7 +75,6 @@ onMounted(async() => {
     .card {
       & > *:not(:last-child) {
         border-bottom: 1px solid $green;
-        border-radius: 4px;
       }
     }
   }
