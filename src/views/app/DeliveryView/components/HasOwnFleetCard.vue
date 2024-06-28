@@ -12,22 +12,30 @@ const clientStore = useClientStore();
 const authStore = useAuthStore();
 
 const deliveryConfig = reactive({
-  active: false,
-  inactive: false,
+  isActive: false,
   isLoaded: false,
 });
 
-function isActive(event: boolean): void {
-  deliveryConfig.active = event;
+
+// function handleInput(event: boolean, type: string): void {
+//   if (type === 'active') {
+//     console.log('sin formatear: ', event)
+//     deliveryConfig.active = event;
+//     console.log("formateado: ", deliveryConfig.active)
+//   }
+// }
+async function setActive(event: boolean) {
   if (deliveryStore.delivery) {
-    deliveryStore.postHasOwnFleet({id: deliveryStore.delivery._id, hasOwnFleet: event});
+    deliveryConfig.isActive = event;
+    const response = await deliveryStore.postHasOwnFleet({id: deliveryStore.delivery._id, hasOwnFleet: event});
+    console.log('response: ', response)
   };
 };
-function isDesactive(event: boolean): void {
-  event = true;
-  deliveryConfig.inactive = event;
+async function isDesactive(event: boolean) {
+  deliveryConfig.inactive = event
+  deliveryConfig.active = !event; 
   if(deliveryStore.delivery) {
-    deliveryStore.postHasOwnFleet({id: deliveryStore.delivery._id, hasOwnFleet: event});
+    await deliveryStore.postHasOwnFleet({id: deliveryStore.delivery._id, hasOwnFleet: !event});
   }
 }
 
@@ -37,7 +45,8 @@ onMounted(async() => {
   await clientStore.getClientByEmail(userAuth?.email!);
   const deliveryId = clientStore.client?.restaurant?.delivery!;
   await deliveryStore.getDeliveryData(deliveryId);
-  deliveryConfig.active = deliveryStore.delivery?.hasOwnFleet || false;
+  deliveryConfig.active = deliveryStore.delivery?.hasOwnFleet!;
+  deliveryConfig.inactive = !deliveryStore.delivery?.hasOwnFleet!,
   deliveryConfig.isLoaded = true;
 });
 </script>
@@ -57,7 +66,7 @@ onMounted(async() => {
           <ToggleInput
             v-model:value="deliveryConfig.active"
             :text="'Activar'"
-            @update:modelValue="isActive" />
+            @update:modelValue="setActive($event)" />
         </div>
         <p class="delivery-config-status-message">
           {{ deliveryConfig.active 

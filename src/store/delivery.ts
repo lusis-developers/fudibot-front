@@ -28,10 +28,8 @@ const useDeliveryStore = defineStore("DeliveryStore", {
     },
     async postHasOwnFleet(data: HasOwnFleet) {
       try {
-        const response = await deliveryService.postHasOwnFleet(data);
-        if(this.delivery) {
-          this.delivery.hasOwnFleet = response.data.hasOwnFleet;
-        };
+        await deliveryService.postHasOwnFleet(data);
+        this.getDeliveryData(data.id);
       } catch (error) {
         this.error = String(error);
       };

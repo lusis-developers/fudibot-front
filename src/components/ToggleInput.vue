@@ -17,8 +17,7 @@ const props = defineProps({
 const isActive = ref(props.value);
 
 function toggle(): void {
-  isActive.value = !isActive.value;
-  emit('update:modelValue', isActive.value);
+  emit('update:modelValue', !isActive);
 }
 </script>
 
