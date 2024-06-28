@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import ProductRow from '@/components/Tables/ProductRow.vue';
 import { PropType } from 'vue';
+
+import ProductRow from '@/components/Tables/ProductRow.vue';
 import Card from '../Card.vue';
 
 const props = defineProps({

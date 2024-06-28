@@ -5,20 +5,12 @@ import APIBase from '../base';
 import type { OrderResponse } from '@/interfaces/order.interface';
 
 class APIOrder extends APIBase {
-  // async addMeals(meal: Order): Promise<AxiosResponse<Order>> {
-  //   return this.post('orders', meal);
-  // }
-  
-  // async addMealImage(image: File): Promise<AxiosResponse<Image>> {
-  //   return this.uploadFile<Image>(`meals-image`, image);
-  // }
+  async getOrders(restaurantId: string, page: number = 1): Promise<AxiosResponse<OrderResponse>> {
+    return await this.get<OrderResponse>(`orders/${restaurantId}?page=${page}`);
+  }
 
-  // async removeMeal(mealId: string) {
-  //   return this.delete(`meals/${mealId}`);
-  // }
-
-  async getOrders(restaurantId: string): Promise<AxiosResponse<OrderResponse>> {
-    return await this.get<OrderResponse>(`orders/${restaurantId}`);
+  async updateOrderStatus(orderId: string, status: string): Promise<AxiosResponse> {
+    return await this.patch(`update-order/${orderId}`, { status: status })
   }
 }
 

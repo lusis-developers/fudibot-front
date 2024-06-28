@@ -1,16 +1,23 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { computed, onMounted } from 'vue';
 
-import useOrderStore from '@/store/order';
 import useAuthStore from '@/store/auth';
+import useOrderStore from '@/store/order';
 import useClientStore from '@/store/client';
 
+import Pagination from '@/components/Pagination.vue';
 import OrderTable from '@/components/Tables/OrderTable.vue';
-// import ProductTable from '@/components/TableItems/ProductTable.vue'; 
 
 const authStore = useAuthStore();
 const orderStore = useOrderStore();
 const clientStore = useClientStore();
+
+function changePage(page: number) {
+  orderStore.getOrders(clientStore.client?.restaurant?._id!, page);
+}
+
+const nextPage = computed(() => orderStore.nextPage !== null ? orderStore.nextPage : 0)
+const previousPage = computed(() => orderStore.previousPage !== null ? orderStore.previousPage : 0)
 
 onMounted( async () => {
   const userAuth = await authStore.checkAuth();
@@ -22,10 +29,16 @@ onMounted( async () => {
 
 <template>
   <div class="meals">
-    <!-- <ProductTable
+    <OrderTable
       v-if="orderStore.orders.length"
-      :items="orderStore.orders" /> -->
-      <OrderTable
-        :orders="orderStore.orders" />
+      :orders="orderStore.orders" />
+    <Pagination
+      :totalPages="orderStore.totalPages"
+      :currentPage="orderStore.currentPage"
+      :hasNextPage="orderStore.hasPreviousPage"
+      :hasPreviousPage="orderStore.hasPreviousPage"
+      :nextPage="nextPage"
+      :previousPage="previousPage"
+      @pageChange="changePage" />
   </div>
 </template>

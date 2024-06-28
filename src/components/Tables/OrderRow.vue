@@ -1,59 +1,111 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { ref, computed, PropType } from 'vue';
 
+import { OrderStatus } from '@/enum/order.enum';
 import { formatToCurrency } from '@/utils/inputFormats';
-import mealGenericImage from '@/assets/fudi-plato.png';
+import { OrderItem } from '@/interfaces/order.interface';
+import DetailsModal from '@/views/app/OrderHistory/components/DetailsModal.vue';
 
 const props = defineProps({
-  image: {
+  _id: {
     type: String,
     required: true
   },
-  item: {
+  items: {
+    type: Array as PropType<OrderItem[]>,
+    required: true
+  },
+  status: {
     type: String,
     required: true
   },
-  description: {
-    type: String,
-    required: true
-  },
-  price: {
+  total: {
     type: Number,
     required: true
+  },
+  deliveryCost: {
+    type: Number,
+    required: true
+  },
+});
+
+const isModalOpen = ref(false);
+const formattedTotal = computed(() => formatToCurrency(props.total));
+const statusClass = computed(() => {
+  switch (props.status) {
+    case OrderStatus.OPEN:
+      return 'status-open';
+    case OrderStatus.PREPARING:
+      return 'status-preparing';
+    case OrderStatus.ON_THE_WAY:
+      return 'status-on-the-way';
+    case OrderStatus.DELIVERED:
+      return 'status-delivered';
+    case OrderStatus.CANCELLED_BY_RESTAURANT:
+      return 'status-cancelled-by-restaurant';
+    case OrderStatus.FAILED_DELIVERY:
+      return 'status-failed-delivery';
+    default:
+      return '';
   }
 });
 
-const formattedPrice = computed(() => formatToCurrency(props.price));
-const imageToDisplay = computed(() => props.image.length > 0 ? props.image : mealGenericImage);
+function openCloseModal(): void {
+  isModalOpen.value = !isModalOpen.value;
+}
 </script>
 
 <template>
   <div class="product-item">
-    <div class="product-item-image">
-      <img
-        :src="imageToDisplay"
-        alt="meal image"
-        class="image">
+    <div class="product-item-order">
+      <span
+        v-for="(item, index) in items"
+        :key="index">
+        {{ item.quantity }} X {{ item.item }} - {{  item.price }}
+      </span>
     </div>
-    <div class="product-item-name">
-      {{ item }}
+    <div class="product-item-cost">
+      {{ formattedTotal }}
     </div>
-    <div class="product-item-description">
-      {{ description }}
+    <div class="product-item-delivery">
+      ${{ deliveryCost }}
     </div>
-    <div class="product-item-price">
-      {{ formattedPrice }}
+    <div class="product-item-status">
+      <span :class="[statusClass]">
+        {{ status }}
+      </span>
     </div>
+    <div class="product-item-actions">
+      <CrushButton
+        :small="true"
+        variant="secondary"
+        @click="openCloseModal">
+        detalles
+      </CrushButton>
+    </div> 
   </div>
+  <DetailsModal
+    :modalValue="isModalOpen"
+    :_id="_id"
+    :deliveryCost="deliveryCost"
+    :items="items"
+    :total="total"
+    :status="status"
+    @closeModal="openCloseModal" />
 </template>
 
-<style lang="scss"coped>
+<style lang="scss" scoped>
+:deep(.crush-secondary) {
+  border: 1px solid $grey;
+  color: $grey;
+}
 .product-item {
   border-top: 1px solid $grey;
   width: 100%;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
   align-items: center;
+  padding: 16px 0;
   
   @media (min-width: $tablet-upper-breakpoint) {
     display: flex;
@@ -61,31 +113,34 @@ const imageToDisplay = computed(() => props.image.length > 0 ? props.image : mea
     align-items: center;
   }
 
-  &-image {
-    width: 25%;
+  &-order {
+    width: 50%;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
+    
+    @media (min-width: $tablet-upper-breakpoint) {
+      width: 20%;
+      justify-content: center;
+      align-items: flex-start;
+    }
 
-    .image {
-      width: 64px;
-      height: 64px;
-      object-fit: cover;
-      border-radius: 5px;
+    span {
+      display: block;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      font-size: 14px;
     }
   }
 
-  &-name {
-    width: 25%;
-    display: flex;
+  &-cost, &-delivery, &-status {
+    width: 20%;
+    display: none;
     justify-content: center;
     align-items: center;
-  }
-  
-  &-description {
-    width: 25%;
-    display: none;
-
+    
     @media (min-width: $tablet-upper-breakpoint) {
       display: flex;
       justify-content: center;
@@ -93,11 +148,46 @@ const imageToDisplay = computed(() => props.image.length > 0 ? props.image : mea
     }
   }
 
-  &-price {
-    width: 25%;
+  &-status {
+    span {
+      padding: 4px 8px;
+      border-radius: 8px;
+      font-size: 10px;
+    }
+  }
+
+  &-actions {
+    width: 50%;
     display: flex;
     justify-content: center;
-    align-items: center;
+    
+    @media (min-width: $tablet-upper-breakpoint) {
+      width: 20%;
+    }
   }
+}
+
+.status-open {
+  background-color: lightblue;
+}
+
+.status-preparing {
+  background-color: yellow;
+}
+
+.status-on-the-way {
+  background-color: orange;
+}
+
+.status-delivered {
+  background-color: lightgreen;
+}
+
+.status-cancelled-by-restaurant {
+  background-color: lightcoral;
+}
+
+.status-failed-delivery {
+  background-color: darkred;
 }
 </style>
