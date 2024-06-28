@@ -1,9 +1,13 @@
 <script setup lang="ts">
-import { PropType, computed, ref } from 'vue';
+import { PropType, computed, onMounted, ref } from 'vue';
 
 import { OrderStatus } from '@/enum/order.enum';
 import { statusAvailable } from '@/utils/order';
 import { formatToCurrency } from '@/utils/inputFormats';
+import useAuthStore from '@/store/auth';
+import useOrderStore from '@/store/order';
+import useClientStore from '@/store/client';
+import useRestaurantStore from '@/store/restaurant';
 import Modal from '@/components/Modal.vue';
 
 import type { OrderItem } from '@/interfaces/order.interface';
@@ -37,6 +41,11 @@ const props = defineProps({
   },
 });
 
+const orderStore = useOrderStore();
+const restaurantStore = useRestaurantStore();
+const authStore = useAuthStore();
+const clientStore = useClientStore();
+
 const statusSelected = ref(props.status);
 const formattedTotal = computed(() => formatToCurrency(props.total));
 const statusClass = computed(() => {
@@ -57,19 +66,36 @@ const statusClass = computed(() => {
       return '';
   }
 });
+const validTransitions: Record<OrderStatus, OrderStatus[]> = {
+  [OrderStatus.OPEN]: [OrderStatus.PREPARING, OrderStatus.CANCELLED_BY_RESTAURANT],
+  [OrderStatus.PREPARING]: [OrderStatus.ON_THE_WAY],
+  [OrderStatus.ON_THE_WAY]: [OrderStatus.DELIVERED],
+  [OrderStatus.DELIVERED]: [],
+  [OrderStatus.CANCELLED_BY_RESTAURANT]: [],
+  [OrderStatus.FAILED_DELIVERY]: []
+};
 
 function updateStatus(status: OrderStatus): void {
-  statusSelected.value = status;
-  
+  if (validTransitions[statusSelected.value as OrderStatus].includes(status)) {
+    statusSelected.value = status;
+  }
 }
 
 function closeModal(): void {
   emit('closeModal');
+  statusSelected.value = props.status;
 }
 async function submitStatus(): Promise<void> {
-  // TODO: update oorder status;
+  await orderStore.updateOrderStatus(props._id, statusSelected.value, restaurantStore.restaurant?._id!);
   closeModal();
 }
+
+onMounted( async () => {
+  const userAuth = await authStore.checkAuth();
+  await clientStore.getClientByEmail(userAuth?.email!);
+
+  await restaurantStore.getRestaurantById(clientStore.client?.restaurant?._id!);
+});
 </script>
 
 

@@ -45,6 +45,15 @@ const useOrderStore = defineStore("OrderStore", {
       } catch (error) {
         this.error = String(error);
       }
+    },
+    async updateOrderStatus(orderId: string, status: string, restaurantId: string) {
+      try {
+        console.log('orderId', orderId)
+        await orderService.updateOrderStatus(orderId, status);
+        this.getOrders(restaurantId);
+      } catch (error: unknown) {
+        this.error = String(error);
+      }
     }
   },
 });
