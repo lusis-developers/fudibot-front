@@ -22,6 +22,10 @@ class APIDelivery extends APIBase {
 	): Promise<AxiosResponse<Delivery>> {
 		return await this.post<Delivery>("add-fleet-detail", data);
 	}
+
+	async deleteFleetDetail(deliveryId: string, fleetId: string): Promise<AxiosResponse<Delivery>> {
+		return await this.delete<Delivery>(`/delete-fleet-detail/${deliveryId}/${fleetId}`)
+	}
 }
 
 export default APIDelivery;
