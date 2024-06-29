@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
+import useDeliveryStore from '@/store/delivery';
+
 const emit = defineEmits(['update:modelValue']);
 
 const props = defineProps({
@@ -16,14 +18,20 @@ const props = defineProps({
 
 const isActive = ref(props.value);
 
+const deliveryStore = useDeliveryStore();
+
 function toggle(): void {
-  emit('update:modelValue', !isActive);
+  isActive.value = !isActive.value
+  emit('update:modelValue', isActive.value);
 }
 </script>
 
 <template>
   <div class="input-toggle">
       <label>
+        <span>
+          tien flota? {{ deliveryStore.delivery?.hasOwnFleet }}
+        </span>
         <span>
           {{ text }}
         </span>
