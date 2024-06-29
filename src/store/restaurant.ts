@@ -76,7 +76,24 @@ export const useRestaurantStore = defineStore('RestaurantStore', {
         this.error = String(error);
       }
     },
-  }
-});
+    async updateRestaurantInfoView(data: {[key:string]:string}): Promise<Restaurant | any> {
+      try {
+        data["uuid"] = this.restaurant?.uuid!
+        const restaurant = await restaurantService.updateRestaurantInfoView(data)
+        return restaurant
+      } catch (error: unknown) {
+        this.error = String(error)
+      }
+    },
+    async deleteRestaurantLogo(): Promise<void> {
+      try {
+        const { logo } = this.restaurant!
+        const logoName = logo.split('/').pop()!
+        await restaurantService.deleteRestaurantLogo(logoName);
+      } catch (error: unknown) {
+        this.error = String(error);
+      }
+    }
+}});
 
 export default useRestaurantStore;
