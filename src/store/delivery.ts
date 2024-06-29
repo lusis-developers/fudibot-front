@@ -22,6 +22,7 @@ const useDeliveryStore = defineStore("DeliveryStore", {
       try {
         const response = await deliveryService.getDeliveryData(id);
         this.delivery = response.data;
+        console.log('this delivery: ', this.delivery);
       } catch (error) {
         this.error = String(error);
       };
@@ -29,7 +30,6 @@ const useDeliveryStore = defineStore("DeliveryStore", {
     async postHasOwnFleet(data: HasOwnFleet) {
       try {
         await deliveryService.postHasOwnFleet(data);
-        this.getDeliveryData(data.id);
       } catch (error) {
         this.error = String(error);
       };
