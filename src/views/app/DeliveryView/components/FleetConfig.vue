@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, provide } from 'vue';
 
 import PickerCard from './Card/PickerCard.vue';
 import useDeliveryStore from '@/store/delivery';
 import OwnFloatCard from './Card/OwnFloatCard.vue'
 
 const deliveryStore = useDeliveryStore();
+
+provide('has-own-fleet', deliveryStore.delivery?.hasOwnFleet);
 
 const messageCard = computed(() => {
   return deliveryStore.delivery?.hasOwnFleet
@@ -18,6 +20,8 @@ async function handleSelection(hasOwnFleet: boolean): Promise<void> {
   await deliveryStore.postHasOwnFleet({ id: deliveryStore.delivery?._id!, hasOwnFleet: hasOwnFleet}); 
   
   await deliveryStore.getDeliveryData(deliveryStore.delivery?._id!);
+
+  hasOwnFleet == deliveryStore.delivery?.hasOwnFleet ?? false;
 };
 </script>
 

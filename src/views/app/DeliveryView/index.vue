@@ -5,7 +5,7 @@ import Card from '@/components/Card.vue';
 import useAuthStore from '@/store/auth';
 import useClientStore from '@/store/client';
 import useDeliveryStore from '@/store/delivery';
-import HasOwnFleetCard from './components/HasOwnFleetCard.vue';
+import FleetConfig from './components/FleetConfig.vue';
 import AddFleetDetails from './components/AddFleetDetails.vue';
 import FleetDetailCard from './components/FleetDetailCard.vue';
 import { formatPriceToDisplay, formatNumberToSave } from '@/utils/inputFormats';
@@ -74,7 +74,7 @@ onMounted(async() => {
 
 <template>
   <div class="container" v-if="deliveryStore.delivery">
-    <HasOwnFleetCard />
+    <FleetConfig />
     <CrushButton
       class="container-button"
       text="Agregar detalle de flota"

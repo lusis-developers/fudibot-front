@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { computed } from 'vue';
 
 import Card from '@/components/Card.vue';
 import ToggleInput from '@/components/ToggleInput.vue';
@@ -13,10 +13,8 @@ const props = defineProps({
   }
 });
 
-const isActive = ref(props.pickerFloatIsActive);
-
 const messageCard = computed(() => {
-  return isActive.value 
+  return props.pickerFloatIsActive
     ? 'Activa esta opcion para usar nuestra FudiFlota' 
     : 'Estas trabajando con la FudiFlota'
 })
@@ -31,7 +29,7 @@ function activePicker(isActivePicker: boolean) {
       <template #content>
         <div class="delivery-config-toggle-container">
           <ToggleInput
-            v-model:value="isActive"
+            :value="pickerFloatIsActive"
             :text="'Activar'"
             @update:modelValue="activePicker" />
         </div>

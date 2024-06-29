@@ -22,7 +22,6 @@ const useDeliveryStore = defineStore("DeliveryStore", {
       try {
         const response = await deliveryService.getDeliveryData(id);
         this.delivery = response.data;
-        console.log('this delivery: ', this.delivery);
       } catch (error) {
         this.error = String(error);
       };
