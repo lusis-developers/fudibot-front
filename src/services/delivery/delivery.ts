@@ -11,7 +11,7 @@ import type {
 
 class APIDelivery extends APIBase {
 	async getDeliveryData(id: string): Promise<AxiosResponse> {
-		return await this.get(`/get-delivery-data/${id}`);
+		return await this.get(`get-delivery-data/${id}`);
 	}
 
 	async postHasOwnFleet(data: HasOwnFleet): Promise<AxiosResponse<Delivery>> {
