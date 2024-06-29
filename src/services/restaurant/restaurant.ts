@@ -17,6 +17,14 @@ class APIRestaurant extends APIBase {
   async patchRestaurantData(data: Restaurant): Promise<AxiosResponse<Restaurant>> {
     return await this.patch<Restaurant>('restaurant', data);
   }
+
+  async deleteRestaurantLogo(logoName: string): Promise<AxiosResponse<null>> {
+    return await this.delete<null>(`restaurant/${logoName}`);
+  }
+
+  async updateRestaurantInfoView(data: {[key:string]:string}): Promise<AxiosResponse<Restaurant>> {
+    return await this.patch<Restaurant>('restaurant-info', data)
+  }
 }
 
 export default APIRestaurant;
