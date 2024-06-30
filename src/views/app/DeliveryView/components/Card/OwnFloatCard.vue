@@ -1,10 +1,16 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 
 import Card from '@/components/Card.vue';
 import ToggleInput from '@/components/ToggleInput.vue';
+import useDeliveryStore from '@/store/delivery';
 
-const emit = defineEmits(['handleSelection'])
+const emit = defineEmits(['handleSelection', 'showForm', 'showSecondForm'])
+
+const deliveryStore = useDeliveryStore();
+
+const showForm = ref(false);
+const showFormOnePrice = ref(false);
 
 const props = defineProps({
   hasOwnFleet: {
@@ -22,20 +28,62 @@ const messageCard = computed(() => {
 function setOwnFleet(isOwnFleet: boolean) {
   emit('handleSelection', isOwnFleet);
 };
+function showAddUniquePriceToAllDelieveries(): void {
+  showFormOnePrice.value = !showFormOnePrice.value;
+  emit('showSecondForm', showFormOnePrice.value);
+};
+
+function showAddFleetDetails (): void {
+  showForm.value = !showForm.value;
+  emit('showForm', showForm.value)
+};
 </script>
 
 <template>
-   <Card>
-      <template #content>
-        <div class="delivery-config-toggle-container">
-          <ToggleInput
-            :value="hasOwnFleet"
-            :text="'Activar'"
-            @update:modelValue="setOwnFleet" />
-        </div>
-        <p class="delivery-config-status-message">
-          {{ messageCard }}
-        </p> 
-      </template>
-    </Card>
+  <Card class="principal">
+    <template #content>
+      <div class="delivery-config-toggle-container">
+        <ToggleInput
+          :value="hasOwnFleet"
+          :text="'Activar'"
+          @update:modelValue="setOwnFleet" />
+      </div>
+      <p class="delivery-config-status-message">
+        {{ messageCard }}
+      </p> 
+      <div class="section">
+        <CrushButton
+          v-if="deliveryStore.delivery?.hasOwnFleet"
+          class="section-container-button"
+          text="Agregar detalle de flota"
+          @click="showAddFleetDetails"/>
+        <CrushButton
+          v-if="deliveryStore.delivery?.hasOwnFleet"
+          class="section-container-button"
+          text="Establecer precio único de envío"
+          @click="showAddUniquePriceToAllDelieveries" />  
+      </div>
+    </template>
+  </Card>
 </template>
+
+<style lang="scss" scoped>
+.principal {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  .delivery-config-status-message {
+    font-size: $body-font-size;
+  }
+  .section {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    gap: 16px;
+    &-container-button {
+      color: $black;
+      background-color: $light-green;
+    }
+  }
+}
+</style>

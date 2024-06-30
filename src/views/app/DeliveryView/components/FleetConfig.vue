@@ -1,19 +1,25 @@
 <script setup lang="ts">
-import { computed, provide } from 'vue';
+import { computed, provide, ref } from 'vue';
 
 import PickerCard from './Card/PickerCard.vue';
 import useDeliveryStore from '@/store/delivery';
 import OwnFloatCard from './Card/OwnFloatCard.vue'
+import FleetDetailModal from './Modals/FleetDetailModal.vue';
+import AddGeneralCostModal from './Modals/AddGeneralCostModal.vue';
+
 
 const deliveryStore = useDeliveryStore();
 
 provide('has-own-fleet', deliveryStore.delivery?.hasOwnFleet);
 
+const active = ref(false);
+const active2 = ref(false);
+
 const messageCard = computed(() => {
   return deliveryStore.delivery?.hasOwnFleet
     ? 'Estás usando tu propia flota de vehículos.' 
     : 'Actualmente usas nuestra flota de vehículos. Si deseas configurar tu propia flota, activa el interruptor y sigue los pasos.'
-})
+});
 
 async function handleSelection(hasOwnFleet: boolean): Promise<void> {
   
@@ -23,6 +29,17 @@ async function handleSelection(hasOwnFleet: boolean): Promise<void> {
 
   hasOwnFleet == deliveryStore.delivery?.hasOwnFleet ?? false;
 };
+
+function showForm (value: boolean): void {
+  console.log('lo que llega: ', value);
+  active.value = value;
+  console.log('en lo que se transforma: ', active.value);
+}
+function showSecondForm(value: boolean): void {
+  console.log('lo que llega: ', value);
+  active2.value = value
+  console.log('en lo que se transforma: ', active2.value);
+}
 </script>
 
 <template>
@@ -32,13 +49,19 @@ async function handleSelection(hasOwnFleet: boolean): Promise<void> {
     <p>
       {{ messageCard }}
     </p>
-    <OwnFloatCard 
-      :hasOwnFleet="deliveryStore.delivery.hasOwnFleet"
-      @handleSelection="handleSelection" />
     <PickerCard
       :pickerFloatIsActive="!deliveryStore.delivery.hasOwnFleet"
       @handleSelection="handleSelection" />
+    <OwnFloatCard 
+      :hasOwnFleet="deliveryStore.delivery.hasOwnFleet"
+      @handleSelection="handleSelection" 
+      @showForm="showForm"
+      @showSecondForm="showSecondForm"/>
   </div>
+  <FleetDetailModal 
+    :active="active"/>
+  <AddGeneralCostModal
+    :active="active2"/>
 </template>
 
 <style lang="scss" scoped>
@@ -71,4 +94,4 @@ async function handleSelection(hasOwnFleet: boolean): Promise<void> {
     color: #888;
   }
 }
-</style>
+</style>./Modals/AddGeneralCostModal.vue
