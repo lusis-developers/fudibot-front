@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-
 const emit = defineEmits(['update:modelValue']);
 
 const props = defineProps({
@@ -10,36 +8,30 @@ const props = defineProps({
   },
   value: {
     type: Boolean,
-    required: true
+    required: true,
   }
 });
 
-const isActive = ref(props.value);
-
 function toggle(): void {
-  isActive.value = !isActive.value;
-  emit('update:modelValue', isActive.value);
-}
+  emit('update:modelValue', !props.value);
+};
 </script>
 
 <template>
   <div class="input-toggle">
-      <label>
-        <span>
-          {{ text }}
-        </span>
-        <div class="input-container">
+    <label>
+      <div class="input-container">
+        <div
+          class="toggle-switch"
+          :class="{ 'active': value }"
+          @click="toggle">
           <div
-            class="toggle-switch"
-            :class="{ 'active': isActive }"
-            @click="toggle">
-            <div
-              class="slider"
-              :class="{ 'active': isActive }" />
-          </div>
+            class="slider"
+            :class="{ 'active': value }" />
         </div>
-      </label>
-    </div>
+      </div>
+    </label>
+  </div>
 </template>
 
 <style lang="scss" scoped>

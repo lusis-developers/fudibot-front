@@ -75,6 +75,13 @@ export const rucRules = [
   }
 ];
 
+export const ciRules = [
+  {
+    validate: (value: string) => value.length > 8,
+    message: 'El CI no parece correcto'
+  },
+];
+
 export const pagopluxClientIdRules = [
   {
     validate: (value: string) => /^[a-zA-Z0-9]+$/.test(value),

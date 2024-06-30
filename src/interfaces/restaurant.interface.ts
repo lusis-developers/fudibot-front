@@ -16,6 +16,7 @@ export interface Restaurant {
   phone: string,
   schedule: Schedule[],
   logo: string,
+  delivery: string,
   website: string,
   meals?: Meal[] | string[],
   drinks?: Drink[] | string[], 
