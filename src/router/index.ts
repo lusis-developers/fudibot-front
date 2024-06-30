@@ -10,6 +10,7 @@ const Login = () => import('@/views/Login.vue');
 const Register = () => import('@/views/Register.vue');
 const Authorize = () => import('@/views/Authorize.vue');
 const Wizard = () => import('@/views/Wizard/Index.vue');
+const Bill = () => import('@/views/Bill.vue');
 const Meals = () => import('@/views/app/MealsView/Index.vue');
 const Drinks = () => import('@/views/app/DrinksView/Index.vue');
 const Integrations = () => import('@/views/app/TheIntegrations/index.vue');
@@ -50,6 +51,14 @@ const routes: Array<RouteRecordRaw> = [
     meta: {
       title: 'Primeros Pasos',
     },
+  },
+  {
+    path: '/factura/:id',
+    name: 'Bill',
+    component: Bill,
+    meta: {
+      title: 'Llena tus datos 📝'
+    }
   },
   {
     path: '/app',
