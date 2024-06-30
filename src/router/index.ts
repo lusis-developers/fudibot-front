@@ -15,7 +15,7 @@ const Meals = () => import('@/views/app/MealsView/Index.vue');
 const Drinks = () => import('@/views/app/DrinksView/Index.vue');
 const Integrations = () => import('@/views/app/TheIntegrations/index.vue');
 const OrderHistory = () => import('@/views/app/OrderHistory/Index.vue');
-const DeliverySetup = () => import('@/views/app/DeliverySetup.vue');
+const DeliverySetup = () => import('@/views/app/DeliveryView/index.vue');
 const InvoiceHistory = () => import('@/views/app/InvoiceHistory.vue');
 const RestaurantInfo = () => import('@/views/app/RestaurantInfo/Index.vue');
 
@@ -94,7 +94,7 @@ const routes: Array<RouteRecordRaw> = [
         name: 'DeliverySetup',
         component: DeliverySetup,
         meta: {
-          title: 'Configuración de pedidos',
+          title: 'Configuración de envíos',
         },
       },
       {
