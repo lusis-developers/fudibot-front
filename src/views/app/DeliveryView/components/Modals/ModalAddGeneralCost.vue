@@ -71,16 +71,16 @@ async function addgeneralDeliveryCost(): Promise<void> {
     <template #content>
       <div class="modal-fleet-form">
         <CrushTextField 
-        :value="generalDeliveryCost"
-        prependContent="$"
-        placeholder="Establece un precio estandar para todos los envíos"
-        label="Precio estándar"
-        @update:modelValue="handleInput($event, 'price')"/>
-      <CrushButton
-        :disabled="!buttonActive"
-        text="Guardar"
-        class="button"
-        @click="addgeneralDeliveryCost"/>
+          :value="generalDeliveryCost"
+          prependContent="$"
+          placeholder="Establece un precio estandar para todos los envíos"
+          label="Precio estándar"
+          @update:modelValue="handleInput($event, 'price')"/>
+        <CrushButton
+          :disabled="!buttonActive"
+          text="Guardar"
+          class="button"
+          @click="addgeneralDeliveryCost"/>
       </div>
     </template>
   </Modal>

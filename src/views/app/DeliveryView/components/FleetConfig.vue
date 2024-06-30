@@ -4,16 +4,16 @@ import { computed, provide, ref } from 'vue';
 import PickerCard from './Card/PickerCard.vue';
 import useDeliveryStore from '@/store/delivery';
 import OwnFloatCard from './Card/OwnFloatCard.vue'
-import FleetDetailModal from './Modals/FleetDetailModal.vue';
-import AddGeneralCostModal from './Modals/AddGeneralCostModal.vue';
+import ModalFleetDetail from './Modals/ModalFleetDetail.vue';
+import ModalAddGeneralCost from './Modals/ModalAddGeneralCost.vue';
 
 
 const deliveryStore = useDeliveryStore();
 
 provide('has-own-fleet', deliveryStore.delivery?.hasOwnFleet);
 
-const active = ref(false);
-const active2 = ref(false);
+const firtForm = ref(false);
+const secondForm = ref(false);
 
 const messageCard = computed(() => {
   return deliveryStore.delivery?.hasOwnFleet
@@ -31,19 +31,16 @@ async function handleSelection(hasOwnFleet: boolean): Promise<void> {
 };
 
 function showForm (value: boolean): void {
-  console.log('111. lo que llega: ', value);
-  active.value = value;
-  console.log('111. en lo que se transforma: ', active.value);
+  firtForm.value = value;
 };
 function showSecondForm(value: boolean): void {
-  console.log('111. lo que llega: ', value);
-  active2.value = value
-  console.log('222. en lo que se transforma: ', active2.value);
-  closeModal(false);
+  secondForm.value = value
 };
 function closeModal(value: boolean): void {
-  console.log('value del close modal: ', active.value)
-  active.value = value;
+  firtForm.value = value;
+  secondForm.value = value;
+  console.log('active 1: ', firtForm.value);
+  console.log('active 2: ', secondForm.value)
 };
 </script>
 
@@ -61,13 +58,14 @@ function closeModal(value: boolean): void {
       :hasOwnFleet="deliveryStore.delivery.hasOwnFleet"
       @handleSelection="handleSelection" 
       @showForm="showForm"
-      @showSecondForm="showSecondForm"
-      @closeModal="closeModal"/>
+      @showSecondForm="showSecondForm"/>
   </div>
-  <FleetDetailModal 
-    :active="active"/>
-  <AddGeneralCostModal
-    :active="active2"/>
+  <ModalFleetDetail 
+    :active="firtForm"
+    @closeModal="closeModal"/>
+  <ModalAddGeneralCost
+    :active="secondForm"
+    @closeModal="closeModal"/>
 </template>
 
 <style lang="scss" scoped>
@@ -100,4 +98,4 @@ function closeModal(value: boolean): void {
     color: #888;
   }
 }
-</style>./Modals/AddGeneralCostModal.vue
+</style>./Modals/AddGeneralCostModal.vue./Modals/ModalAddGeneralCost.vue./Modals/ModalFleetDetail.vue

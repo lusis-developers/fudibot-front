@@ -31,7 +31,9 @@ onMounted(async() => {
   <div class="container" v-if="deliveryStore.delivery">
     <FleetConfig />
     <div class="container-cards" v-if="cards">
-      <Card class="card">
+      <Card
+        v-if="deliveryStore.delivery.fleetDetails" 
+        class="card">
          <template #content>
           <FleetDetailCard
             v-for="(fleetDetail, index) in deliveryStore.delivery.fleetDetails"
