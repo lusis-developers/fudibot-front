@@ -51,10 +51,7 @@ const useDeliveryStore = defineStore("DeliveryStore", {
     },
     async addGeneralDeliveryCost(data: {id: string, generalDeliveryCost: number}) {
       try {
-        const response = await deliveryService.addGeneralDeliveryCost(data);
-        if(this.delivery) {
-          this.delivery.fleetDetails = response.data;
-        }
+        await deliveryService.addGeneralDeliveryCost(data);
       } catch(error) {
         this.error = String(error);
       };
