@@ -43,9 +43,13 @@ function showAddFleetDetails (): void {
   <Card class="principal">
     <template #content>
       <div class="delivery-config-toggle-container">
+        <p>
+          Tu flota personalizada
+        </p>
         <ToggleInput
           :value="hasOwnFleet"
           :text="'Activar'"
+          class="toggle"
           @update:modelValue="setOwnFleet" />
       </div>
       <p class="delivery-config-status-message">
@@ -73,6 +77,18 @@ function showAddFleetDetails (): void {
   flex-direction: column;
   width: 100%;
   gap: 24px;
+  p {
+    font-size: $body-font-size;
+  }
+  .toggle {
+    width: auto;
+  }
+  .delivery-config-toggle-container{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
   .delivery-config-status-message {
     font-size: $body-font-size;
   }

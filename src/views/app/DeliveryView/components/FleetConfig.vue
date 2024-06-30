@@ -39,8 +39,6 @@ function showSecondForm(value: boolean): void {
 function closeModal(value: boolean): void {
   firtForm.value = value;
   secondForm.value = value;
-  console.log('active 1: ', firtForm.value);
-  console.log('active 2: ', secondForm.value)
 };
 </script>
 
@@ -98,4 +96,4 @@ function closeModal(value: boolean): void {
     color: #888;
   }
 }
-</style>./Modals/AddGeneralCostModal.vue./Modals/ModalAddGeneralCost.vue./Modals/ModalFleetDetail.vue
+</style>

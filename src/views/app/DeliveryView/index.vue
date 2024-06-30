@@ -32,7 +32,7 @@ onMounted(async() => {
     <FleetConfig />
     <div class="container-cards" v-if="cards">
       <Card
-        v-if="deliveryStore.delivery.fleetDetails" 
+        v-if="deliveryStore.delivery" 
         class="card">
          <template #content>
           <FleetDetailCard

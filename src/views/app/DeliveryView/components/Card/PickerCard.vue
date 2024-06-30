@@ -27,21 +27,25 @@ function activePicker(isActivePicker: boolean) {
 
 <template>
   <Card class="pickerCard">
-      <template #content>
-        <div class="delivery-config-toggle-container">
-          <ToggleInput
-            :value="pickerFloatIsActive"
-            :text="'Activar'"
-            @update:modelValue="activePicker" />
-        </div>
-        <p class="delivery-config-status-message">
-          {{ messageCard }}
-        </p> 
-        <img 
+    <template #content>
+      <div class="delivery-config-toggle-container">
+        <div>
+          <img 
           :src="pickerLogo"
           class="image"/>
-      </template>
-    </Card>
+        </div>
+          <div>
+            <ToggleInput
+              :value="pickerFloatIsActive"
+              :text="'Activar'"
+              @update:modelValue="activePicker" />
+          </div>
+      </div>
+      <p class="delivery-config-status-message">
+        {{ messageCard }}
+      </p> 
+    </template>
+  </Card>
 </template>
 
 <style lang="scss" scoped>
@@ -54,6 +58,12 @@ function activePicker(isActivePicker: boolean) {
   gap: 16px;
   pointer-events: none;
   cursor: not-allowed;
+  .delivery-config-toggle-container{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: space-between;
+  }
   .delivery-config-status-message {
     font-size: $body-font-size;
   }
