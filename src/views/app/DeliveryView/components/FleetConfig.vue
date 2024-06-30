@@ -31,20 +31,20 @@ async function handleSelection(hasOwnFleet: boolean): Promise<void> {
 };
 
 function showForm (value: boolean): void {
-  console.log('lo que llega: ', value);
+  console.log('111. lo que llega: ', value);
   active.value = value;
-  console.log('en lo que se transforma: ', active.value);
-}
+  console.log('111. en lo que se transforma: ', active.value);
+};
 function showSecondForm(value: boolean): void {
-  console.log('lo que llega: ', value);
+  console.log('111. lo que llega: ', value);
   active2.value = value
-  console.log('en lo que se transforma: ', active2.value);
+  console.log('222. en lo que se transforma: ', active2.value);
   closeModal(false);
-}
+};
 function closeModal(value: boolean): void {
   console.log('value del close modal: ', active.value)
   active.value = value;
-}
+};
 </script>
 
 <template>

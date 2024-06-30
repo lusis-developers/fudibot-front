@@ -2,6 +2,7 @@
 import { onMounted, computed } from 'vue';
 
 import useAuthStore from '@/store/auth';
+import Card from '@/components/Card.vue'
 import useClientStore from '@/store/client';
 import useDeliveryStore from '@/store/delivery';
 import FleetConfig from './components/FleetConfig.vue';
