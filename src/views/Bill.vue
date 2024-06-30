@@ -70,7 +70,7 @@ onMounted(() => {
             :src="fudibot"
             alt="fuditbot logo">
           <h3>
-            Llena tus factura
+            Llena tu factura
           </h3>
         </div>
       </template>
