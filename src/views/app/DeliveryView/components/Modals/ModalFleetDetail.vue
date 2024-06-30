@@ -35,7 +35,6 @@ function handleInput(event: string, type: string): void {
   };
   if (type === 'price') {
     deliveryData.price = formatPriceToDisplay(event);
-    console.log("formateado: ", deliveryData.price);
   };
 };
 function closeModal() {
@@ -50,7 +49,9 @@ async function AddFleetDetails(): Promise<void> {
   }
   await deliveryStore.addFleetDetail(data);
   emit('update:visibleForm', false);
-  emit('closeModal', false)
+  emit('closeModal', false);
+  //todo: remove this solving problem with toggles :)
+  window.location.reload();
 };
 </script>
 

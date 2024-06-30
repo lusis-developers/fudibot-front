@@ -26,9 +26,7 @@ const buttonActive = computed(() => {
 
 function handleInput(event: string, type: string): void {
   if (type === 'price') {
-    console.log('sin formatear: ', event)
     generalDeliveryCost.value = formatPriceToDisplay(event);
-    console.log("formateado: ", generalDeliveryCost.value)
   };
 };
 
@@ -54,7 +52,9 @@ async function addgeneralDeliveryCost(): Promise<void> {
       })
     }
     await deliveryStore.addGeneralDeliveryCost(data);
-    emit('closeModal', false)
+    emit('closeModal', false);
+    //todo: remove this solving problem with toggles :)
+    window.location.reload();
   }
 }
 </script>
