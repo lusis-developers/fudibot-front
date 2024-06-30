@@ -39,6 +39,11 @@ function showSecondForm(value: boolean): void {
   console.log('lo que llega: ', value);
   active2.value = value
   console.log('en lo que se transforma: ', active2.value);
+  closeModal(false);
+}
+function closeModal(value: boolean): void {
+  console.log('value del close modal: ', active.value)
+  active.value = value;
 }
 </script>
 
@@ -56,7 +61,8 @@ function showSecondForm(value: boolean): void {
       :hasOwnFleet="deliveryStore.delivery.hasOwnFleet"
       @handleSelection="handleSelection" 
       @showForm="showForm"
-      @showSecondForm="showSecondForm"/>
+      @showSecondForm="showSecondForm"
+      @closeModal="closeModal"/>
   </div>
   <FleetDetailModal 
     :active="active"/>

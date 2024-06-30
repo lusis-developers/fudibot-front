@@ -6,6 +6,8 @@ import useDeliveryStore from '@/store/delivery';
 import useClientStore from '@/store/client';
 import { formatNumberToSave, formatPriceToDisplay } from '@/utils/inputFormats';
 
+const emit = defineEmits(['closeModal'])
+
 const deliveryStore = useDeliveryStore();
 const clientStore = useClientStore();
 
@@ -49,6 +51,7 @@ async function addgeneralDeliveryCost(): Promise<void> {
       })
     }
     await deliveryStore.addGeneralDeliveryCost(data);
+    emit('closeModal', false)
   }
 }
 </script>

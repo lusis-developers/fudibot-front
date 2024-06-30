@@ -7,7 +7,7 @@ import { formatNumberToSave, formatPriceToDisplay } from '@/utils/inputFormats';
 
 import type { AddOrEditFleetDetail, FleetDetail } from '@/interfaces/delivery.interface';
 
-const emit = defineEmits(['update:visibleForm']);
+const emit = defineEmits(['update:visibleForm', 'closeModal']);
 
 const deliveryStore = useDeliveryStore();
 
@@ -42,7 +42,8 @@ async function AddFleetDetails(): Promise<void> {
     price: formatNumberToSave(String(deliveryData.price))
   }
   await deliveryStore.addFleetDetail(data);
-  emit('update:visibleForm', false)
+  emit('update:visibleForm', false);
+  emit('closeModal', false)
 }
 
 const buttonActive = computed(() => {
