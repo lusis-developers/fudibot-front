@@ -25,7 +25,6 @@ const displayDescription = computed(() => {
 
 <template>
   <div class="product-card">
-    fdsaafdsafsdaasdfadsgfghfc
     <h4>
       {{ item }}
     </h4>
