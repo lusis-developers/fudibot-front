@@ -71,6 +71,7 @@ function showAddFleetDetails (): void {
 .principal {
   display: flex;
   flex-direction: column;
+  width: 100%;
   gap: 24px;
   .delivery-config-status-message {
     font-size: $body-font-size;
@@ -79,10 +80,13 @@ function showAddFleetDetails (): void {
     display: flex;
     flex-wrap: wrap;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
     gap: 16px;
     &-container-button {
       color: $black;
       background-color: $light-green;
+      width: 50%;
     }
   }
 }
