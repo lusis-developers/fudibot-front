@@ -52,9 +52,8 @@ async function addgeneralDeliveryCost(): Promise<void> {
       })
     }
     await deliveryStore.addGeneralDeliveryCost(data);
+    await deliveryStore.getDeliveryData(id)
     emit('closeModal', false);
-    //todo: remove this solving problem with toggles :)
-    window.location.reload();
   }
 }
 </script>

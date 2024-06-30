@@ -12,7 +12,7 @@ const deliveryStore = useDeliveryStore();
 
 provide('has-own-fleet', deliveryStore.delivery?.hasOwnFleet);
 
-const firtForm = ref(false);
+const firstForm = ref(false);
 const secondForm = ref(false);
 
 const messageCard = computed(() => {
@@ -24,20 +24,19 @@ const messageCard = computed(() => {
 async function handleSelection(hasOwnFleet: boolean): Promise<void> {
   
   await deliveryStore.postHasOwnFleet({ id: deliveryStore.delivery?._id!, hasOwnFleet: hasOwnFleet}); 
-  
   await deliveryStore.getDeliveryData(deliveryStore.delivery?._id!);
 
   hasOwnFleet == deliveryStore.delivery?.hasOwnFleet ?? false;
 };
 
 function showForm (value: boolean): void {
-  firtForm.value = value;
+  firstForm.value = value;
 };
 function showSecondForm(value: boolean): void {
   secondForm.value = value
 };
 function closeModal(value: boolean): void {
-  firtForm.value = value;
+  firstForm.value = value;
   secondForm.value = value;
 };
 </script>
@@ -52,14 +51,14 @@ function closeModal(value: boolean): void {
     <PickerCard
       :pickerFloatIsActive="!deliveryStore.delivery.hasOwnFleet"
       @handleSelection="handleSelection" />
-    <OwnFloatCard 
+    <OwnFloatCard
       :hasOwnFleet="deliveryStore.delivery.hasOwnFleet"
       @handleSelection="handleSelection" 
       @showForm="showForm"
       @showSecondForm="showSecondForm"/>
   </div>
   <ModalFleetDetail 
-    :active="firtForm"
+    :active="firstForm"
     @closeModal="closeModal"/>
   <ModalAddGeneralCost
     :active="secondForm"

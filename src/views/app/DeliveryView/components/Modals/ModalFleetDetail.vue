@@ -42,16 +42,17 @@ function closeModal() {
 };
 
 async function AddFleetDetails(): Promise<void> {
+  const deliveryId = deliveryStore.delivery?._id;
   const data: AddOrEditFleetDetail = {
-    id: deliveryStore.delivery?._id!,
+    id: deliveryId!,
     radius: Number(deliveryData.radius),
     price: formatNumberToSave(String(deliveryData.price))
   }
   await deliveryStore.addFleetDetail(data);
+  await deliveryStore.getDeliveryData(deliveryId!);
+
   emit('update:visibleForm', false);
   emit('closeModal', false);
-  //todo: remove this solving problem with toggles :)
-  window.location.reload();
 };
 </script>
 
