@@ -32,6 +32,9 @@ function handleInput(event: string, type: string): void {
   };
 };
 
+function closeModal() {
+  emit('closeModal', false);
+};
 
 async function addgeneralDeliveryCost(): Promise<void> {
   const id = deliveryStore.delivery?._id;
@@ -71,16 +74,21 @@ async function addgeneralDeliveryCost(): Promise<void> {
     <template #content>
       <div class="modal-fleet-form">
         <CrushTextField 
+          class="question"
           :value="generalDeliveryCost"
           prependContent="$"
           placeholder="Establece un precio estandar para todos los envíos"
           label="Precio estándar"
           @update:modelValue="handleInput($event, 'price')"/>
-        <CrushButton
-          :disabled="!buttonActive"
-          text="Guardar"
-          class="button"
-          @click="addgeneralDeliveryCost"/>
+          <CrushButton
+            text="Cancelar"
+            class="button-cancel"
+            @click="closeModal"/>
+          <CrushButton
+            :disabled="!buttonActive"
+            text="Guardar"
+            class="button"
+            @click="addgeneralDeliveryCost"/>
       </div>
     </template>
   </Modal>
@@ -101,10 +109,19 @@ async function addgeneralDeliveryCost(): Promise<void> {
   }
   &-form {
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    .question {
+      width: 80%;
+    }
     .button {
       width: 40%;
       align-self: flex-end; 
+    }
+    .button-cancel {
+      color: $red;
+      width: 40%;
+      align-self: flex-start;
     }
   }
   :deep(.crush-text-field-label-text){

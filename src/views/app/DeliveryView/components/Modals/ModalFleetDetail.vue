@@ -25,15 +25,22 @@ const deliveryData = reactive({
   radius: ''
 });
 
+const buttonActive = computed(() => {
+  return deliveryData.price !== '' && deliveryData.radius !== '';
+});
+
 function handleInput(event: string, type: string): void {
   if (type === 'radius') {
     deliveryData.radius = event;
-  }
+  };
   if (type === 'price') {
     deliveryData.price = formatPriceToDisplay(event);
-    console.log("formateado: ", deliveryData.price)
-  }
-}
+    console.log("formateado: ", deliveryData.price);
+  };
+};
+function closeModal() {
+  emit('closeModal', false);
+};
 
 async function AddFleetDetails(): Promise<void> {
   const data: AddOrEditFleetDetail = {
@@ -44,11 +51,7 @@ async function AddFleetDetails(): Promise<void> {
   await deliveryStore.addFleetDetail(data);
   emit('update:visibleForm', false);
   emit('closeModal', false)
-}
-
-const buttonActive = computed(() => {
-  return deliveryData.price !== '' && deliveryData.radius !== '';
-});
+};
 </script>
 
 <template>
@@ -65,14 +68,20 @@ const buttonActive = computed(() => {
           prependContent="Km"
           placeholder="Escribe la cantidad de km desde tu restaurante a la redonda"
           label="Kilómetros"
+          class="question"
           @update:modelValue="handleInput($event, 'radius')" />
         <CrushTextField 
           :value="deliveryData.price"
           prependContent="$"
           placeholder="Escribe el costo de ese kilometraje a la redonda" 
           label="Precio"
+          class="question"
           @update:modelValue="handleInput($event, 'price')"/>
-          <CrushButton
+        <CrushButton
+          text="Cancelar"
+          class="button-cancel"
+          @click="closeModal"/>
+        <CrushButton
           :disabled="!buttonActive"
           text="Guardar"
           class="button"
@@ -89,10 +98,19 @@ const buttonActive = computed(() => {
   }
   &-form {
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    .question {
+      width: 80%;
+    }
     .button {
       width: 40%;
       align-self: flex-end; 
+    }
+    .button-cancel {
+      color: $red;
+      width: 40%;
+      align-self: flex-start;
     }
   }
   :deep(.crush-text-field-label-text){
