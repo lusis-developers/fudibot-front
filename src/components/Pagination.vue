@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const emit = defineEmits(['pageChange']);
 
-const props = defineProps({
+defineProps({
   currentPage: {
     type: Number,
     required: true

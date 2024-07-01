@@ -11,7 +11,7 @@ const emit = defineEmits(['update:visibleForm', 'closeModal']);
 
 const deliveryStore = useDeliveryStore();
 
-const props = defineProps({
+defineProps({
   active: {
     type: Boolean,
     default: false,

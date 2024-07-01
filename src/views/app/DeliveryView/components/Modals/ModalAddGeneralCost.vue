@@ -11,7 +11,7 @@ const emit = defineEmits(['closeModal'])
 const deliveryStore = useDeliveryStore();
 const clientStore = useClientStore();
 
-const props = defineProps({
+defineProps({
   active: {
     type: Boolean,
     default: false,

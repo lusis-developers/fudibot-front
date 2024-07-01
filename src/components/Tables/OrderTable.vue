@@ -6,7 +6,7 @@ import OrderRow from '@/components/Tables/OrderRow.vue';
 
 import type { OrdersRequested } from '@/interfaces/order.interface';
 
-const props = defineProps({
+defineProps({
   orders: {
     type: Array as PropType<OrdersRequested[]>,
     required: true

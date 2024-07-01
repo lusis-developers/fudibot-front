@@ -63,7 +63,7 @@ async function sendPagoPluxData () {
       clientToken: `${pagopluxForm.clientId}:${pagopluxForm.secretKey}`
     };
     const restaurantUuid = clientStore.client?.restaurant?.uuid;
-    const response = await paymentMethodsStore.putPagopluxData(data, restaurantUuid!);
+    await paymentMethodsStore.putPagopluxData(data, restaurantUuid!);
     pagopluxForm.formVisible = false;
     paymentMethodsStore.paymentMethods?.pagoplux
   } catch(e) {

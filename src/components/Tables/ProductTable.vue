@@ -4,7 +4,7 @@ import { PropType } from 'vue';
 import ProductRow from '@/components/Tables/ProductRow.vue';
 import Card from '../Card.vue';
 
-const props = defineProps({
+defineProps({
   items: {
     type: Array as PropType<any[]>,
     required: true
