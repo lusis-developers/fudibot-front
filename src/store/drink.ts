@@ -5,6 +5,13 @@ import type { Drink } from '@/interfaces/drink.interface';
 
 interface RootState {
   drinks: Drink[];
+  currentPage: number;
+  totalPages: number;
+  totalOrders: number;
+  hasNextPage: boolean;
+  nextPage: number | null;
+  hasPreviousPage: boolean;
+  previousPage: number | null;
   error: string | null;
 }
 
@@ -13,14 +20,28 @@ const drinkService = new APIDrink();
 const useDrinkStore = defineStore("DrinkStore", {
   state: (): RootState => ({
     drinks: [],
+    currentPage: 1,
+    totalPages: 1,
+    totalOrders: 1,
+    hasNextPage: false,
+    nextPage: null,
+    hasPreviousPage: false,
+    previousPage: null,
     error: null,
   }),
 
   actions: {
-    async getDrinks(uuid: string): Promise<void> {
+    async getDrinks(uuid: string, page: number = 1): Promise<void> {
       try {
-        const response = await drinkService.getDrinks(uuid);
-        this.drinks = response.data;
+        const response = await drinkService.getDrinks(uuid, page);
+        this.drinks = response.data.drinks;
+        this.currentPage = response.data.currentPage;
+        this.totalPages = response.data.totalPages;
+        this.totalOrders = response.data.totalOrders;
+        this.nextPage = response.data.nextPage;
+        this.hasNextPage = response.data.hasNextPage;
+        this.previousPage = response.data.previousPage;
+        this.hasPreviousPage = response.data.hasPreviousPage;
       } catch(error: unknown) {
         this.error = String(error)
       }

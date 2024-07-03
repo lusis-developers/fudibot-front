@@ -28,17 +28,27 @@ onMounted( async () => {
 </script>
 
 <template>
-  <div class="meals">
+  <div class="orders">
     <OrderTable
       v-if="orderStore.orders.length"
       :orders="orderStore.orders" />
-    <Pagination
-      :totalPages="orderStore.totalPages"
-      :currentPage="orderStore.currentPage"
-      :hasNextPage="orderStore.hasPreviousPage"
-      :hasPreviousPage="orderStore.hasPreviousPage"
-      :nextPage="nextPage"
-      :previousPage="previousPage"
-      @pageChange="changePage" />
+    <div class="orders-pagination">
+      <Pagination
+        :totalPages="orderStore.totalPages"
+        :currentPage="orderStore.currentPage"
+        :hasNextPage="orderStore.hasPreviousPage"
+        :hasPreviousPage="orderStore.hasPreviousPage"
+        :nextPage="nextPage"
+        :previousPage="previousPage"
+        @pageChange="changePage" />
+    </div>
   </div>
 </template>
+
+<style lang="scss" scoped>
+.meals {
+  &-pagination {
+    margin-top: 12px;
+  }
+}
+</style>

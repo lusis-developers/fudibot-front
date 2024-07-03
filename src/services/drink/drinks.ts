@@ -18,8 +18,8 @@ class APIDrink extends APIBase {
     return this.delete(`drinks/${drinkId}`);
   }
 
-  async getDrinks(uuid: string): Promise<AxiosResponse> {
-    return await this.get(`restaurant/${uuid}/drinks`);
+  async getDrinks(uuid: string, page: number = 1): Promise<AxiosResponse> {
+    return await this.get(`restaurant/${uuid}/drinks?page=${page}`);
   }
 }
 
