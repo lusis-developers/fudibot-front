@@ -16,6 +16,29 @@ export const emailRules = [
   }
 ];
 
+export const passwordRules = [
+  {
+    validate: (value: string) => value.length >= 8,
+    message: 'La contraseña debe tener al menos 8 caracteres 😥'
+  },
+  {
+    validate: (value: string) => /[a-z]/.test(value),
+    message: 'La contraseña debe contener al menos una letra minúscula (a-z) 😥'
+  },
+  {
+    validate: (value: string) => /[A-Z]/.test(value),
+    message: 'La contraseña debe contener al menos una letra mayúscula (A-Z) 😥'
+  },
+  {
+    validate: (value: string) => /\d/.test(value),
+    message: 'La contraseña debe contener al menos un número (0-9) 😥'
+  },
+  {
+    validate: (value: string) => /[!@#$%^&*(),.?":{}|<>]/.test(value),
+    message: 'La contraseña debe contener al menos un carácter especial (e.g. !@#$%^&*) 😥'
+  },
+]
+
 export const managerNameRules = [
   {
     validate: (value: string) => value.trim().split(/\s+/).length > 1,

@@ -27,6 +27,24 @@ const useAuthStore = defineStore('AuthStore', {
         }
       }
     },
+    async registerWithCredentials(email: string, password: string): Promise<void> {
+      try {
+        await auth0Service.registerUser(email, password);
+      } catch (error: unknown) {
+        this.error = String(error);
+      }
+    },
+    async loginWithCredentials(email: string, password: string): Promise<void> {
+      try {
+        await auth0Service.loginWithUsernameAndPassword(email, password);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          this.error = error.message;
+        } else {
+          this.error = String(error);
+        }
+      }
+    },
     // TODO: WAITING FOR DEVELOPER CREDENTIALS
     // async loginWithFacebook(): Promise<void> {
     //   try {

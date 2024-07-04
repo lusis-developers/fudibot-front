@@ -2,6 +2,7 @@
 import { useRouter } from 'vue-router';
 
 import useAuthStore from '@/store/auth';
+import RegisterForm from '@/components/Forms/RegisterForm.vue';
 
 const router = useRouter();
 
@@ -24,11 +25,12 @@ function redirect(): void {
   <div class="wrapper">
     <div class="wrapper-login">
       <h1 class="wrapper-login-title">
-        Inicia Sesión...
+        Regístrate...
       </h1>
       <p>
-        Inicia Sesión y tomemos en control tus deliveries y tu negocio.
+        Comencemos y tomemos en control tus deliveries y tu negocio.
       </p>
+      <RegisterForm />
       <CrushButton
         :small="true"
         class="wrapper-login-google"
