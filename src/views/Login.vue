@@ -2,7 +2,7 @@
 import { useRouter } from 'vue-router';
 
 import useAuthStore from '@/store/auth';
-// import useClientStore from '@/store/client';
+import LoginForm from '@/components/Forms/LoginForm.vue'
 
 const router = useRouter();
 
@@ -29,6 +29,7 @@ function redirect(): void {
         Ingresar...
       </h1>
       <p>¿Estás listo? Toma el poder de tu negocio, gestiona y automatiza tus deliveries</p>
+      <LoginForm />
       <CrushButton
         :small="true"
         class="wrapper-login-google"

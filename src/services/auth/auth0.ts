@@ -1,17 +1,18 @@
-import { AuthErrorResponse } from '@/interfaces/auth.interface';
 import {
   createAuth0Client,
   Auth0ClientOptions,
   Auth0Client,
   RedirectLoginOptions
 } from '@auth0/auth0-spa-js';
-import { AxiosError } from 'axios';
 
 class Auth0Service {
   private auth0Client: Auth0Client | null = null;
   private initPromise: Promise<void> | null = null;
-  private domain: string = 'dev-fzn3icmi5a20c452.us.auth0.com';
-  private clientId: string = 'FiKCHkexkbJoCRRyIDDBslvfguV2beQK';
+  private domain: string = 'dev-fzn3icmi5a20c452.us.auth0.com' || '';
+  private clientId: string = '4dS9j5MWVIyywq1kSz4U6cIhn4qKQ8ta' || '';
+  // private clientSecret: string = 'iQBN-5h6R3PRwnRx0hFjouxdh-lrZcDyQ51LNVnDR5TxY1QT3BxIG5GJhVJ0kl9_' || '';
+  // private audience: string = 'https://dev-fzn3icmi5a20c452.us.auth0.com/api/v2/' || '';
+  // private realm: string = 'Username-Password-Authentication' || '';
 
   constructor() {
     this.initPromise = this.init();
@@ -23,13 +24,13 @@ class Auth0Service {
         domain: this.domain,
         clientId: this.clientId,
         authorizationParams: {
-          grandType: 'authorization_code',
+          grantType: 'authorization_code',
           redirect_uri: window.location.origin + '/authorize',
           scope: 'openid profile email phone address'
         },
         useRefreshTokens: true,
         cacheLocation: 'localstorage'
-      }
+      };
   
       this.auth0Client = await createAuth0Client(config);
     } catch (error) {
@@ -82,7 +83,6 @@ class Auth0Service {
     if (this.auth0Client) {
       return await this.auth0Client.isAuthenticated();
     }
-    // Verifica si hay un token en el localStorage
     const accessToken = localStorage.getItem('access_token');
     return !!accessToken;
   }
@@ -103,72 +103,71 @@ class Auth0Service {
         }
       });
     }
-    // Remueve los tokens del localStorage
     localStorage.removeItem('access_token');
     localStorage.removeItem('id_token');
   }
 
-  async loginWithUsernameAndPassword(username: string, password: string): Promise<any> {
-    try {
-      const response = await fetch(`https://${this.domain}/oauth/token`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          grant_type: 'password',
-          username,
-          password,
-          audience: 'https://your-api-identifier',
-          scope: 'openid profile email',
-          client_id: this.clientId
-        })
-      });
-
-      const data = await response.json();
-      if (data.error) {
-        throw new Error(data.error_description);
-      }
-
-      // Store the access token and id token
-      localStorage.setItem('access_token', data.access_token);
-      localStorage.setItem('id_token', data.id_token);
+  // async loginWithUsernameAndPassword(username: string, password: string): Promise<any> {
+  //   try {
+  //     const response = await fetch(`https://${this.domain}/oauth/token`, {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json'
+  //       },
+  //       body: JSON.stringify({
+  //         grant_type: 'password',
+  //         username,
+  //         password,
+  //         audience: this.audience,
+  //         scope: 'openid profile email',
+  //         client_id: this.clientId,
+  //         client_secret: this.clientSecret,
+  //         realm: this.realm
+  //       })
+  //     });
+  
+  //     const data = await response.json();
+  //     if (data.error) {
+  //       throw new Error(data.error_description);
+  //     }
+  
+  //     localStorage.setItem('access_token', data.access_token);
+  //     localStorage.setItem('id_token', data.id_token);
       
-      return data;
-    } catch (error) {
-      console.error('Login failed:', error);
-      throw error;
-    }
-  }
+  //     return data;
+  //   } catch (error) {
+  //     console.error('Login failed:', error);
+  //     throw error;
+  //   }
+  // }
 
-  async registerUser(email: string, password: string): Promise<any> {
-    try {
-      const response = await fetch(`https://${this.domain}/dbconnections/signup`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          client_id: this.clientId,
-          email,
-          password,
-          connection: 'Username-Password-Authentication'
-        })
-      });
+  // async registerUser(email: string, password: string): Promise<any> {
+  //   try {
+  //     const response = await fetch(`https://${this.domain}/dbconnections/signup`, {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json'
+  //       },
+  //       body: JSON.stringify({
+  //         client_id: this.clientId,
+  //         email,
+  //         password,
+  //         connection: this.realm
+  //       })
+  //     });
 
-      const data = await response.json();
-      console.log('data', data)
-      if (data.statusCode === 404 || data.statusCode === 400) {
-        const errorMessage = data.description || 'Unknown error';
-        throw new Error(errorMessage);
-      }
+  //     const data = await response.json();
+  //     if (data.statusCode === 404 || data.statusCode === 400) {
+  //       const errorMessage = data.description || 'Unknown error';
+  //       throw new Error(errorMessage);
+  //     }
 
-      return data;
-    } catch (error: unknown) {
-      const errorMessage = (error as { description: string }).description || 'Unknown error';
-      throw new Error(errorMessage);
-    }
-  }
+  //     return data;
+  //   } catch (error: unknown) {
+  //     const errorMessage = (error as { description: string }).description || 'Unknown error';
+  //     throw new Error(errorMessage);
+  //   }
+  // }
 }
 
 export default Auth0Service;

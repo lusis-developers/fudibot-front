@@ -10,5 +10,6 @@ export interface Client {
   given_name: string,
   nickname: string,
   family_name: string,
-  restaurant?: Restaurant
+  restaurant?: Restaurant,
+  password?: string,
 }

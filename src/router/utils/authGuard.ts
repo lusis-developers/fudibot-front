@@ -10,6 +10,8 @@ export async function googleAuthGuard(
 
   const authStore = useAuthStore();
 
+    // authStore.signOut();
+
   const isAuthenticated = await authStore.checkAuth();
 
   if (isAuthenticated && (to.name === 'Login' || to.name === 'Register' || to.name === 'Authorize')) {

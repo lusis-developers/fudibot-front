@@ -3,8 +3,10 @@ import { defineStore } from 'pinia';
 import Auth0Service from '@/services/auth/auth0';
 
 import { Client } from '@/interfaces/client.interface';
+import APIAuth from '@/services/auth/auth';
 
 const auth0Service = new Auth0Service();
+const authService = new APIAuth();
 
 interface RootState {
   error: string | null;
@@ -27,16 +29,16 @@ const useAuthStore = defineStore('AuthStore', {
         }
       }
     },
-    async registerWithCredentials(email: string, password: string): Promise<void> {
+    async registerWithCredentials(email: string, password: string, name: string, lastname: string): Promise<void> {
       try {
-        await auth0Service.registerUser(email, password);
+        await authService.registerClient({ email, password, name, family_name: lastname });
       } catch (error: unknown) {
         this.error = String(error);
       }
     },
     async loginWithCredentials(email: string, password: string): Promise<void> {
       try {
-        await auth0Service.loginWithUsernameAndPassword(email, password);
+        await authService.loginClient({ email, password });
       } catch (error: unknown) {
         if (error instanceof Error) {
           this.error = error.message;

@@ -9,16 +9,11 @@ const router = useRouter();
 
 const authStore = useAuthStore();
 
-// it forces to re-render the component once the value change
 const textKey = ref(0);
 const isPasswordVisible = ref(false);
-const isRepeatedPasswordVisible = ref(false);
 const userData = reactive({
-  name: '',
-  lastname: '',
   email: '',
   password: '',
-  passwordRepeated: '',
 });
 const userRules = {
   emailValidation: [
@@ -31,64 +26,34 @@ const userRules = {
       message: 'Ingresa un correo'
     }
   ],
-  passwordRepeatedValidation: [
-    {
-      validate: (value: string) => userData.password === value,
-      message: 'El password no coincide'
-    },
-  ],
-  nameValidation: [
-    {
-      validate: (value: string) => value.length,
-      message: 'Ingresa tu nombre'
-    }
-  ],
-  lastnameValidation: [
-    {
-      validate: (value: string) => value.length,
-      message: 'Ingresa tu apellido'
-    }
-  ]
 }
 
 const enableForm = computed(() => {
   const passwordValidation = passwordRules.every(rule => rule.validate(userData.password))
   return userData.email !== '' &&
     userData.password !== '' &&
-    userData.name !== '' &&
-    userData.lastname !== '' &&
     userRules.emailValidation.every((rule) => rule.validate(userData.email)) &&
-    passwordValidation &&
-    userRules.passwordRepeatedValidation.every((rule) => rule.validate(userData.passwordRepeated))
+    passwordValidation
 });
 const passwordIcon = computed(() => {
   return isPasswordVisible.value ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye';
 });
-const passwordRepeatedIcon = computed(() => {
-  return isRepeatedPasswordVisible.value ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye';
-});
 const textType = computed(() => {
   return isPasswordVisible.value ? 'text' : 'password';
-});
-const textRepeatedType = computed(() => {
-  return isRepeatedPasswordVisible.value ? 'text' : 'password';
 });
 
 
 function resetValue(): void {
   userData.email = '';
   userData.password = '';
-  userData.passwordRepeated = '';
   textKey.value ++
 }
 
-async function handleRegister(): Promise<void> {
+async function handleLogin(): Promise<void> {
   try {
-    await authStore.registerWithCredentials(
+    await authStore.loginWithCredentials(
       userData.email.trim().toLocaleLowerCase(), 
       userData.password.trim(),
-      userData.name.trim(),
-      userData.name.trim()
     );
     resetValue();
     if (!authStore.error) {
@@ -104,16 +69,6 @@ async function handleRegister(): Promise<void> {
 <template>
   <div class="register-wrapper">
     <div class="register-wrapper-card">
-      <CrushTextField
-        :key="textKey"
-        v-model="userData.name"
-        label="Nombre"
-        :validRules="userRules.nameValidation" />
-      <CrushTextField
-        :key="textKey"
-        v-model="userData.lastname"
-        label="Apellido"
-        :validRules="userRules.lastnameValidation" />
       <CrushTextField
         :key="textKey"
         v-model="userData.email"
@@ -133,25 +88,11 @@ async function handleRegister(): Promise<void> {
           </button>
         </template>
       </CrushTextField>
-      <CrushTextField
-        :key="textKey"
-        v-model.trim="userData.passwordRepeated"
-        label="Repita su contraseña"
-        :type="textRepeatedType"
-        :validRules="userRules.passwordRepeatedValidation">
-        <template #icon>
-          <button
-            class="icon-button"
-            @click="isRepeatedPasswordVisible = !isRepeatedPasswordVisible">
-            <i :class="passwordRepeatedIcon" />
-          </button>
-        </template>
-      </CrushTextField>
       <CrushButton
         variant="primary"
-        text="Registro"
+        text="Inicia Sesión"
         :disabled="!enableForm"
-        @click.prevent="handleRegister" />
+        @click.prevent="handleLogin" />
     </div>
   </div>
 </template>
