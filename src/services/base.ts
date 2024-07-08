@@ -11,7 +11,7 @@ class APIBase {
     return `${this.baseUrl}/${endpoint}`;
   }
 
-  private getHeaders(): { [key: string]: string } {
+  protected getHeaders(): { [key: string]: string } {
     const headers: { [key: string]: string } = {
       'Content-Type': 'application/json'
     }
@@ -24,17 +24,17 @@ class APIBase {
     return headers;
   }
 
-  protected async get<T>(endpoint: string): Promise<AxiosResponse<T>> {
+  protected async get<T>(endpoint: string, headers?: { [key: string]: string }): Promise<AxiosResponse<T>> {
     const url = this.buildUrl(endpoint);
     try {
       return await axios.get<T>(url, {
-        headers: this.getHeaders()
-      })
+        headers: headers ? headers : this.getHeaders()
+      });
     } catch (error: any) {
       const errorDetails = {
         status: error.response.status,
         message: error.response?.data?.message || error.message
-      }
+      };
       throw errorDetails;
     }
   }

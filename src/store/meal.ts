@@ -49,8 +49,6 @@ const useMealStore = defineStore("MealStore", {
     },
     async addMeal(meal: Meal, uuid: string) {
       try {
-        console.log('meal', meal)
-        console.log('uuid', uuid)
         await mealService.addMeals({ ...meal, uuid });
         this.getMeals(uuid);
       } catch (error: any) {

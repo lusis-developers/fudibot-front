@@ -38,7 +38,11 @@ const useAuthStore = defineStore('AuthStore', {
     },
     async loginWithCredentials(email: string, password: string): Promise<void> {
       try {
-        await authService.loginClient({ email, password });
+        const response = await authService.loginClient({ email, password });
+        const token = response.data.token;
+        if (token) {
+          localStorage.setItem('token-item', token);
+        }
       } catch (error: unknown) {
         if (error instanceof Error) {
           this.error = error.message;
@@ -47,18 +51,23 @@ const useAuthStore = defineStore('AuthStore', {
         }
       }
     },
-    // TODO: WAITING FOR DEVELOPER CREDENTIALS
-    // async loginWithFacebook(): Promise<void> {
-    //   try {
-    //     await auth0Service.loginWithFacebook();
-    //   } catch (error: unknown) {
-    //     if (error instanceof Error) {
-    //       this.error = error.message;
-    //     } else {
-    //       this.error = String(error);
-    //     }
-    //   }
-    // },
+    async getClientSession(): Promise<Client | null> {
+      try {
+        const token = localStorage.getItem('token-item');
+        if (token) {
+          const response = await authService.getClientSession(token);
+          return response.data;
+        }
+        return null;
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          this.error = error.message;
+        } else {
+          this.error = String(error);
+        }
+        return null;
+      }
+    },
     async handleAuthCallback(): Promise<Client | null> {
       try {
         await auth0Service.handleRedirectCallback();
@@ -88,6 +97,10 @@ const useAuthStore = defineStore('AuthStore', {
             given_name: response.given_name
           };
           return client;
+        }
+        const client = await this.getClientSession();
+        if (client) {
+          return client;
         } else {
           return null;
         }
@@ -103,6 +116,7 @@ const useAuthStore = defineStore('AuthStore', {
     async signOut(): Promise<void> {
       try {
         auth0Service.logout();
+        localStorage.removeItem('token-item');
       } catch (error: unknown) {
         if (error instanceof Error) {
           this.error = error.message;

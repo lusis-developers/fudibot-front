@@ -69,7 +69,6 @@ async function addMealOrDrink(): Promise<void> {
       form.image = linkURL; 
     }
   }
-  console.log(form.image)
   if (props.category === Categories.DRINK) {
     if (!imageURL.value.length) {
       form.image = 'https://storage.googleapis.com/fudi-drinks/fudi-bebida.png';
@@ -88,7 +87,6 @@ async function addMealOrDrink(): Promise<void> {
       companyName: restaurantStore.restaurant?.companyName!
     };
 
-    console.log(restaurantStore.restaurant?.uuid);
     if (props.category === Categories.MEAL) {
       await mealStore.addMeal(newItem, restaurantStore.restaurant?.uuid!);
     } else if (props.category === Categories.DRINK) {

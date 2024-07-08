@@ -12,4 +12,5 @@ export interface Client {
   family_name: string,
   restaurant?: Restaurant,
   password?: string,
+  token?: string
 }

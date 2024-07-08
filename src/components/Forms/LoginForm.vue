@@ -59,6 +59,7 @@ async function handleLogin(): Promise<void> {
     if (!authStore.error) {
       router.push({ name: 'Login' })
     }
+    router.push({ name: 'Restaurant Info' })
   } catch (error) {
     console.error('Error en el registro:', error);
   }
