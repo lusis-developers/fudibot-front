@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import Card from '@/components/Card.vue';
 import { defineProps, defineEmits } from 'vue';
 
 const props = defineProps({
@@ -24,62 +25,42 @@ const emits = defineEmits(['edit']);
 </script>
 
 <template>
-  <header class="header">
-    <h2 class="info-title">
-      {{ props.companyName }}
-    </h2>
-    <CrushButton 
-      @click="$emit('edit')" 
-      class="edit-button">
-        Editar
-    </CrushButton>
-  </header>
-  <div class="info-content">
-    <img 
-      :src="props.logo"
-      :alt="props.companyName" 
-      class="info-logo" />
-    <div class="info-web">
-      Sitio web: 
-      <a
-        :href="props.website" 
-        target="_blank"
-        rel="noopener noreferrer"
-        class="info-web-link">
-         {{ props.website }}
-      </a>
-    </div>
-    <p class="info-paragraph">
-      <span>Manager:</span> {{ props.manager }}
-    </p>
-  </div>
+  <Card class="info-content">
+    <template #content>
+      <div class="info-content">
+        <div class="header">
+        <h2 class="info-title">
+          {{ props.companyName }}
+        </h2>
+        <CrushButton 
+          @click="$emit('edit')" 
+          class="edit-button">
+            Editar
+        </CrushButton>
+      </div>
+      <img 
+        :src="props.logo"
+        :alt="props.companyName" 
+        class="info-logo" />
+      <div class="info-web">
+        Sitio web: 
+        <a
+          :href="props.website" 
+          target="_blank"
+          rel="noopener noreferrer"
+          class="info-web-link">
+          {{ props.website }}
+        </a>
+      </div>
+      <p class="info-paragraph">
+        <span>Manager:</span> {{ props.manager }}
+      </p>
+      </div>
+    </template>
+  </Card>
 </template>
 
 <style lang="scss" scoped>
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-  padding: 10px 25px;
-  background-color: $light-green;
-  color: $white;
-  border-radius: 8px;
-}
-.edit-button {
-  padding: 10px 20px;
-  background-color: $black;
-  color: $white;
-  font-size: .9rem;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: .3s background-color;
-  &:hover {
-    background-color: darken($black, 10%);
-    border: none;
-  }
-}
 .info-content {
   display: flex;
   flex-direction: column;
@@ -87,7 +68,29 @@ const emits = defineEmits(['edit']);
   padding: 20px;
   background-color: $white;
   border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  .header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    color: $white;
+    border-radius: 8px;
+  }
+  .edit-button {
+    padding: 10px 20px;
+    background-color: $black;
+    color: $white;
+    font-size: .9rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: .3s background-color;
+    &:hover {
+      background-color: darken($black, 10%);
+      border: none;
+    }
+  }
 }
 .info{
   &-title {

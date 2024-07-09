@@ -12,6 +12,7 @@
 .card {
   border: 1px solid $grey;
   padding: 16px;
+  margin-bottom: 12px;
   border-radius: 12px;
   background-color: $white;
   color: $dark-grey;
