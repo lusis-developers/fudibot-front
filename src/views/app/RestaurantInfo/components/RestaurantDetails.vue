@@ -63,9 +63,9 @@ const emits = defineEmits(['edit']);
 <style lang="scss" scoped>
 .info-content {
   display: flex;
+  width: 100%;
   flex-direction: column;
   align-items: flex-start;
-  padding: 20px;
   background-color: $white;
   border-radius: 8px;
   .header {

@@ -56,7 +56,9 @@ onMounted(async () => {
   </div>
   <qrCode
     v-if="botStore.status"
-    :base64="botStore.status.base64Qr" />
+    :base64="botStore.status.base64Qr"
+    :status="botStore.status.status"
+    :botId="botId!" />
   <ModalEdit 
     :showModal="showModal" 
     @closeModal="showModal = false" />
