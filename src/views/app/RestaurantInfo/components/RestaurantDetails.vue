@@ -94,7 +94,6 @@ const emits = defineEmits(['edit']);
 }
 .info{
   &-title {
-    font-size: 2.5rem;
     margin: 0;
   }  
   &-logo {

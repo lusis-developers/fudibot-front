@@ -40,6 +40,17 @@ const useBotStore = defineStore("BotStore", {
       } finally {
         this.isLoading = false;
       }
+    },
+    async deleteBot(botId: string): Promise<void> {
+      this.isLoading = true;
+      try {
+        await botService.removeContainer(botId);
+        this.createBot(botId);
+      } catch (error: unknown) {
+        this.error = error as AxiosError;
+      } finally {
+        this.isLoading = false;
+      }
     }
   },
 });

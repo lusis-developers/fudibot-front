@@ -10,6 +10,10 @@ class APIBot extends APIBase {
   async createContainer(botId: string): Promise<AxiosResponse> {
     return await this.post(`container/${botId}`, {});
   }
+
+  async removeContainer(botId: string): Promise<AxiosResponse> {
+    return await this.delete(`container/${botId}`);
+  }
 }
 
 export default APIBot;
