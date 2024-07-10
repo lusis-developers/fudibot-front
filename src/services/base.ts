@@ -4,6 +4,7 @@ class APIBase {
   private baseUrl: string;
 
   constructor() {
+    console.log(' import.meta.env.VITE_FUDIBOT_API: ', import.meta.env.VITE_FUDIBOT_API);
     this.baseUrl = import.meta.env.VITE_FUDIBOT_API || 'http://localhost:8100/api';
   }
 
