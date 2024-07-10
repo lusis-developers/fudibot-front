@@ -1,5 +1,4 @@
 import { NavigationGuardNext, RouteLocationNormalized } from 'vue-router';
-
 import useAuthStore from '@/store/auth';
 
 export async function googleAuthGuard(
@@ -9,12 +8,26 @@ export async function googleAuthGuard(
 ): Promise<void> {
 
   const authStore = useAuthStore();
+  // authStore.signOut()
+  
+  const token = localStorage.getItem('token-item');
 
-  await authStore.checkAuth();
+  if (token) {
+    const clientSession = await authStore.getClientSession();
+    if (clientSession) {
+      if (to.name === 'Login' || to.name === 'Register' || to.name === 'Authorize') {
+        next({ path: '/app/restaurant-info' });
+        return;
+      } else {
+        next();
+        return;
+      }
+    }
+  }
 
-  const isAuthenticated = authStore.user !== null;
+  const isAuthenticated = await authStore.checkAuth();
 
-  if (isAuthenticated && (to.name === 'Login' || to.name === 'Register' || to.name === 'Authorize' || to.name === 'Home')) {
+  if (isAuthenticated && (to.name === 'Login' || to.name === 'Register' || to.name === 'Authorize')) {
     next({ path: '/app/restaurant-info' });
     return;
   } else if (!isAuthenticated && (to.path.startsWith('/app') || to.name === 'Home')) {

@@ -1,44 +1,47 @@
 import { defineStore } from 'pinia';
 
-import type { User } from '@/types/user.interface';
-import ClientService from '@/services/client';
+import { Client } from '@/interfaces/client.interface';
+
+import APIClient from '@/services/client/client';
+
+const clientService = new APIClient();
 
 interface RootState {
-  user: User | null;
+  client: Client | null;
   error: string | null;
   isLoading: boolean;
-  clientCreated: boolean;
 }
 
-const clientService = new ClientService();
 
 export const useClientStore = defineStore('ClientStore', {
   state: (): RootState => ({
-    user: null,
+    client: null,
     error: null,
     isLoading: false,
-    clientCreated: false
   }),
 
   actions: {
-    setUser(user: User): void {
-      this.user = user;
-      if(!this.clientCreated){
-        clientService.createClient(user);
-        this.clientCreated = true;
+    async createClient(client: Client): Promise<void> {
+      this.isLoading = true;
+      try {
+        const response = await clientService.createClient(client);
+        this.client = response?.data;
+      } catch (error: unknown) {
+        this.error = String(error)
+      } finally {
+        this.isLoading = false;
       }
-      console.log('Usuario establecido en ClientStore:', this.user);
     },
-    getUser(): User | null {
-      return this.user;
-    },
-    async getUserIDRestaurant() {
-      const userSub = this.user?.sub
-      if (!userSub) {
-        throw new Error('User not found');
+    async getClientByEmail(email: string): Promise<void> {
+      this.isLoading = true;
+      try {
+        const response = await clientService.getClientByEmail(email);
+        this.client = response.data;
+      } catch (error: unknown) {
+        this.error = String(error);
+      } finally {
+        this.isLoading = false;
       }
-      const restaurantID = await clientService.getClientIDRestaurant(userSub)
-      return restaurantID;
     }
   }
 });

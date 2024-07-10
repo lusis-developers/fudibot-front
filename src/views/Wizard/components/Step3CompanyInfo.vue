@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
-import CrushSelect from '@nabux-crush/crush-select';
-import CrushTextField from '@nabux-crush/crush-text-field'
+import { computed, reactive } from 'vue';
 
 import useRestaurantStore from '@/store/restaurant';
+import { timeOptions } from '@/utils/timeSchedules';
 import SelectDaysIsOpen from '@/components/SelectDaysIsOpen.vue';
 
 
@@ -11,57 +10,54 @@ const emit = defineEmits(['next', 'prev']);
 
 const restaurantStore = useRestaurantStore();
 
-const form = ref({
-  companyName: '',
+const form = reactive({
+  restaurantName: '',
   schedule: {
     open: '',
     close: '',
     days: [] as any
   }
 });
-const timeOptions = [
-  '6:00', '7:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', 
-  '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00'
-];
+
 const isFormValid = computed(() => {
-  return form.value.schedule.open !== '' && 
-         form.value.schedule.close !== '' && 
-         form.value.schedule.days.length > 0;
+  return form.schedule.open !== '' && 
+         form.schedule.close !== '' && 
+         form.schedule.days.length > 0;
 });
 
 function updateSelectedDays(days: string[]) {
-  form.value.schedule.days = days;
+  form.schedule.days = days;
 }
 function handleInput(event: string, type: string): void {
   if (type === 'restaurantName') {
-    form.value.companyName = event;
+    form.restaurantName = event;
   }
   if (type === 'open') {
-    form.value.schedule.open = event;
+    form.schedule.open = event;
   }
   if (type === 'close') {
-    form.value.schedule.close = event;
+    form.schedule.close = event;
   }
   if (type === 'days') {
-    form.value.schedule.days = event;
+    form.schedule.days = event;
   }
 }
 async function submitForm() {
-  emit('next', form.value);
-  await updateCompanyInfo();
+  updateCompanyInfo();
+  emit('next');
 }
 function goBack(): void {
   emit('prev')
 }
-async function updateCompanyInfo() {
-  await restaurantStore.addCompanyName(form.value.companyName)
-  for(let day of form.value.schedule.days){
-    await restaurantStore.addSchedule({
+function updateCompanyInfo(): void {
+  const schedule = form.schedule.days.map((day: string) => {
+    return {
       day: day,
-      open: form.value.schedule.open,
-      close: form.value.schedule.close
-    })
-  }
+      open: form.schedule.open,
+      close: form.schedule.close
+    }
+  });
+  restaurantStore.addCompanyData(form.restaurantName, schedule)
 }
 </script>
 
@@ -70,10 +66,10 @@ async function updateCompanyInfo() {
     <h2>
       Información del Negocio
     </h2>
-    <form @submit.prevent="submitForm">
+    <div class="form">
       <div class="form-group">
         <CrushTextField
-          :value="form.companyName"
+          :value="form.restaurantName"
           placeholder="Nombre del Restaurante"
           label="Nombre del Restaurante:"
           class="form-group-text-field"
@@ -110,11 +106,11 @@ async function updateCompanyInfo() {
         </button>
         <button 
           :disabled="!isFormValid"
-          type="submit">
+          @click="submitForm">
             Siguiente
         </button>
       </div>
-    </form>
+    </div>
   </div>
 </template>
 

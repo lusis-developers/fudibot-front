@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { onMounted, ref, computed } from 'vue';
 
+import useAuthStore from '@/store/auth';
+
+const authStore = useAuthStore();
+
 const menu = [
-  {
-    name: 'Info',
-    path: 'restaurant-info',
-    icon: 'fa-solid fa-receipt'
-  },
   {
     name: 'Ordenes',
     path: 'order-history',
@@ -23,10 +22,25 @@ const menu = [
     icon: 'fa-solid fa-motorcycle'
   },
   {
+    name: 'Meals',
+    path: 'meals',
+    icon: 'fa-solid fa-bowl-food'
+  },
+  {
+    name: 'Drinks',
+    path: 'drinks',
+    icon: 'fa-solid fa-wine-bottle'
+  },
+  {
     name: 'Integraciones',
     path: 'integrations',
     icon: 'fa-solid fa-circle-nodes'
-  }
+  },
+  {
+    name: 'Info',
+    path: 'restaurant-info',
+    icon: 'fa-solid fa-receipt'
+  },
 ];
 
 const isOpen = ref(false);
@@ -34,6 +48,10 @@ const isDektop = computed(() => window.innerWidth > 1280)
 
 function toggleNav(): void {
   isOpen.value = !isOpen.value;
+}
+
+async function logout(): Promise<void> {
+  await authStore.signOut();
 }
 
 onMounted(() => {
@@ -59,17 +77,26 @@ onMounted(() => {
             <i class="fa-solid fa-bars"></i>
         </button>
     </div>
-    <div class="nav-wrapper">
-      <router-link
-        v-for="(item, index) in menu"
-        :key="index"
-        :to="`/app/${item.path}`"
-        class="nav-item">
-          <i :class="item.icon"></i>
-          <span class="nav-text">
-            {{ item.name }}
-          </span>
-      </router-link>
+    <div class="wrapper">
+      <div class="nav-wrapper">
+        <router-link
+          v-for="(item, index) in menu"
+          :key="index"
+          :to="`/app/${item.path}`"
+          class="nav-item">
+            <i :class="item.icon"></i>
+            <span class="nav-text">
+              {{ item.name }}
+            </span>
+        </router-link>
+      </div>
+      <div class="logout-button">
+        <CrushButton
+        :small="true"
+        @click="logout">
+        <i class="fa-solid fa-right-from-bracket"></i>
+      </CrushButton>
+    </div>
     </div>
   </nav>
 </template>
@@ -78,6 +105,7 @@ onMounted(() => {
 :deep(.button) {
   background-color: $white;
 }
+
 .nav {
   position: fixed;
   bottom: 0;
@@ -95,6 +123,25 @@ onMounted(() => {
     width: 24px;
     .logo {
       display: none;
+    }
+  }
+  .wrapper {
+    padding: 0 0 24px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex: 1;
+
+    .logout-button {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+
+      :deep(.crush-button.crush-primary) {
+        background-color: $white;
+        border: 1px solid $grey;
+        transform: rotate(180deg); 
+      }
     }
   }
   &-wrapper {

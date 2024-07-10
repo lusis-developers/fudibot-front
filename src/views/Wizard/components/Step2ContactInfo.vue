@@ -1,49 +1,47 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
-import CrushTextField from '@nabux-crush/crush-text-field'
+import { onMounted, computed, reactive } from 'vue';
 
 import useClientStore from '@/store/client';
 import useRestaurantStore from '@/store/restaurant';
 import { cellphoneRules, emailRules } from '@/utils/validations';
 
-
 const emit = defineEmits(['next', 'prev']);
 
+const clientStore = useClientStore()
 const restaurantStore = useRestaurantStore();
-const clientStore = useClientStore();
 
-const form = ref({
+const form = reactive({
   email: '',
-  cellphone: '',
+  phone: '',
 });
 const rules = {
   cellphone: cellphoneRules,
   email: emailRules
 };
 const isFormValid = computed(() => {
-  const isCellphoneValid = cellphoneRules.every(rule => rule.validate(form.value.cellphone));
+  const isCellphoneValid = cellphoneRules.every(rule => rule.validate(form.phone));
   return isCellphoneValid;
 });
 
 function handleInput(event: string, type: string): void {
-  if (type === 'cellphone') {
-    form.value.cellphone = event;
+  if (type === 'phone') {
+    form.phone = event
   }
 }
 function submitForm(): void {
+  restaurantStore.addContactInfo(form.email, form.phone);
   emit('next');
-  restaurantStore.addContactInfo(form.value);
 }
 function goBack(): void {
   emit('prev')
 }
-function getEmail() {
-  const user = clientStore.getUser();
-  if(!user?.email) return;
-  form.value.email = user.email;
-}
 
-onMounted(getEmail)
+onMounted(() => {
+  if (clientStore.client) {
+    form.email = clientStore.client?.email;
+  }
+});
+
 </script>
 
 <template>
@@ -51,32 +49,32 @@ onMounted(getEmail)
     <h2>
       Información de Contacto
     </h2>
-    <form @submit.prevent="submitForm">
+    <div class="form">
       <div class="form-group">
         <CrushTextField 
-          :value="form.cellphone"
+          :value="form.phone"
           :valid-rules="rules.cellphone" 
           placeholder="Número de Celular" 
           label="Tu número celular 📲" 
           class="form-group-text-field" 
-          @update:modelValue="handleInput($event, 'cellphone')" />
+          @update:modelValue="handleInput($event, 'phone')" />
       </div>
       <div class="form-actions">
-        <button
+        <CrushButton
           class="action-button prev-button"
           type="button"
           @click="goBack">
             Retroceder
-        </button>
-        <button 
+        </CrushButton>
+        <CrushButton 
           :disabled="!isFormValid" 
           :style="{ cursor: isFormValid ? 'pointer' : 'not-allowed' }"
           class="action-button next-button"
-          type="submit">
+          @click="submitForm">
             Siguiente
-        </button>
+        </CrushButton>
       </div>
-    </form>
+    </div>
   </div>
 </template>
 

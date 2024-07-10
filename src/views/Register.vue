@@ -2,6 +2,7 @@
 import { useRouter } from 'vue-router';
 
 import useAuthStore from '@/store/auth';
+import RegisterForm from '@/components/Forms/RegisterForm.vue';
 
 const router = useRouter();
 
@@ -11,9 +12,9 @@ function loginWithGoogle(): void {
   authStore.loginWithGoogle();
 }
 
-function loginWithFacebook(): void {
-  authStore.loginWithFacebook();
-}
+// function loginWithFacebook(): void {
+//   authStore.loginWithFacebook();
+// }
 
 function redirect(): void {
   router.push('/login');
@@ -24,11 +25,12 @@ function redirect(): void {
   <div class="wrapper">
     <div class="wrapper-login">
       <h1 class="wrapper-login-title">
-        Inicia Sesión...
+        Regístrate...
       </h1>
       <p>
-        Inicia Sesión y tomemos en control tus deliveries y tu negocio.
+        Comencemos y tomemos en control tus deliveries y tu negocio.
       </p>
+      <RegisterForm />
       <CrushButton
         :small="true"
         class="wrapper-login-google"
@@ -36,13 +38,13 @@ function redirect(): void {
         <i class="fa-brands fa-google"></i>
         Inicia con Google
       </CrushButton>
-      <CrushButton
+      <!-- <CrushButton
         :small="true"
         class="wrapper-login-google"
         @click="loginWithFacebook">
         <i class="fa-brands fa-facebook"></i>
         Inicia con Facebook
-      </CrushButton>
+      </CrushButton> -->
       <div class="wrapper-login-link">
         <CrushButton
           :small="true"

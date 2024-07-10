@@ -1,112 +1,99 @@
 import { defineStore } from 'pinia';
 
-import useClientStore from './client';
-import RestaurantService from '@/services/restaurant';
-import type { BankSettings, BasicInfo, ContactInfo, Restaurant, Schedule, Settings } from '@/types/restaurant.interface';
+import APIRestaurant from '@/services/restaurant/restaurant';
+
+import type { Restaurant, Schedule } from '@/interfaces/restaurant.interface';
+import type { Coordinates } from '@/interfaces/coordinates.interface';
+
+const restaurantService = new APIRestaurant();
 
 interface RootState {
-  restaurant: Restaurant;
+  restaurant: Restaurant | null;
   error: string | null;
   isLoading: boolean;
 }
 
-const { getUser } = useClientStore();
-const userSub = getUser()?.sub;
 
-const restaurantService = new RestaurantService();
-
-const useRestaurantStore = defineStore('RestaurantStore', {
+export const useRestaurantStore = defineStore('RestaurantStore', {
   state: (): RootState => ({
-    restaurant: {
-      basicInfo: {
-        location: {
-          lat: 0,
-          lng: 0,
-          radius: '',
-          fullAdress: ''
-        },
-        botName: ''
-      },
-      contactInfo: {
-        email: '',
-        cellphone: ''
-      },
-      companyName: '',
-      schedule: [] as Schedule[],
-      settings: {
-        logo: '',
-        manager: '',
-        website: '',
-      },
-      others: {
-        currency: 'USD',
-        meals: [],
-        drinks: [],
-        countryCode: '+593',
-        enable: false,
-        deleted: false,
-      },
-      bankSettings: [] as BankSettings[],  
-    },
+    restaurant: null,
     error: null,
-    isLoading: false
+    isLoading: false,
   }),
 
   actions: {
-    addBasicInfo(basicInfo: BasicInfo) {
-      this.restaurant.basicInfo = basicInfo;
-    },
-    addContactInfo(contactInfo: ContactInfo) {
-      this.restaurant.contactInfo = contactInfo;
-    },
-    addCompanyName(companyName: string) {
-      this.restaurant.companyName = companyName;
-    },
-    async addSchedule(schedule: Schedule) {
-      this.restaurant.schedule = [...this.restaurant.schedule, schedule];
-    },
-    async addSettings(settings: Settings) {
-      this.restaurant.settings = settings;
-      const newRestaurant = Object.assign(
-        {}, 
-        this.restaurant.basicInfo,
-        this.restaurant.contactInfo, 
-        this.restaurant.settings,
-        { companyName: this.restaurant.companyName, userSub },
-        { schedule: this.restaurant.schedule },
-        this.restaurant.others,
-        this.restaurant.bankSettings
-      );
-      await restaurantService.createRestaurant(newRestaurant);
-    },
-    async addLogo(image: any) {
-      const logo = await restaurantService.addRestaurantLogo(image);
-      this.restaurant.settings.logo = logo as string;
-      return logo;
-    },
-    async addBankSettings(bankSetting: BankSettings) {
-      this.restaurant.bankSettings = [...this.restaurant.bankSettings, bankSetting];
-      for (const bank of this.restaurant.bankSettings) {
-        const newBank = Object.assign(
-          {},
-          bank,
-          { companyName: this.restaurant.companyName }
-        )
-        await restaurantService.createBank(newBank);
+    async getRestaurantById(id: string): Promise<void> {
+      this.isLoading = true;
+      try {
+        const response = await restaurantService.getRestaurantById(id);
+        this.restaurant = response.data;
+      } catch (error: unknown) {
+        this.error = String(error)
+      } finally {
+        this.isLoading = false
       }
     },
-    async getRestaurant(id: string) {
+    addBasicInfo(location: Coordinates, botName: string): void {
+      if (this.restaurant) {
+        this.restaurant.botName = botName;
+        this.restaurant.location = location
+      }
+    },
+    addContactInfo(email: string, phone: string) {
+      if (this.restaurant) {
+        this.restaurant.email = email;
+        this.restaurant.phone = phone
+      }
+    },
+    addCompanyData(restaurantName: string, schedule: Schedule[]): void {
+      if (this.restaurant) {
+        this.restaurant.companyName = restaurantName,
+        this.restaurant.schedule = schedule
+      }
+    },
+    async postRestaurantLogo(imageFile: File): Promise<void> {
       try {
-        this.isLoading = true;
-        const restaurant = await restaurantService.getRestaurant(id);
-        return restaurant;
-      } catch (error: any) {
-        this.error = error.message;
-      } finally {
-        this.isLoading = false;
+        const response =  await restaurantService.postAddRestaurantLogo(imageFile);
+        if (this.restaurant) {
+          this.restaurant.logo = response.data.url;
+        }
+      } catch (error) {
+        this.error = String(error);
+      }
+    },
+    addWebAndManager(website: string, manager: string) {
+      if (this.restaurant) {
+        this.restaurant.manager = manager;
+        this.restaurant.website = website;
+      }
+    },
+    async updateRestaurant(): Promise<void> {
+      try {
+        const { bankSettings, meals, drinks, ...parsedRestaurantData } = this.restaurant!
+        await restaurantService.patchRestaurantData(parsedRestaurantData!);
+        await this.getRestaurantById(this.restaurant?._id!);
+      } catch (error: unknown) {
+        this.error = String(error);
+      }
+    },
+    async updateRestaurantInfoView(data: {[key:string]:string}): Promise<Restaurant | any> {
+      try {
+        data["uuid"] = this.restaurant?.uuid!
+        const restaurant = await restaurantService.updateRestaurantInfoView(data)
+        return restaurant
+      } catch (error: unknown) {
+        this.error = String(error)
+      }
+    },
+    async deleteRestaurantLogo(): Promise<void> {
+      try {
+        const { logo } = this.restaurant!
+        const logoName = logo.split('/').pop()!
+        await restaurantService.deleteRestaurantLogo(logoName);
+      } catch (error: unknown) {
+        this.error = String(error);
       }
     }
-  }
-});
+}});
 
 export default useRestaurantStore;

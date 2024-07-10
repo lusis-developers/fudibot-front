@@ -2,18 +2,20 @@
 import { useRouter } from 'vue-router';
 
 import useAuthStore from '@/store/auth';
+import LoginForm from '@/components/Forms/LoginForm.vue'
 
 const router = useRouter();
 
 const authStore = useAuthStore();
 
-function loginWithGoogle(): void {
-  authStore.loginWithGoogle();
+async function loginWithGoogle(): Promise<void> {
+  await authStore.loginWithGoogle();
 }
 
-function loginWithFacebook(): void {
-  authStore.loginWithFacebook();
-}
+// TODO: create facebook login
+// function loginWithFacebook(): void {
+//   authStore.loginWithFacebook();
+// }
 
 function redirect(): void {
   router.push('/register');
@@ -27,6 +29,7 @@ function redirect(): void {
         Ingresar...
       </h1>
       <p>¿Estás listo? Toma el poder de tu negocio, gestiona y automatiza tus deliveries</p>
+      <LoginForm />
       <CrushButton
         :small="true"
         class="wrapper-login-google"
@@ -34,13 +37,13 @@ function redirect(): void {
         <i class="fa-brands fa-google"></i>
         Inicia con Google
       </CrushButton>
-      <CrushButton
+      <!-- <CrushButton
         :small="true"
         class="wrapper-login-google"
         @click="loginWithFacebook">
         <i class="fa-brands fa-facebook"></i>
         Inicia con Facebook
-      </CrushButton>
+      </CrushButton> -->
       <div class="wrapper-login-link">
         <CrushButton
           :small="true"

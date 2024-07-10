@@ -1,16 +1,17 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
-import CrushTextField from '@nabux-crush/crush-text-field';
-import CrushSelect from '@nabux-crush/crush-select';
+import { reactive, computed } from 'vue';
 
+import useBankStore from '@/store/bank';
 import useRestaurantStore from '@/store/restaurant';
 import { emailRules, phoneRules } from '@/utils/validations';
+import { AccountType } from '@/enum/bank.enum';
 
-const emit = defineEmits(['next']);
+const emit = defineEmits(['next', 'complete']);
 
 const restaurantStore = useRestaurantStore();
+const bankStore = useBankStore();
 
-const form = ref({
+const form = reactive({
   bankName: '',
   accountType: '',
   accountNumber: '',
@@ -25,34 +26,34 @@ const rules = {
   phone: phoneRules
 };
 const isFormValid = computed(() => {
-  return form.value.bankName !== '' &&
-         form.value.accountType !== '' &&
-         form.value.accountNumber !== '' &&
-         form.value.accountHolderName !== '' &&
-         form.value.identification !== '' &&
-         emailRules.every(rule => rule.validate(form.value.email)) &&
-         phoneRules.every(rule => rule.validate(form.value.phone));
+  return form.bankName !== '' &&
+         form.accountType !== '' &&
+         form.accountNumber !== '' &&
+         form.accountHolderName !== '' &&
+         form.identification !== '' &&
+         emailRules.every(rule => rule.validate(form.email)) &&
+         phoneRules.every(rule => rule.validate(form.phone));
 });
 
 function handleInput(event: string, type: string): void {
-  (form.value as any)[type] = event;
+  (form as any)[type] = event;
 }
 function submitForm(): void {
   if (isFormValid.value) {
-    emit('next', form.value);
     const paymentSettings = {
-      bankName: form.value.bankName,
-      accountType: form.value.accountType as 'Ahorros' | 'Corriente',
-      accountNumber: form.value.accountNumber,
-      accountHolderName: form.value.accountHolderName,
-      identification: form.value.identification,
-      email: form.value.email,
-      phone: form.value.phone
+      bankName: form.bankName,
+      accountType: form.accountType as AccountType,
+      accountNumber: form.accountNumber,
+      accountHolderName: form.accountHolderName,
+      identification: form.identification,
+      email: form.email,
+      phone: form.phone
     };
-    restaurantStore.addBankSettings(paymentSettings);
-  } else {
-    console.log('faltan datos');
+    const uuid = restaurantStore.restaurant?.uuid!;
+    bankStore.postBank(paymentSettings, uuid);
   }
+  emit('next');
+  emit('complete');
 }
 </script>
 

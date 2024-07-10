@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { onMounted, ref, computed } from 'vue';
+import { onMounted, ref, computed, reactive } from 'vue';
 import { Loader } from '@googlemaps/js-api-loader';
-import CrushTextField from '@nabux-crush/crush-text-field'
 
 import useRestaurantStore from '@/store/restaurant';
-
+import CrushTextField from '@nabux-crush/crush-text-field'
 
 const emit = defineEmits(['next']);
 
@@ -13,16 +12,16 @@ const restaurantStore = useRestaurantStore();
 const apiKey = 'AIzaSyA-m3u-eZGtvXPnO4Z3bQ_L_iybWOwQgdY';
 const map = ref<google.maps.Map | null>(null);
 const marker = ref<google.maps.Marker | null>(null);
-const form = ref({
+const form = reactive({
   botName: '',
   location: {
-    lat: 0,
-    radius: '10',
-    lng: 0,
-    fullAdress: ''
+    latitude: 0,
+    radius: '',
+    longitude: 0,
+    fullAddress: ''
   }
 });
-const isFormValid = computed(() => form.value.botName && form.value.location.fullAdress && form.value.location.radius);
+const isFormValid = computed(() => form.botName && form.location.fullAddress && (Number(form.location.radius) > 0));
 
 function initializeMap(lat: number, lng: number): void {
   const loader = new Loader({
@@ -50,16 +49,16 @@ function initializeMap(lat: number, lng: number): void {
       const center = map.value!.getCenter();
       if (center) {
         marker.value!.setPosition(center);
-        form.value.location.lat = center.lat();
-        form.value.location.lng = center.lng();
+        form.location.latitude = center.lat();
+        form.location.longitude = center.lng();
       }
     });
 
     google.maps.event.addListener(map.value, 'idle', () => {
       const center = map.value!.getCenter();
       if (center) {
-        form.value.location.lat = center.lat();
-        form.value.location.lng = center.lng();
+        form.location.latitude = center.lat();
+        form.location.longitude = center.lng();
       }
     });
   });
@@ -70,8 +69,8 @@ function getUserLocation(): void {
       (position) => {
         const { latitude, longitude } = position.coords;
         initializeMap(latitude, longitude);
-        form.value.location.lat = latitude;
-        form.value.location.lng = longitude;
+        form.location.latitude = latitude;
+        form.location.longitude = longitude;
       },
       () => {
         initializeMap(-2.170998, -79.922356); // Guayaquil coordinates
@@ -83,23 +82,26 @@ function getUserLocation(): void {
 }
 function handleInput(event: string, type: string): void {
   if (type === 'botName') {
-    form.value.botName = event;
-    console.log('botname: ', form.value.botName)
+    form.botName = event;
   }
-  if (type === 'location') {
-    form.value.location.fullAdress = event;
+  if (type === 'fullAddress') {
+    form.location.fullAddress = event;
   } 
   if (type === 'radius') {
-    form.value.location.radius = Number(event).toString();
-    console.log('radio de atencion: ', form.value.location.radius)
+    form.location.radius = Number(event).toString();
   }
 }
 function submitForm(): void {
-  emit('next', form.value);
-  restaurantStore.addBasicInfo(form.value);
+  emit('next');
+  restaurantStore.addBasicInfo(
+    { ...form.location, radius: Number(form.location.radius) },
+    form.botName
+  );
 }
 
-onMounted(getUserLocation);
+onMounted(() => {
+  getUserLocation();
+});
 </script>
 
 <template>
@@ -107,7 +109,7 @@ onMounted(getUserLocation);
     <h2>
       Información Básica
     </h2>
-    <form @submit.prevent="submitForm">
+    <div class="form">
       <div class="form-group">
         <CrushTextField
           :value="form.botName"
@@ -120,6 +122,7 @@ onMounted(getUserLocation);
       <div class="form-group">
         <CrushTextField
           :value="form.location.radius"
+          type="number"
           placeholder="Radio de atención en Kilómetros"
           label="Radio de atención"
           class="form-group-text-field"
@@ -128,31 +131,31 @@ onMounted(getUserLocation);
 
       <div class="form-group">
         <CrushTextField
-          :value="form.location.fullAdress"
+          :value="form.location.fullAddress"
           placeholder="Dirección"
           label="Ubicación del Restaurante:"
           class="form-group-text-field"
-          @update:modelValue="handleInput($event, 'location')" />
+          @update:modelValue="handleInput($event, 'fullAddress')" />
       </div>
 
       <div class="form-group">
         <label for="coordinates">
-          Coordenadas:
+          Coordenadas: {{ form.location.latitude }}, {{ form.location.longitude }}
         </label>
         <div id="map"></div>
       </div>
 
       <div class="form-actions">
-        <button 
+        <CrushButton
           :disabled="!isFormValid"
-          type="submit">
+          @click="submitForm">
             Siguiente
-        </button>
+        </CrushButton>
       </div>
-    </form>
+    </div>
   </div>
 </template>
-
+  
 <style lang="scss" scoped>
 .step-content {
   width: 100%;

@@ -1,89 +1,98 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
-import CrushSelect from '@nabux-crush/crush-select';
-import CrushUpload from '@nabux-crush/crush-upload';
-import CrushTextField from '@nabux-crush/crush-text-field';
+import { reactive, computed } from 'vue';
 
-import useMenuStore from '@/store/menu';
+import useMealStore from '@/store/meal';
+import useDrinkStore from '@/store/drink';
 import useRestaurantStore from '@/store/restaurant';
+import { formatNumberToSave, formatPriceToDisplay } from '@/utils/inputFormats';
 import { priceRules, productNameRules } from '@/utils/validations';
-
+import { CurrencyEnum } from '@/enum/currency.enum';
+import { Categories } from '@/enum/mealOrDrink.enum';
+import ProductCard from '@/views/Wizard/components/ProductCard.vue';
 
 const emit = defineEmits(['next', 'prev']);
 
-const menuStore = useMenuStore();
+const mealStore = useMealStore();
+const drinkStore = useDrinkStore()
 const restaurantStore = useRestaurantStore();
 
-const form = ref({
+const form = reactive({
   productName: '',
   price: '',
   category: '',
   image: '',
-  currency: 'USD',
+  currency: CurrencyEnum.USD,
   description: ''
 });
 const categories = ['Bebidas', 'Platillos'];
 const isFormValid = computed(() => {
-  const isProductNameValid = productNameRules.every(rule => rule.validate(form.value.productName));
-  const isPriceValid = priceRules.every(rule => rule.validate(form.value.price));
-  return isProductNameValid && isPriceValid && form.value.category !== '';
+  const isProductNameValid = productNameRules.every(rule => rule.validate(form.productName));
+  const isPriceValid = priceRules.every(rule => rule.validate(form.price));
+  return isProductNameValid && isPriceValid && form.category !== '';
 });
+const isDisabled = computed(() => {
+  return !(mealStore.meals.length < 1 || drinkStore.drinks.length < 1)
+});
+const cursorDiplay = computed(() => {
+  return (mealStore.meals.length > 0 || drinkStore.drinks.length > 0) ? 'pointer' : 'not-allowed'
+})
 
 function handleInput(event: string, type: string): void {
   if (type === 'productName') {
-    form.value.productName = event;
+    form.productName = event;
   }
   if (type === 'price') {
-    form.value.price = event;
-  } 
+    form.price = formatPriceToDisplay(event);
+  }
   if (type === 'category') {
-    form.value.category = event;
+    form.category = event;
   }
   if (type === 'image') {
-    form.value.image = event;
+    form.image = event;
   }
   if (type === 'description') {
-    form.value.description = event;
+    form.description = event;
   }
 }
 async function addMealOrDrink(): Promise<void> {
   if (isFormValid.value) {
     const newItem = {
-      item: form.value.productName,
-      price: parseFloat(form.value.price),
-      image: form.value.image,
-      currency: form.value.currency,
-      description: form.value.description,
-      companyName: restaurantStore.restaurant.companyName
+      item: form.productName,
+      price: formatNumberToSave(form.price),
+      image: form.image,
+      currency: CurrencyEnum.USD,
+      description: form.description,
+      companyName: restaurantStore.restaurant?.companyName!
     };
 
-    if (form.value.category === 'Platillos') {
-      await menuStore.addMeal(newItem);
-    } else if (form.value.category === 'Bebidas') {
-      await menuStore.addDrink(newItem);
+    if (form.category === Categories.MEAL) {
+      await mealStore.addMeal(newItem, restaurantStore.restaurant?.uuid!);
+    } else if (form.category === Categories.DRINK) {
+      await drinkStore.addDrink(newItem, restaurantStore.restaurant?.uuid!);
     }
 
-    form.value = {
-      productName: '',
-      price: '',
-      category: '',
-      image: '',
-      currency: 'USD',
-      description: ''
-    };
+    resetForm();
   }
 }
 async function handleFileSelected(target: File) {
-  const formData = new FormData();
-  formData.append('file', target);
-  if(form.value.category === 'Platillos') {
-    form.value.image = await menuStore.addMealImage(formData) as string;
-  } else if(form.value.category === 'Bebidas') {
-    form.value.image = await menuStore.addDrinkImage(formData) as string;
+  if(form.category === Categories.MEAL) {
+    const linkURL = await mealStore.addMealImage(target);
+    form.image = linkURL; 
+  } else if(form.category === Categories.DRINK) {
+    const linkURL = await drinkStore.addDrinkImage(target);
+    form.image = linkURL;
   }
 }
+function resetForm(): void {
+  form.productName = '';
+  form.price = '';
+  form.category = '';
+  form.image = '';
+  form.currency = CurrencyEnum.USD;
+  form.description = '';
+}
 function submitForm(): void {
-  emit('next', form.value);
+  emit('next');
 }
 function goBack(): void {
   emit('prev')
@@ -95,7 +104,7 @@ function goBack(): void {
     <h2>
       Agregar Productos
     </h2>
-    <form @submit.prevent="submitForm">
+    <div class="form">
       <div class="form-group">
         <CrushSelect
           :options="categories"
@@ -117,13 +126,13 @@ function goBack(): void {
 
       <div class="form-group">
         <CrushTextField
-        :value="form.price"
-        :valid-rules="priceRules"
-        placeholder="Precio"
-        prependContent="$" 
-        label="Precio:"
-        class="form-group-text-field"
-        @update:modelValue="handleInput($event, 'price')" />
+          :value="form.price"
+          :valid-rules="priceRules"
+          placeholder="Precio"
+          prependContent="$" 
+          label="Precio:"
+          class="form-group-text-field"
+          @update:modelValue="handleInput($event, 'price')" />
       </div>
 
       <div class="form-group">
@@ -156,38 +165,41 @@ function goBack(): void {
       <h3>
         Productos
       </h3>
-      <div class="products">
-        <div 
-          v-for="(meal, index) in menuStore.items" 
-          :key="index" 
-          class="product-card">
-            <h4>
-              {{ meal.item }}
-            </h4>
-            <p>
-              {{ meal.price }}
-            </p>
-            <p>
-              {{ meal.description.length > 50 ? 
-                meal.description.substring(0, 50) + '...' : 
-                meal.description }}
-            </p>
-        </div>
+      <div
+        v-if="mealStore.meals.length"
+        class="products">
+        <ProductCard
+          v-for="(meal, index) in mealStore.meals" 
+          :key="index"
+          :item="meal.item"
+          :price="meal.price"
+          :description="meal.description" />
+      </div>
+      <div
+        v-if="drinkStore.drinks.length"
+        class="products">
+        <ProductCard
+          v-for="(drink, index) in drinkStore.drinks" 
+          :key="index"
+          :item="drink.item"
+          :price="drink.price"
+          :description="drink.description" />
       </div>
        <div class="form-actions">
-        <button
+        <CrushButton
           type="button"
           @click="goBack">
             Retroceder
-        </button>
-        <button 
+        </CrushButton>
+        <CrushButton 
           type="submit"
-          :disabled="menuStore.items.length < 1"
-          :style="{ cursor: menuStore.items.length > 0 ? 'pointer' : 'not-allowed' }">
+          :disabled="isDisabled"
+          :style="{ cursor:  cursorDiplay}"
+          @click="submitForm">
             Siguiente
-        </button>
+        </CrushButton>
        </div>
-    </form>
+      </div>
   </div>
 </template>
 
@@ -291,30 +303,5 @@ button:disabled {
   align-items: center;
   flex-wrap: wrap;
   gap: 16px;
-
-  .product-card {
-    border: 1px solid $green;
-    padding: 16px;
-    border-radius: 8px;
-    background-color: #f9f9f9;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s, box-shadow 0.2s;
-
-    &:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-    }
-
-    h4 {
-      margin: 0 0 8px 0;
-      color: $green;
-      font-size: 1.2em;
-    }
-
-    p {
-      margin: 0;
-      color: #333;
-    }
-  }
 }
 </style>

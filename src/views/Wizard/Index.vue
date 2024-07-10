@@ -1,6 +1,10 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
 
+import useAuthStore from '@/store/auth';
+import useClientStore from '@/store/client';
+import useRestaurantStore from '@/store/restaurant';
 import ProgressBar from '@/components/ProgressBar.vue'
 import Step5AddItems from './components/Step5AddItems.vue';
 import Step6PaymentSettings from './components/Step6PaymentSettings.vue';
@@ -9,6 +13,11 @@ import Step1BasicInfo from '@/views/Wizard/components/Step1BasicInfo.vue';
 import Step2ContactInfo from '@/views/Wizard/components/Step2ContactInfo.vue';
 import Step3CompanyInfo from '@/views/Wizard/components/Step3CompanyInfo.vue';
 
+const router = useRouter();
+
+const authStore = useAuthStore();
+const clientStore = useClientStore();
+const restaurantStore = useRestaurantStore();
 
 const emit = defineEmits(['completed']);
 
@@ -25,12 +34,31 @@ function prevStep(): void {
   }
 }
 function completeWizard() {
-  emit('completed')
+  restaurantStore.updateRestaurant();
+  router.push({ path: '/app/restaurant-info' });
 }
+
+onMounted(async () => {
+  const userAuth = await authStore.checkAuth();
+  if (!userAuth || userAuth === undefined) {
+    router.push({ path: '/login' });
+    return;
+  }
+  
+  await clientStore.getClientByEmail(userAuth?.email);
+  if (clientStore.client?.restaurant?.companyName.length) {
+    router.push({ path: '/app/restaurant-info' })
+  }
+  
+  await clientStore.createClient(userAuth);
+
+  await restaurantStore.getRestaurantById(clientStore.client?.restaurant?._id!);
+});
 </script>
 
 <template>
   <div class="container">
+    <button @click="authStore.signOut">logout</button>
     <div class="wizard-wrap">
       <div class="wizard-header">
         <h1>

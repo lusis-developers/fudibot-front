@@ -4,14 +4,14 @@ class APIBase {
   private baseUrl: string;
 
   constructor() {
-    this.baseUrl = 'http://localhost:8100/api';
+    this.baseUrl = import.meta.env.VITE_FUDIBOT_API || 'http://localhost:8100/api';
   }
 
   private buildUrl(endpoint: string): string {
     return `${this.baseUrl}/${endpoint}`;
   }
 
-  private getHeaders(): { [key: string]: string } {
+  protected getHeaders(): { [key: string]: string } {
     const headers: { [key: string]: string } = {
       'Content-Type': 'application/json'
     }
@@ -24,29 +24,27 @@ class APIBase {
     return headers;
   }
 
-  protected async get<T>(endpoint: string): Promise<T> {
+  protected async get<T>(endpoint: string, headers?: { [key: string]: string }): Promise<AxiosResponse<T>> {
     const url = this.buildUrl(endpoint);
     try {
-      const response: AxiosResponse<T> = await axios.get(url, {
-        headers: this.getHeaders()
-      });
-      return response.data;
-    } catch (error: any) {
-      const errorDetails = {
-        status: error.response.status,
-        message: error.response?.data?.message || error.message
-      }
-      throw errorDetails;
-    }
-  }
-
-  protected async post<T>(endpoint: string, data: any, headers?: {[key: string]: string}): Promise<T> {
-    const url = this.buildUrl(endpoint);
-    try {
-      const response: AxiosResponse<T> = await axios.post(url, data, {
+      return await axios.get<T>(url, {
         headers: headers ? headers : this.getHeaders()
       });
-      return response.data;
+    } catch (error: any) {
+      const errorDetails = {
+        status: error.response.status,
+        message: error.response?.data?.message || error.message
+      };
+      throw errorDetails;
+    }
+  }
+
+  protected async post<T>(endpoint: string, data: any, headers?: {[key: string]: string}): Promise<AxiosResponse<T>> {
+    const url = this.buildUrl(endpoint);
+    try {
+      return await axios.post<T>(url, data, {
+        headers: headers ? headers : this.getHeaders()
+      });
     } catch (error: any) {
       const errorDetails = {
         status: error.response.status,
@@ -56,13 +54,33 @@ class APIBase {
     }
   }
 
-  protected async put<T>(endpoint: string, data: any): Promise<T> {
+  protected async uploadFile<T>(endpoint: string, file: File): Promise<AxiosResponse<T>> {
+    const url = this.buildUrl(endpoint);
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      return await axios.post<T>(url, formData, {
+        headers: {
+          ...this.getHeaders(),
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+    } catch (error: any) {
+      const errorDetails = {
+        status: error.response?.status,
+        message: error.response?.data?.message || error.message
+      };
+      throw errorDetails;
+    }
+  }
+
+  protected async put<T>(endpoint: string, data: any): Promise<AxiosResponse<T>> {
     const url = this.buildUrl(endpoint);
     try {
-      const response: AxiosResponse<T> = await axios.put(url, data, {
+      return await axios.put<T>(url, data, {
         headers: this.getHeaders()
       });
-      return response.data;
     } catch (error: any) {
       const errorDetails = {
         status: error.response.status,
@@ -72,13 +90,12 @@ class APIBase {
     }
   }
 
-  protected async patch<T>(endpoint: string, data: any): Promise<T> {
+  protected async patch<T>(endpoint: string, data: any): Promise<AxiosResponse<T>> {
     const url = this.buildUrl(endpoint);
     try {
-      const response: AxiosResponse<T> = await axios.patch(url, data, {
+      return await axios.patch<T>(url, data, {
         headers: this.getHeaders()
       });
-      return response.data;
     } catch (error: any) {
       const errorDetails = {
         status: error.response.status,
@@ -88,13 +105,12 @@ class APIBase {
     }
   }
 
-  protected async delete<T>(endpoint: string): Promise<T> {
+  protected async delete<T>(endpoint: string): Promise<AxiosResponse<T>> {
     const url = this.buildUrl(endpoint);
     try {
-      const response: AxiosResponse<T> = await axios.delete(url, {
+      return await axios.delete<T>(url, {
         headers: this.getHeaders()
       });
-      return response.data;
     } catch (error: any) {
       const errorDetails = {
         status: error.response.status,

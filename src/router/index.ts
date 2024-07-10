@@ -1,29 +1,25 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 
 import { googleAuthGuard } from './utils/authGuard';
-import { wizardGuard } from './utils/wizardGuard';
 
 // import layout components
 const AppLayout = () => import('@/layouts/AppLayout.vue');
 
 // import web views
-const Home = () => import('@/views/index.vue');
 const Login = () => import('@/views/Login.vue');
 const Register = () => import('@/views/Register.vue');
 const Authorize = () => import('@/views/Authorize.vue');
 const Wizard = () => import('@/views/Wizard/Index.vue');
-const Integrations = () => import('@/views/app/Integrations.vue');
-const OrderHistory = () => import('@/views/app/OrderHistory.vue');
-const DeliverySetup = () => import('@/views/app/DeliverySetup.vue');
+const Bill = () => import('@/views/Bill.vue');
+const Meals = () => import('@/views/app/MealsView/Index.vue');
+const Drinks = () => import('@/views/app/DrinksView/Index.vue');
+const Integrations = () => import('@/views/app/TheIntegrations/index.vue');
+const OrderHistory = () => import('@/views/app/OrderHistory/Index.vue');
+const DeliverySetup = () => import('@/views/app/DeliveryView/index.vue');
 const InvoiceHistory = () => import('@/views/app/InvoiceHistory.vue');
 const RestaurantInfo = () => import('@/views/app/RestaurantInfo/Index.vue');
 
 const routes: Array<RouteRecordRaw> = [
-  {
-    path: '/',
-    name: 'Home',
-    component: Home,
-  },
   {
     path: '/login',
     name: 'Login',
@@ -57,6 +53,14 @@ const routes: Array<RouteRecordRaw> = [
     },
   },
   {
+    path: '/factura/:id',
+    name: 'Bill',
+    component: Bill,
+    meta: {
+      title: 'Llena tus datos 📝'
+    }
+  },
+  {
     path: '/app',
     name: 'App',
     component: AppLayout,
@@ -66,7 +70,7 @@ const routes: Array<RouteRecordRaw> = [
         name: 'Restaurant Info',
         component: RestaurantInfo,
         meta: {
-          title: 'Información de pedidos',
+          title: 'Información del local',
         },
       },
       {
@@ -74,7 +78,7 @@ const routes: Array<RouteRecordRaw> = [
         name: 'InvoiceHistory',
         component: InvoiceHistory,
         meta: {
-          title: 'Pedidos',
+          title: 'Facturas',
         },
       },
       {
@@ -90,7 +94,23 @@ const routes: Array<RouteRecordRaw> = [
         name: 'DeliverySetup',
         component: DeliverySetup,
         meta: {
-          title: 'Configuración de pedidos',
+          title: 'Configuración de envíos',
+        },
+      },
+      {
+        path: 'meals',
+        name: 'Meals',
+        component: Meals,
+        meta: {
+          title: 'Platillos 🍛',
+        },
+      },
+      {
+        path: 'drinks',
+        name: 'Drinks',
+        component: Drinks,
+        meta: {
+          title: 'Bebidas 🥤',
         },
       },
       {
@@ -114,8 +134,6 @@ router.beforeEach(async (to, from, next) => {
   document.title = to.meta.title as string;
 
   await googleAuthGuard(to, from, next);
-
-  wizardGuard(to, from, next);
 });
 
 export default router;
