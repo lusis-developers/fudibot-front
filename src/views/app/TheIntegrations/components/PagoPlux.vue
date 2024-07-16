@@ -73,9 +73,7 @@ onMounted( async () => {
 </script>
 
 <template>
-  <Card
-    class="card"
-    :class="{ expanded: isCardOpen }">
+  <Card class="card">
     <template #title>
       <div class="header-wrapper">
         <div class="form-integration">
