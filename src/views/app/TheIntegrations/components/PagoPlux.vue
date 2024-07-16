@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, computed, onMounted } from "vue";
+import { reactive, computed, onMounted, ref } from "vue";
 
 import {
   pagopluxClientIdRules,
@@ -13,31 +13,27 @@ import ToggleInput from '@/components/ToggleInput.vue';
 import useClientStore from '@/store/client'
 import Card from '@/components/Card.vue';
 import useAuthStore from '@/store/auth';
+import { PaymentLinkType } from "@/enum/paymentMethods.enum";
 
 const authStore = useAuthStore();
 const clientStore = useClientStore();
 const paymentMethodsStore = usePaymentMethodsStore();
-
-const pagopluxForm = reactive({
-  ruc: '',
-  clientId: '',
-  secretKey: '',
-  active: false,
-  formVisible: false,
-});
-
-const toggleText = computed(() => {
-  return pagopluxForm.active ? "Desactivar" : "Activar";
-});
-const isFormVisibled = computed(() => 
-  pagopluxForm.active && pagopluxForm.formVisible
-)
 
 const rules = {
   ruc: rucRules,
   clientId: pagopluxClientIdRules,
   secretKey: pagopluxSecretKeyRules
 };
+const pagopluxForm = reactive({
+  ruc: '',
+  clientId: '',
+  secretKey: '',
+});
+const isCardOpen = ref(false);
+const toggleText = computed(() => {
+  return !isSelected.value ? "Desactivar" : "Activar";
+});
+const isSelected = computed(() => paymentMethodsStore.paymentMethods?.paymentLinkSelected === PaymentLinkType.PAGOPLUX);
 
 const isFormValid = computed(() => {
   const isRucValid = rucRules.every(rule => rule.validate(pagopluxForm.ruc));
@@ -46,14 +42,11 @@ const isFormValid = computed(() => {
   return isRucValid && isClientIdValid && isSecretKeyValid;
 });
 
-function isActive(event: boolean): void {
-  pagopluxForm.active = event;
-  if(!event) {
-    pagopluxForm.ruc = '';
-    pagopluxForm.clientId = '',
-    pagopluxForm.secretKey = ''
-  };
-  pagopluxForm.formVisible = event;
+function openCloseCard(): void {
+  pagopluxForm.ruc = '';
+  pagopluxForm.clientId = '',
+  pagopluxForm.secretKey = ''
+  isCardOpen.value = !isCardOpen.value;
 };
 
 async function sendPagoPluxData () {
@@ -64,8 +57,7 @@ async function sendPagoPluxData () {
     };
     const restaurantUuid = clientStore.client?.restaurant?.uuid;
     await paymentMethodsStore.putPagopluxData(data, restaurantUuid!);
-    pagopluxForm.formVisible = false;
-    paymentMethodsStore.paymentMethods?.pagoplux
+    openCloseCard();
   } catch(e) {
     console.error('error: ', e)
   }
@@ -81,25 +73,43 @@ onMounted( async () => {
 </script>
 
 <template>
-  <p class="title">
-    <li>
-      Configura tu cuenta de pagoplux 😊
-    </li>
-  </p>
-  <Card :class="{ expanded: pagopluxForm.active }">
+  <Card
+    class="card"
+    :class="{ expanded: isCardOpen }">
     <template #title>
-      <div class="form-integration">
-        <p class="form-integration-title">Pagoplux</p>
-        <img :src="pagopluxImage" alt="logo de pagoplux" class="form-integration-image" />
+      <div class="header-wrapper">
+        <div class="form-integration">
+          <div class="header">
+            <img
+              :src="pagopluxImage"
+              alt="logo de pagoplux"
+              class="image" />
+            <p class="title">
+              Pagoplux
+            </p>
+          </div>
+          <div class="toggle">
+            <ToggleInput
+              v-model:value="isSelected"
+              :text="toggleText" />
+          </div>
+        </div>
+        <div class="edit-section">
+          <span>Deseas usar tu propios links? Agregalos</span>
+          <CrushButton
+            :small="true"
+            class="edit-button"
+            @click="openCloseCard">
+            Editar
+          </CrushButton>
+        </div>
       </div>
     </template>
     <template #content>
-      <form class="form">
-        <ToggleInput
-          v-model:value="pagopluxForm.active"
-          :text="toggleText"
-          @update:modelValue="isActive" />
-        <div class="form-content" v-show="isFormVisibled">
+      <form
+        v-show="isCardOpen"
+        class="form">
+        <div class="form-content">
           <CrushTextField
             v-model="pagopluxForm.ruc"
             :valid-rules="rules.ruc"
@@ -116,12 +126,13 @@ onMounted( async () => {
             label="Clave secreta" 
             placeholder="pV5uMhA7oyQr0yXqB2bmoQkCtBfwivb5IVVz7pSUCCAWSDp3" />
         </div>
-        <CrushButton
-          v-if="isFormVisibled"
-          :disabled="!isFormValid"
-          text="Guardar"
-          class="button"
-          @click="sendPagoPluxData" />
+        <div class="actions-wrapper">
+          <CrushButton
+            :disabled="!isFormValid"
+            text="Guardar"
+            class="button"
+            @click="sendPagoPluxData" />
+        </div>
       </form>
     </template>
   </Card>
@@ -132,34 +143,54 @@ onMounted( async () => {
   width: 100%;
   font-size: 1rem;
 }
-.expanded {
-  max-width: 680px;
-  padding: 32px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-.form {
+.card {
+  max-width: 600px;
   width: 100%;
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  &-integration {
-    gap: 8px;
-    width: 100%;
+  .header-wrapper {
     display: flex;
-    justify-content: center;
-    align-items: center;
     flex-direction: column;
-    &-title {
-      color: $black;
-      font-size: 16px;
+    justify-content: center;
+    .form-integration {
+      gap: 8px;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      .header {
+        display: flex;
+        align-items: center;
+        .title {
+          color: $black;
+          font-size: 16px;
+        }
+        .image {
+          width: 24px;
+          height: 24px;
+        }
+      }
+      .toggle {
+        width: auto;
+      }
     }
-    &-image {
-      width: 24px;
-      height: 24px;
+    .edit-section {
+      width: 100%;
+      margin-top: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      .edit-button {
+        background-color: $white;
+        color: $black;
+        border: 1px solid $black;
+        cursor: pointer;
+        transition: .3s background-color;
+        &:hover {
+          background-color: darken($white, 10%);
+        }
+      }
     }
   }
-  &-content {
+  .form-content {
     width: 100%;
     display: flex;
     justify-content: center;
@@ -183,6 +214,14 @@ onMounted( async () => {
     :deep(.crush-text-field) {
       width: 100%;
       max-width: $tablet-lower-breakpoint;
+    }
+  }
+  .actions-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    .crush-button {
+      width: 128px;
     }
   }
   .button {

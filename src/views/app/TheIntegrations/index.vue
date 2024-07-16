@@ -4,6 +4,9 @@ import Pagoplux from './components/PagoPlux.vue';
 
 <template>
   <div class="principal-container">
+    <h3 class="title">
+      Configura tu cuenta de link de pago 😊
+    </h3>
     <div class="principal-container-integration">
       <Pagoplux /> 
     </div>

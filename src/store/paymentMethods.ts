@@ -25,6 +25,7 @@ const usePaymentMethodsStore = defineStore('PaymentMethodsStore', {
       try {
         const response = await paymentMethodsService.putPagopluxClientConfig(data, restaurantUuid);
         this.paymentMethods = response?.data;
+        this.getPaymentMethods(restaurantUuid);
       } catch (error: unknown) {
         this.error = String(error);
       } finally {
