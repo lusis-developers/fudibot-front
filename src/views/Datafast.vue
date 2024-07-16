@@ -1,8 +1,14 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 
+import fudibot from '@/assets/fudi-isologo-color.png';
+import Card from '@/components/Card.vue';
+
 const route = useRoute();
+
+const totalAmount = computed(() => route.query.totalAmount);
+const number = computed(() => route.query.number);
 
 async function loadDatafastWidget(): Promise<void> {
   try {
@@ -25,17 +31,64 @@ async function loadDatafastWidget(): Promise<void> {
   }
 }
 
+async function checkPayment(): Promise<void> {
+  console.log(number.value);
+}
+
 onMounted(async () => {
   await loadDatafastWidget();
 });
 </script>
 
 <template>
-  <div>
-    <form
-      id="payment-form"
-      action="https://test.oppwa.com/v1/payments"
-      class="paymentWidgets"
-      data-brands="VISA MASTER AMEX"></form>
+  <div class="datafast">
+    <Card>
+      <template #title>
+        <div class="header">
+          <img
+            :src="fudibot"
+            alt="fuditbot logo">
+          <h3>
+            Realiza tu pago :)
+          </h3>
+          <span>
+            Valor a pagar {{ totalAmount }}
+          </span>
+        </div>
+      </template>
+      <template #content>
+        <div>
+          <form
+            id="payment-form"
+            action="https://test.oppwa.com/v1/payments"
+            class="paymentWidgets"
+            data-brands="VISA MASTER AMEX"></form>
+        </div>
+      </template>
+    </Card>
   </div>
 </template>
+
+<style lang="scss" scoped>
+.datafast {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+
+    img {
+      width: 64px;
+      height: 64px;
+      margin: auto;
+    }
+  }
+}
+</style>
