@@ -126,3 +126,25 @@ export const pagopluxSecretKeyRules = [
     message: 'La clave secreta de PagoPlux debe tener más de 35 caracteres'
   }
 ];
+
+export const datafastEntityIdRules = [
+  {
+    validate: (value: string) => /^(\S+)$/.test(value),
+    message: 'Ooops parece que algo no está bien en tu entityId'
+  },
+  {
+    validate: (value: string) => value.length > 0,
+    message: 'Tú entityId no puede ser vacío'
+  },
+]
+
+export const datafastBearerTokenRules = [
+  {
+    validate: (value: string) => /^(\S+)$/.test(value),
+    message: 'La clave secreta de PagoPlux solo debe contener caracteres alfanuméricos'
+  },
+  {
+    validate: (value: string) => value.length > 0,
+    message: 'Tú bearerToken no puede ser vacío'
+  },
+]

@@ -4,11 +4,11 @@ export interface Pagoplux {
   restaurantRUC: string;
   clientToken: string;
 };
-interface Payphone {
+export interface Payphone {
   clientToken: string;
 }
 
-interface Datafast {
+export interface Datafast {
   entityId: string,
   bearerToken: string
 }
