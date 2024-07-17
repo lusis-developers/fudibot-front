@@ -15,13 +15,13 @@ class APIDelivery extends APIBase {
 	}
 
 	async postHasOwnFleet(data: HasOwnFleet): Promise<AxiosResponse<Delivery>> {
-		return await this.patch<Delivery>("has-own-fleet", data);
+		return await this.patch<Delivery>('has-own-fleet', data);
 	}
 
 	async addFleetDetail(
 		data: AddOrEditFleetDetail
 	): Promise<AxiosResponse<Delivery>> {
-		return await this.post<Delivery>("add-fleet-detail", data);
+		return await this.post<Delivery>('add-fleet-detail', data);
 	}
 
 	async deleteFleetDetail(deliveryId: string, fleetId: string): Promise<AxiosResponse<Delivery>> {
@@ -29,7 +29,11 @@ class APIDelivery extends APIBase {
 	}
 
 	async addGeneralDeliveryCost(data: { id: string, generalDeliveryCost: number }): Promise<AxiosResponse<FleetDetail[]>> {
-		return await this.patch<FleetDetail[]>("add-general-delivery-cost", data);
+		return await this.patch<FleetDetail[]>('add-general-delivery-cost', data);
+	}
+
+	async createBooking(restaurantUuid: string, data: { from: string, name: string }): Promise<AxiosResponse<string>> {
+		return await this.post<string>(`shipping/${restaurantUuid}`, data);
 	}
 }
 

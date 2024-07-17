@@ -12,6 +12,7 @@ import useRestaurantStore from '@/store/restaurant';
 import Modal from '@/components/Modal.vue';
 
 import type { OrderItem } from '@/interfaces/order.interface';
+import useDeliveryStore from '@/store/delivery';
 
 const emit = defineEmits(['update:modalValue', 'closeModal'])
 
@@ -51,6 +52,7 @@ const restaurantStore = useRestaurantStore();
 const authStore = useAuthStore();
 const clientStore = useClientStore();
 const userStore = useUserStore();
+const deliveryStore = useDeliveryStore();
 
 const statusSelected = ref(props.status);
 const formattedTotal = computed(() => formatToCurrency(props.total));
@@ -95,6 +97,17 @@ async function submitStatus(): Promise<void> {
   await orderStore.updateOrderStatus(props._id, statusSelected.value, restaurantStore.restaurant?._id!);
   if (statusSelected.value === OrderStatus.PREPARING) {
     await userStore.getUser(props.userId);
+
+    if (userStore.user) {
+      const data = {
+        from: userStore.user.number,
+        name: userStore.user.name
+      } 
+      await deliveryStore.createBooking(
+        restaurantStore.restaurant?.uuid!,
+        data
+      );
+    }
   }
   closeModal();
 }

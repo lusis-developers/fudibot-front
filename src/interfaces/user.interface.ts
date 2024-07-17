@@ -4,7 +4,7 @@ import type { Coordinates } from './coordinates.interface';
 
 
 export interface User {
-  number: number;
+  number: string;
   name: string;
   status: UserStatusEnum;
   purchases: [];
