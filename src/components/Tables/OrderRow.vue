@@ -27,6 +27,10 @@ const props = defineProps({
     type: Number,
     required: true
   },
+  userId: {
+    type: String,
+    required: true
+  }
 });
 
 const isModalOpen = ref(false);
@@ -91,6 +95,7 @@ function openCloseModal(): void {
     :items="items"
     :total="total"
     :status="status"
+    :userId="userId"
     @closeModal="openCloseModal" />
 </template>
 

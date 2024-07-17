@@ -4,6 +4,7 @@ import { PropType, computed, onMounted, ref } from 'vue';
 import useAuthStore from '@/store/auth';
 import useOrderStore from '@/store/order';
 import useClientStore from '@/store/client';
+import useUserStore from '@/store/user';
 import { OrderStatus } from '@/enum/order.enum';
 import { statusAvailable } from '@/utils/order';
 import { formatToCurrency } from '@/utils/inputFormats';
@@ -39,12 +40,17 @@ const props = defineProps({
     type: Number,
     required: true
   },
+  userId: {
+    type: String,
+    required: true
+  }
 });
 
 const orderStore = useOrderStore();
 const restaurantStore = useRestaurantStore();
 const authStore = useAuthStore();
 const clientStore = useClientStore();
+const userStore = useUserStore();
 
 const statusSelected = ref(props.status);
 const formattedTotal = computed(() => formatToCurrency(props.total));
@@ -87,6 +93,9 @@ function closeModal(): void {
 }
 async function submitStatus(): Promise<void> {
   await orderStore.updateOrderStatus(props._id, statusSelected.value, restaurantStore.restaurant?._id!);
+  if (statusSelected.value === OrderStatus.PREPARING) {
+    await userStore.getUser(props.userId);
+  }
   closeModal();
 }
 
