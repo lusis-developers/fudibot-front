@@ -17,7 +17,7 @@ const Drinks = () => import('@/views/app/DrinksView/Index.vue');
 const Integrations = () => import('@/views/app/TheIntegrations/index.vue');
 const OrderHistory = () => import('@/views/app/OrderHistory/Index.vue');
 const DeliverySetup = () => import('@/views/app/DeliveryView/index.vue');
-const InvoiceHistory = () => import('@/views/app/InvoiceHistory.vue');
+const InvoiceHistory = () => import('@/views/app/InvoiceHistory/Index.vue');
 const RestaurantInfo = () => import('@/views/app/RestaurantInfo/Index.vue');
 
 const routes: Array<RouteRecordRaw> = [

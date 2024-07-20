@@ -3,6 +3,6 @@
 
 <template>
   <div>
-    Historial de facturas
+    Historial de facturas 2
   </div>
 </template>
