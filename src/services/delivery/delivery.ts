@@ -33,7 +33,14 @@ class APIDelivery extends APIBase {
 	}
 
 	async createBooking(restaurantUuid: string, data: { from: string, name: string }): Promise<AxiosResponse<string>> {
-		return await this.post<string>(`shipping/${restaurantUuid}`, data);
+		const body = {
+			ctx: {
+				from: data.from,
+				name: data.name
+			}
+		}
+
+		return await this.post<string>(`shipping/${restaurantUuid}`, body);
 	}
 }
 

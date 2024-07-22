@@ -89,6 +89,7 @@ function openCloseModal(): void {
     </div> 
   </div>
   <DetailsModal
+    v-if="isModalOpen"
     :modalValue="isModalOpen"
     :_id="_id"
     :deliveryCost="deliveryCost"
