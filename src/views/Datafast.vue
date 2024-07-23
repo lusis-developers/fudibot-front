@@ -8,7 +8,7 @@ import Card from '@/components/Card.vue';
 const route = useRoute();
 
 const totalAmount = computed(() => route.query.totalAmount);
-const number = computed(() => route.query.number);
+// const number = computed(() => route.query.number);
 
 async function loadDatafastWidget(): Promise<void> {
   try {
@@ -31,9 +31,9 @@ async function loadDatafastWidget(): Promise<void> {
   }
 }
 
-async function checkPayment(): Promise<void> {
-  console.log(number.value);
-}
+// async function checkPayment(): Promise<void> {
+//   console.log(number.value);
+// }
 
 onMounted(async () => {
   await loadDatafastWidget();
