@@ -11,11 +11,11 @@ const menu = [
     path: 'order-history',
     icon: 'fas fa-history'
   },
-  {
-    name: 'Facturas',
-    path: 'invoice-history',
-    icon: 'fa-solid fa-file-invoice'
-  },
+  // {
+  //   name: 'Facturas',
+  //   path: 'invoice-history',
+  //   icon: 'fa-solid fa-file-invoice'
+  // },
   {
     name: 'Delivery',
     path: 'delivery-setup',

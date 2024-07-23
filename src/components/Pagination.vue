@@ -43,7 +43,7 @@ function changePage(page: number) {
     </button>
     <span>Page {{ currentPage }} of {{ totalPages }}</span>
     <button
-      :disabled="!hasNextPage"
+      :disabled="hasNextPage"
       @click="changePage(nextPage)">
       Next
     </button>

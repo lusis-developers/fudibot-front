@@ -56,6 +56,14 @@ const useDeliveryStore = defineStore("DeliveryStore", {
         this.error = String(error);
       };
     },
+    async createBooking(restaurantUuid: string, data: { from: string, name: string }) {
+      try {
+        const response = await deliveryService.createBooking(restaurantUuid, data);
+        return response.data;
+      } catch (error) {
+        this.error = String(error);
+      };
+    },
   }
 });
 

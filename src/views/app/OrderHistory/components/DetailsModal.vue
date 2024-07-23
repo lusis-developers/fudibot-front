@@ -4,6 +4,7 @@ import { PropType, computed, onMounted, ref } from 'vue';
 import useAuthStore from '@/store/auth';
 import useOrderStore from '@/store/order';
 import useClientStore from '@/store/client';
+import useUserStore from '@/store/user';
 import { OrderStatus } from '@/enum/order.enum';
 import { statusAvailable } from '@/utils/order';
 import { formatToCurrency } from '@/utils/inputFormats';
@@ -11,6 +12,7 @@ import useRestaurantStore from '@/store/restaurant';
 import Modal from '@/components/Modal.vue';
 
 import type { OrderItem } from '@/interfaces/order.interface';
+import useDeliveryStore from '@/store/delivery';
 
 const emit = defineEmits(['update:modalValue', 'closeModal'])
 
@@ -39,12 +41,18 @@ const props = defineProps({
     type: Number,
     required: true
   },
+  userId: {
+    type: String,
+    required: true
+  }
 });
 
 const orderStore = useOrderStore();
 const restaurantStore = useRestaurantStore();
 const authStore = useAuthStore();
 const clientStore = useClientStore();
+const userStore = useUserStore();
+const deliveryStore = useDeliveryStore();
 
 const statusSelected = ref(props.status);
 const formattedTotal = computed(() => formatToCurrency(props.total));
@@ -87,6 +95,25 @@ function closeModal(): void {
 }
 async function submitStatus(): Promise<void> {
   await orderStore.updateOrderStatus(props._id, statusSelected.value, restaurantStore.restaurant?._id!);
+  console.log('status selected', statusSelected.value);
+
+  console.log('condition', statusSelected.value === OrderStatus.PREPARING)
+  if (statusSelected.value === OrderStatus.PREPARING) {
+    await userStore.getUser(props.userId);
+
+    console.log('user', userStore.user);
+    if (userStore.user) {
+
+      const data = {
+        from: userStore.user.number,
+        name: userStore.user.name
+      } 
+      await deliveryStore.createBooking(
+        restaurantStore.restaurant?.uuid!,
+        data
+      );
+    }
+  }
   closeModal();
 }
 

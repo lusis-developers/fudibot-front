@@ -1,11 +1,16 @@
 <script setup lang="ts">
+import Datafast from './components/Datafast.vue';
 import Pagoplux from './components/PagoPlux.vue';
 </script>
 
 <template>
   <div class="principal-container">
+    <h3>
+      Configura tu cuenta de link de pago 😊
+    </h3>
     <div class="principal-container-integration">
-      <Pagoplux /> 
+      <Pagoplux />
+      <Datafast />
     </div>
   </div>
 </template>

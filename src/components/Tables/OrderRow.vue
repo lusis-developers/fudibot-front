@@ -2,7 +2,7 @@
 import { ref, computed, PropType } from 'vue';
 
 import { OrderStatus } from '@/enum/order.enum';
-import { formatToCurrency } from '@/utils/inputFormats';
+import { formatPriceToDisplay } from '@/utils/inputFormats';
 import { OrderItem } from '@/interfaces/order.interface';
 import DetailsModal from '@/views/app/OrderHistory/components/DetailsModal.vue';
 
@@ -27,10 +27,14 @@ const props = defineProps({
     type: Number,
     required: true
   },
+  userId: {
+    type: String,
+    required: true
+  }
 });
 
 const isModalOpen = ref(false);
-const formattedTotal = computed(() => formatToCurrency(props.total));
+const formattedTotal = computed(() => formatPriceToDisplay(String(props.total)));
 const statusClass = computed(() => {
   switch (props.status) {
     case OrderStatus.OPEN:
@@ -85,12 +89,14 @@ function openCloseModal(): void {
     </div> 
   </div>
   <DetailsModal
+    v-if="isModalOpen"
     :modalValue="isModalOpen"
     :_id="_id"
     :deliveryCost="deliveryCost"
     :items="items"
     :total="total"
     :status="status"
+    :userId="userId"
     @closeModal="openCloseModal" />
 </template>
 

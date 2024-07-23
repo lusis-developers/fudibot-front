@@ -2,12 +2,11 @@
 import { reactive, computed, onMounted, ref } from "vue";
 
 import {
-  pagopluxClientIdRules,
-  pagopluxSecretKeyRules,
-  rucRules
-} from '@/utils/validations'
+  datafastBearerTokenRules,
+  datafastEntityIdRules
+} from "@/utils/validations";
 
-import pagopluxImage from '@/assets/integrations/pagoplux.png';
+import datafastImage from '@/assets/integrations/Datafast-Icon-web.webp';
 import usePaymentMethodsStore from '@/store/paymentMethods';
 import ToggleInput from '@/components/ToggleInput.vue';
 import useClientStore from '@/store/client'
@@ -20,43 +19,39 @@ const clientStore = useClientStore();
 const paymentMethodsStore = usePaymentMethodsStore();
 
 const rules = {
-  ruc: rucRules,
-  clientId: pagopluxClientIdRules,
-  secretKey: pagopluxSecretKeyRules
+  bearerToken: datafastBearerTokenRules,
+  entityId: datafastEntityIdRules
 };
-const pagopluxForm = reactive({
-  ruc: '',
-  clientId: '',
-  secretKey: '',
+const datafast = reactive({
+  bearerToken: '',
+  entityId: '',
 });
 const isCardOpen = ref(false);
 const toggleText = computed(() => {
   return !isSelected.value ? "Desactivar" : "Activar";
 });
-const isSelected = computed(() => paymentMethodsStore.paymentMethods?.paymentLinkSelected === PaymentLinkType.PAGOPLUX);
+const isSelected = computed(() => paymentMethodsStore.paymentMethods?.paymentLinkSelected === PaymentLinkType.DATAFAST);
 
 const isFormValid = computed(() => {
-  const isRucValid = rucRules.every(rule => rule.validate(pagopluxForm.ruc));
-  const isClientIdValid = pagopluxClientIdRules.every(rule => rule.validate(pagopluxForm.clientId));
-  const isSecretKeyValid = pagopluxSecretKeyRules.every(rule => rule.validate(pagopluxForm.secretKey));
-  return isRucValid && isClientIdValid && isSecretKeyValid;
+  const isEntityIdValid = datafastEntityIdRules.every(rule => rule.validate(datafast.entityId));
+  const isBearerTokenValid = datafastBearerTokenRules.every(rule => rule.validate(datafast.bearerToken));
+  return isEntityIdValid && isBearerTokenValid;
 });
 
 function openCloseCard(): void {
-  pagopluxForm.ruc = '';
-  pagopluxForm.clientId = '',
-  pagopluxForm.secretKey = ''
+  datafast.entityId = '',
+  datafast.bearerToken = ''
   isCardOpen.value = !isCardOpen.value;
 };
 
 async function sendPagoPluxData () {
   try {
     const data = {
-      restaurantRUC: pagopluxForm.ruc,
-      clientToken: `${pagopluxForm.clientId}:${pagopluxForm.secretKey}`
+      entityId: datafast.entityId,
+      bearerToken: datafast.bearerToken
     };
     const restaurantUuid = clientStore.client?.restaurant?.uuid;
-    await paymentMethodsStore.putPagopluxData(data, restaurantUuid!);
+    await paymentMethodsStore.putDatafastData(data, restaurantUuid!);
     openCloseCard();
   } catch(e) {
     console.error('error: ', e)
@@ -73,17 +68,19 @@ onMounted( async () => {
 </script>
 
 <template>
-  <Card class="card">
+  <Card
+    class="card"
+    :class="{ expanded: isCardOpen }">
     <template #title>
       <div class="header-wrapper">
         <div class="form-integration">
           <div class="header">
             <img
-              :src="pagopluxImage"
+              :src="datafastImage"
               alt="logo de pagoplux"
               class="image" />
             <p class="title">
-              Pagoplux
+              Dataweb
             </p>
           </div>
           <div class="toggle">
@@ -93,7 +90,7 @@ onMounted( async () => {
           </div>
         </div>
         <div class="edit-section">
-          <span>Deseas usar tu propios links? Agregalos</span>
+          <span>Tienes Dataweb?</span>
           <CrushButton
             :small="true"
             class="edit-button"
@@ -109,20 +106,15 @@ onMounted( async () => {
         class="form">
         <div class="form-content">
           <CrushTextField
-            v-model="pagopluxForm.ruc"
-            :valid-rules="rules.ruc"
-            label="Ruc del establecimiento" 
-            placeholder="0954227382001" />
-          <CrushTextField
-            :valid-rules="rules.clientId"
-            v-model="pagopluxForm.clientId"
-            label="id del client" 
+            :valid-rules="rules.entityId"
+            v-model="datafast.entityId"
+            label="entityId" 
             placeholder="k3rTOL7NCbGULs2m2jK6a04SUg"/>
           <CrushTextField
-            :valid-rules="rules.secretKey"
-            v-model="pagopluxForm.secretKey"
-            label="Clave secreta" 
-            placeholder="pV5uMhA7oyQr0yXqB2bmoQkCtBfwivb5IVVz7pSUCCAWSDp3" />
+            :valid-rules="rules.bearerToken"
+            v-model="datafast.bearerToken"
+            label="Bearer Token" 
+            placeholder="pV5uMhA7oyQr0yXqB2bmoQkCtBfwivb5IVVz7pSUCCAWSDp3==" />
         </div>
         <div class="actions-wrapper">
           <CrushButton
@@ -137,10 +129,6 @@ onMounted( async () => {
 </template>
 
 <style lang="scss" scoped>
-.title {
-  width: 100%;
-  font-size: 1rem;
-}
 .card {
   max-width: 600px;
   width: 100%;
@@ -162,7 +150,7 @@ onMounted( async () => {
           font-size: 16px;
         }
         .image {
-          width: 24px;
+          width: 112px;
           height: 24px;
         }
       }

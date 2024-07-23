@@ -55,7 +55,6 @@ function toggle(): void {
   position: relative;
   width: 60px;
   height: 30px;
-  margin-top: 12px;
   background-color: $dark-grey; 
   border-radius: 15px;
   cursor: pointer;

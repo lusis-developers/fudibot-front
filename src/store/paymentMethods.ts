@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 
 import APIPaymentMethods from "@/services/paymentMethods/paymentMethods";
 
-import type { Pagoplux, PaymentMethods } from "@/interfaces/paymentMethods.interface";
+import type { Datafast, Pagoplux, PaymentMethods } from "@/interfaces/paymentMethods.interface";
 
 const paymentMethodsService = new APIPaymentMethods();
 
@@ -23,8 +23,8 @@ const usePaymentMethodsStore = defineStore('PaymentMethodsStore', {
     async putPagopluxData(data: Pagoplux, restaurantUuid: string): Promise<void> {
       this.isLoading = true;
       try {
-        const response = await paymentMethodsService.putPagopluxClientConfig(data, restaurantUuid);
-        this.paymentMethods = response?.data;
+        await paymentMethodsService.putPagopluxClientConfig(data, restaurantUuid);
+        this.getPaymentMethods(restaurantUuid);
       } catch (error: unknown) {
         this.error = String(error);
       } finally {
@@ -41,7 +41,18 @@ const usePaymentMethodsStore = defineStore('PaymentMethodsStore', {
       } finally {
         this.isLoading = false;
       };
-    }
+    },
+    async putDatafastData(data: Datafast, restaurantUuid: string): Promise<void> {
+      this.isLoading = true;
+      try {
+        await paymentMethodsService.putDatafastConfig(data, restaurantUuid);
+        this.getPaymentMethods(restaurantUuid);
+      } catch (error: unknown) {
+        this.error = String(error);
+      } finally {
+        this.isLoading = false;
+      }
+    },
   }
 })
 

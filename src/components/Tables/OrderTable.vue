@@ -33,7 +33,8 @@ defineProps({
           :deliveryCost="order.deliveryCost"
           :items="order.items"
           :total="order.totalOrder"
-          :status="order.orderStatus">
+          :status="order.orderStatus"
+          :userId="order.userId">
         </OrderRow>      
       </div>
     </template>
