@@ -95,10 +95,15 @@ function closeModal(): void {
 }
 async function submitStatus(): Promise<void> {
   await orderStore.updateOrderStatus(props._id, statusSelected.value, restaurantStore.restaurant?._id!);
+  console.log('status selected', statusSelected.value);
+
+  console.log('condition', statusSelected.value === OrderStatus.PREPARING)
   if (statusSelected.value === OrderStatus.PREPARING) {
     await userStore.getUser(props.userId);
 
+    console.log('user', userStore.user);
     if (userStore.user) {
+
       const data = {
         from: userStore.user.number,
         name: userStore.user.name
