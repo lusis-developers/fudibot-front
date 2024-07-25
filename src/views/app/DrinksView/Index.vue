@@ -7,7 +7,6 @@ import useClientStore from '@/store/client';
 import { Categories } from '@/enum/mealOrDrink.enum';
 import ProductTable from '@/components/Tables/ProductTable.vue'; 
 import useRestaurantStore from '@/store/restaurant';
-import CreateMealDrinkModal from '@/components/Modals/CreateMealDrinkModal.vue';
 
 const authStore = useAuthStore();
 const drinksStore = useDrinkStore();
