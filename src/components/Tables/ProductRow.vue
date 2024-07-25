@@ -84,8 +84,8 @@ function openCloseModal(): void {
 
 <style lang="scss" scoped>
 :deep(.crush-secondary) {
-  border: 1px solid $red;
-  background-color: $red;
+  border: 1px solid $grey;
+  color: $grey;
 }
 
 .product-item {
