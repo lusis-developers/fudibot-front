@@ -1,15 +1,26 @@
 <script setup lang="ts">
-import { PropType } from 'vue';
+import { computed, PropType } from 'vue';
 
 import ProductRow from '@/components/Tables/ProductRow.vue';
 import Card from '../Card.vue';
+import { Categories } from '@/enum/mealOrDrink.enum';
 
-defineProps({
+const props = defineProps({
   items: {
     type: Array as PropType<any[]>,
     required: true
+  },
+  restaurantUuid: {
+    type: String,
+    required: true
+  },
+  categoryType: {
+    type: String as PropType<Categories>,
+    required: true
   }
-})
+});
+
+const displayProducts = computed(() => props.items.length > 0 && props.restaurantUuid.length > 0);
 </script>
 
 <template>
@@ -21,16 +32,22 @@ defineProps({
           <div>Nombre</div>
           <div>Descripcion</div>
           <div>Precio</div>
+          <div>Acciones</div>
         </div>
         
-        <ProductRow
-          v-for="(meal, index) in items"
-          :key="index"
-          :item="meal.item"
-          :price="meal.price"
-          :description="meal.description"
-          :image="meal.image"
-          class="product-table-body" />
+        <template v-if="displayProducts">
+          <ProductRow
+            v-for="(product, index) in items"
+            :key="index"
+            :item="product.item"
+            :price="product.price"
+            :description="product.description"
+            :image="product.image"
+            :id="product._id"
+            :categoryType="categoryType"
+            :restaurantUuid="restaurantUuid"
+            class="product-table-body" />
+        </template>
       
       </div>
     </template>
@@ -62,6 +79,17 @@ defineProps({
       display: flex;
       justify-content: center;
       align-items: center;
+    }
+
+    div:nth-of-type(1) {
+      width: 25%;
+      display: none;
+
+      @media (min-width: $tablet-upper-breakpoint) {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
     }
 
     div:nth-of-type(3) {
