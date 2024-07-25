@@ -26,13 +26,15 @@ function changePage(page: number) {
 
 const nextPage = computed(() => drinksStore.nextPage !== null ? drinksStore.nextPage : 0);
 const previousPage = computed(() => drinksStore.previousPage !== null ? drinksStore.previousPage : 0);
+const drinks = computed(() => drinksStore.drinks);
+const restaurantUuid = computed(() => restaurantStore.restaurant?.uuid);
 
 onMounted( async () => {
   const userAuth = await authStore.checkAuth();
   await clientStore.getClientByEmail(userAuth?.email!);
 
-  restaurantStore.getRestaurantById(clientStore.client?.restaurant?._id!);
-  drinksStore.getDrinks(clientStore.client?.restaurant?.uuid!);
+  await restaurantStore.getRestaurantById(clientStore.client?.restaurant?._id!);
+  await drinksStore.getDrinks(clientStore.client?.restaurant?.uuid!);
 });
 </script>
 
@@ -45,8 +47,10 @@ onMounted( async () => {
         @click="openCloseModal" />
     </div>
     <ProductTable
-      v-if="drinksStore.drinks.length"
-      :items="drinksStore.drinks" />
+      v-if="drinks && restaurantUuid"
+      :items="drinks"
+      :restaurantUuid="restaurantUuid"
+      :categoryType="Categories.DRINK" />
     <div class="meals-pagination">
       <Pagination
         :totalPages="drinksStore.totalPages"
@@ -57,10 +61,6 @@ onMounted( async () => {
         :previousPage="previousPage"
         @pageChange="changePage" />
     </div>
-    <CreateMealDrinkModal
-      :isModalOpen="isModalOpen"
-      :category="Categories.DRINK"
-      @close-modal="openCloseModal" />
   </div>
 </template>
 
