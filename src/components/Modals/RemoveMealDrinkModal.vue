@@ -72,14 +72,10 @@ function closeModal(): void {
 </template>
 
 <style lang="scss" scoped>
-:deep(.crush-secondary) {
-  border: 1px solid $grey;
-  color: $grey;
-}
-:deep(.crush-primary) {
-  border: 1px solid $red;
-  color: $red;
-}
+// :deep(.crush-primary) {
+//   border: 1px solid $red;
+//   background-color: $red;
+// }
 
 .modal {
 

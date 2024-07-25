@@ -4,9 +4,11 @@ import { onMounted, ref, computed } from 'vue';
 import useAuthStore from '@/store/auth';
 import useDrinkStore from '@/store/drink';
 import useClientStore from '@/store/client';
+import useRestaurantStore from '@/store/restaurant';
 import { Categories } from '@/enum/mealOrDrink.enum';
 import ProductTable from '@/components/Tables/ProductTable.vue'; 
-import useRestaurantStore from '@/store/restaurant';
+
+import CreateMealDrinkModal from '@/components/Modals/CreateMealDrinkModal.vue';
 
 const authStore = useAuthStore();
 const drinksStore = useDrinkStore();
@@ -61,6 +63,10 @@ onMounted( async () => {
         @pageChange="changePage" />
     </div>
   </div>
+  <CreateMealDrinkModal
+    :isModalOpen="isModalOpen"
+    :category="Categories.DRINK"
+    @close-modal="openCloseModal" />
 </template>
 
 <style lang="scss" scoped>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref, computed } from 'vue';
+
 import useMealStore from '@/store/meal';
 import useAuthStore from '@/store/auth';
 import useClientStore from '@/store/client';
@@ -7,6 +8,8 @@ import useRestaurantStore from '@/store/restaurant';
 import { Categories } from '@/enum/mealOrDrink.enum';
 import ProductTable from '@/components/Tables/ProductTable.vue'; 
 import Pagination from '@/components/Pagination.vue';
+
+import CreateMealDrinkModal from '@/components/Modals/CreateMealDrinkModal.vue';
 
 const authStore = useAuthStore();
 const mealStore = useMealStore();
@@ -60,6 +63,10 @@ onMounted(async () => {
         @pageChange="changePage" />
     </div>
   </div>
+  <CreateMealDrinkModal
+    :isModalOpen="isModalOpen"
+    :category="Categories.MEAL"
+    @close-modal="openCloseModal" />
 </template>
 
 <style lang="scss" scoped>
