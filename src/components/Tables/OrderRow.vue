@@ -30,7 +30,15 @@ const props = defineProps({
   userId: {
     type: String,
     required: true
-  }
+  },
+  paymentType: {
+    type: String,
+    required: true
+  },
+  wireTransferImage: {
+    type: String,
+    required: false,
+  },
 });
 
 const isModalOpen = ref(false);
@@ -97,6 +105,8 @@ function openCloseModal(): void {
     :total="total"
     :status="status"
     :userId="userId"
+    :paymentType="paymentType"
+    :wireTransferImage="wireTransferImage"
     @closeModal="openCloseModal" />
 </template>
 
