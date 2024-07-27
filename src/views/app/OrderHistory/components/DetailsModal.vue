@@ -1,18 +1,20 @@
 <script setup lang="ts">
 import { PropType, computed, onMounted, ref } from 'vue';
 
+import useUserStore from '@/store/user';
 import useAuthStore from '@/store/auth';
 import useOrderStore from '@/store/order';
-import useClientStore from '@/store/client';
-import useUserStore from '@/store/user';
-import { OrderStatus } from '@/enum/order.enum';
-import { statusAvailable } from '@/utils/order';
-import { formatToCurrency } from '@/utils/inputFormats';
-import useRestaurantStore from '@/store/restaurant';
 import Modal from '@/components/Modal.vue';
+import useClientStore from '@/store/client';
+import { OrderStatus } from '@/enum/order.enum';
+import useDeliveryStore from '@/store/delivery';
+import { statusAvailable } from '@/utils/order';
+import useRestaurantStore from '@/store/restaurant';
+import { formatToCurrency } from '@/utils/inputFormats';
 
 import type { OrderItem } from '@/interfaces/order.interface';
-import useDeliveryStore from '@/store/delivery';
+import { PaymentTypeSpanishTranslate } from '@/enum/PaymentType.enum';
+import axios from 'axios';
 
 const emit = defineEmits(['update:modalValue', 'closeModal'])
 
@@ -44,7 +46,15 @@ const props = defineProps({
   userId: {
     type: String,
     required: true
-  }
+  },
+  paymentType: {
+    type: String,
+    required: true
+  },
+  wireTransferImage: {
+    type: String,
+    required: false,
+  },
 });
 
 const orderStore = useOrderStore();
@@ -74,6 +84,7 @@ const statusClass = computed(() => {
       return '';
   }
 });
+const showTransfer = computed(() => props.paymentType === PaymentTypeSpanishTranslate.WIRE_TRANSFER);
 const validTransitions: Record<OrderStatus, OrderStatus[]> = {
   [OrderStatus.OPEN]: [OrderStatus.PREPARING, OrderStatus.CANCELLED_BY_RESTAURANT],
   [OrderStatus.PREPARING]: [OrderStatus.ON_THE_WAY],
@@ -93,6 +104,30 @@ function closeModal(): void {
   emit('closeModal');
   statusSelected.value = props.status;
 }
+
+async function downloadTransfer() {
+  const transferImage = props.wireTransferImage;
+  if (transferImage) {
+    try {
+      const response = await axios.get(transferImage, { responseType: 'blob' });
+      const blob = new Blob([response.data], { type: response.data.type });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'transferencia.pdf';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error al descargar el archivo:', error);
+      window.open(transferImage, '_blank');
+    };
+  } else {
+    console.error('Is not possible to download wire transfer');
+  };
+};
+
 async function submitStatus(): Promise<void> {
   await orderStore.updateOrderStatus(props._id, statusSelected.value, restaurantStore.restaurant?._id!);
   console.log('status selected', statusSelected.value);
@@ -138,7 +173,7 @@ function isStatusButtonEnabled(status: OrderStatus): boolean {
   <Modal :modalValue="modalValue">
     <template #header>
       <div class="modal-header">
-        <h4>Order Details</h4>
+        <h4>Detalle de orden</h4>
         <CrushButton variant="secondary" @click="closeModal">
           <i class="fa-solid fa-x"></i>
         </CrushButton>
@@ -165,6 +200,15 @@ function isStatusButtonEnabled(status: OrderStatus): boolean {
           <span :class="[statusClass]">{{ status }}</span>
         </div>
         <div class="status-actions">
+          <span 
+            class="payment-type">
+              Tipo de pago: <span class="payment-detail">{{ props.paymentType }}</span>
+            <button 
+              v-if="showTransfer"
+              @click="downloadTransfer">
+              Descargar transferencia
+            </button>
+          </span>          
           <span>Cambiar estado</span>
           <button
             v-for="(status, index) in statusAvailable"
@@ -242,6 +286,22 @@ function isStatusButtonEnabled(status: OrderStatus): boolean {
     .status-actions {
       display: flex;
       flex-direction: column;
+      align-items: flex-start;
+      margin-bottom: 20px;
+      gap: 16px;
+
+      .payment-type {
+        font-weight: bold;  
+        color: $black;  
+        padding: 8px 16px;  
+        background-color: $light-grey;
+        border-radius: 8px; 
+
+        .payment-detail {
+          color: $green;
+          font-weight: normal;
+        }
+      }
 
       button {
         width: 128px;
