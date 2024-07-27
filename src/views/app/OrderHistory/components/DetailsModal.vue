@@ -122,7 +122,7 @@ async function downloadTransfer() {
     } catch (error) {
       console.error('Error al descargar el archivo:', error);
       window.open(transferImage, '_blank');
-    };
+    }
   } else {
     console.error('Is not possible to download wire transfer');
   };
@@ -203,11 +203,13 @@ function isStatusButtonEnabled(status: OrderStatus): boolean {
           <span 
             class="payment-type">
               Tipo de pago: <span class="payment-detail">{{ props.paymentType }}</span>
-            <button 
+            <CrushButton 
               v-if="showTransfer"
-              @click="downloadTransfer">
+              @click="downloadTransfer"
+              class="show-transfer-button">
               Descargar transferencia
-            </button>
+              <i class="fa-solid fa-download"></i>
+            </CrushButton>
           </span>          
           <span>Cambiar estado</span>
           <button
@@ -291,11 +293,21 @@ function isStatusButtonEnabled(status: OrderStatus): boolean {
       gap: 16px;
 
       .payment-type {
+        width: 100%;
+        padding: 16px 0;
         font-weight: bold;  
         color: $black;  
-        padding: 8px 16px;  
-        background-color: $light-grey;
-        border-radius: 8px; 
+        border-top: 1px solid $light-grey;
+        border-bottom: 1px solid $light-grey;
+
+        .show-transfer-button {
+          width: 50%;
+          display: inline-block;
+          margin: 16px 0 0 0;
+          font-size: 16px; 
+          color: $black;
+          font-weight: normal;
+        }
 
         .payment-detail {
           color: $green;
