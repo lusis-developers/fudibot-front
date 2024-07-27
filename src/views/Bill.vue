@@ -32,6 +32,8 @@ const isFormValid = computed(() => {
   const email = emailRules.every(rule => rule.validate(form.email));
   return documentNumber && documentType && email;
 });
+const isBillSent = computed(() => billStore.bill?.isSent);
+const billCardTitle = computed(() => isBillSent.value ? 'Tus datos han sido enviados' : 'Llena tu Factura');
 
 function handleInput(event: string, textFieldName: string): void {
   if (textFieldName === 'name') {
@@ -52,11 +54,12 @@ async function submitForm(): Promise<void> {
   await billStore.updateBill(billId.value, form);
 }
 
-onMounted(() => {
+onMounted(async () => {
   const { id } = route.params;
 
   if (typeof id === 'string') {
     billId.value = id;
+    await billStore.getBillById(id);
   }
 });
 </script>
@@ -70,11 +73,13 @@ onMounted(() => {
             :src="fudibot"
             alt="fuditbot logo">
           <h3>
-            Llena tu factura
+            {{ billCardTitle }}
           </h3>
         </div>
       </template>
-      <template #content>
+      <template
+        #content
+        v-if="!isBillSent">
         <div class="form">
           <div class="form-group">
             <CrushTextField
@@ -118,6 +123,11 @@ onMounted(() => {
             </CrushButton>
           </div>  
         </div>
+      </template>
+      <template
+        #content
+        v-else>
+        <p>Tus datos ya han sido enviados</p>
       </template>
     </Card>
   </div>
