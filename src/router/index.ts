@@ -71,7 +71,7 @@ const routes: Array<RouteRecordRaw> = [
     }
   },
   {
-    path: '/schedule/:id',
+    path: '/schedule',
     name: 'Schedule',
     component: Schedule,
     meta: {
