@@ -57,7 +57,7 @@ const useOrderStore = defineStore("OrderStore", {
         this.error = error as AxiosError;
       }
     },
-    async updateOrderScheduled(orderId: string, schedule: OrderSchedule): Promise<void> {
+    async updateOrderScheduled(orderId: string, schedule: Pick<OrderSchedule, 'date' | 'time'>): Promise<void> {
       try {
         await orderService.patchOrderSchedule(orderId, schedule);
         this.getOrderById(orderId);

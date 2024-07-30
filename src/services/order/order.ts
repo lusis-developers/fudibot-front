@@ -14,10 +14,10 @@ class APIOrder extends APIBase {
   }
 
   async getOrderById(orderId: string): Promise<AxiosResponse> {
-    return await this.get(`orders/${orderId}`);
+    return await this.get(`orders/orderId/${orderId}`);
   }
 
-  async patchOrderSchedule(orderId: string, schedule: OrderSchedule): Promise<AxiosResponse> {
+  async patchOrderSchedule(orderId: string, schedule: Pick<OrderSchedule, 'date' | 'time'>): Promise<AxiosResponse> {
     return await this.patch(`orders-scheduled`, { schedule, orderId });
   }
 }

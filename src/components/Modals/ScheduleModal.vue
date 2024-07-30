@@ -15,6 +15,10 @@ const props = defineProps({
   time: {
     type: String,
     required: true
+  },
+  orderId: {
+    type: String,
+    required: true
   }
 });
 
@@ -25,8 +29,8 @@ function closeModal(): void {
 }
 
 async function confirmScheduleOrder(): Promise<void> {
-  console.log(props.date)
-  console.log(props.time)
+  await orderStore.updateOrderScheduled(props.orderId, { date: props.date, time: props.time });
+  closeModal();
 }
 </script>
 

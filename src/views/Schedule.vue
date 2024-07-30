@@ -2,6 +2,7 @@
 import { computed, onMounted, ref, reactive } from 'vue';
 import { useRoute } from 'vue-router';
 
+import useOrderStore from '@/store/order';
 import useRestaurantStore from '@/store/restaurant';
 import fudibot from '@/assets/fudi-isologo-color.png';
 import Card from '@/components/Card.vue';
@@ -9,6 +10,7 @@ import ScheduleModal from '@/components/Modals/ScheduleModal.vue';
 
 const route = useRoute();
 
+const orderStore = useOrderStore();
 const restaurantStore = useRestaurantStore();
 
 const orderId = ref('');
@@ -21,6 +23,8 @@ const confirmation = reactive({
   time: ''
 });
 const schedules = computed(() => restaurantStore.restaurant?.schedule);
+const isOrderSet = computed(() => !orderStore.orderScheduled?.schedule?.set);
+const cardTitle = computed(() => isOrderSet.value ? 'Programa tu entrega' : 'Tu entrega ha sido programada');
 const availableDates = computed(() => {
   const today = new Date();
   today.setDate(today.getDate() + 1); // Empezar desde el día siguiente
@@ -34,7 +38,12 @@ const availableDates = computed(() => {
         const date = new Date(today);
         date.setDate(today.getDate() + i);
         if (days[date.getDay()] === schedule.day) {
-          result.push(date.toDateString());
+          result.push(date.toLocaleDateString('es-ES', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          }));
         }
       }
     });
@@ -61,6 +70,7 @@ const availableTimes = computed(() => {
   }
   return times;
 });
+
 
 function confirmSelection(): void {
   if (selectedDay.value && selectedTime.value) {
@@ -89,10 +99,10 @@ onMounted(async () => {
     restaurantId.value = query.restaurantId;
   }
   if (typeof query.orderId === 'string') {
-    orderId.value = query.orderId;
+    orderId.value = query.orderId as string;
   }
   await restaurantStore.getRestaurantById(restaurantId.value);
-  console.log(restaurantStore.restaurant);
+  await orderStore.getOrderById(orderId.value);
 });
 </script>
 
@@ -105,12 +115,14 @@ onMounted(async () => {
             :src="fudibot"
             alt="fuditbot logo">
           <h3>
-            Programa tu pedido
+            {{ cardTitle }}
           </h3>
         </div>
       </template>
   
-      <template #content>
+      <template
+        v-if="isOrderSet"
+        #content>
         <div class="form">
           <CrushSelect
             v-if="availableDates !== null"
@@ -145,6 +157,7 @@ onMounted(async () => {
     :isModalOpen="isModalOpen"
     :date="confirmation.date"
     :time="confirmation.time"
+    :orderId="orderId"
     @close-modal="openCloseModal" />
 </template>
 

@@ -16,9 +16,9 @@ export interface Order {
 }
 
 export interface OrderSchedule {
-  scheduleDate: string,
-  scheduleTime: string,
-  isScheduleSet: boolean,
+  date: string,
+  time: string,
+  set: boolean,
 }
 
 export interface OrdersRequested {
