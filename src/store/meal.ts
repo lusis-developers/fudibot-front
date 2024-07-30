@@ -3,7 +3,6 @@ import { defineStore } from 'pinia';
 import APIMeal from '@/services/meal/meal';
 
 import type { Meal } from '@/interfaces/meal.interface';
-import { Categories } from '@/enum/mealOrDrink.enum';
 
 interface RootState {
   meals: Meal[];
