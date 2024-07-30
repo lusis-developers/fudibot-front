@@ -43,6 +43,16 @@ const useBillStore = defineStore("BillStore", {
       } catch (error: unknown) {
         this.error = error as AxiosError;
       }
+    },
+    async sendCreateBill(restaurantId: string, billId: string, from: string): Promise<void> {
+      this.isLoading = true;
+      try {
+        await billService.sendCreateBill(restaurantId, billId, from);
+      } catch (error: unknown) {
+        this.error = error as AxiosError;
+      } finally {
+        this.isLoading = false;
+      }
     }
   },
 });

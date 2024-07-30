@@ -163,11 +163,12 @@ onMounted(async () => {
     </Card>
   </div>
   <ScheduleModal
-    v-if="isModalOpen"
+    v-if="orderStore.orderScheduled"
     :isModalOpen="isModalOpen"
     :date="confirmation.date"
     :time="confirmation.time"
     :orderId="orderId"
+    :restaurantId="orderStore.orderScheduled?.restaurantId"
     @close-modal="openCloseModal" />
 </template>
 

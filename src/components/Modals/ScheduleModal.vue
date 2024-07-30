@@ -1,6 +1,10 @@
 <script setup lang="ts">
-import Modal from '@/components/Modal.vue';
+import { onMounted } from 'vue';
+
+import useBillStore from '@/store/bill';
+import useUserStore from '@/store/user';
 import useOrderStore from '@/store/order';
+import Modal from '@/components/Modal.vue';
 
 const emits = defineEmits(['close-modal']);
 const props = defineProps({
@@ -19,9 +23,15 @@ const props = defineProps({
   orderId: {
     type: String,
     required: true
+  },
+  restaurantId: {
+    type: String,
+    required: true
   }
 });
 
+const userStore = useUserStore();
+const billStore = useBillStore();
 const orderStore = useOrderStore();
 
 function closeModal(): void {
@@ -30,8 +40,20 @@ function closeModal(): void {
 
 async function confirmScheduleOrder(): Promise<void> {
   await orderStore.updateOrderScheduled(props.orderId, { date: props.date, time: props.time });
+  if (userStore.user) {
+    await billStore.sendCreateBill(props.restaurantId, userStore.user?.currentBill, userStore.user?.number)
+  }
   closeModal();
 }
+
+onMounted(async () => {
+  if (orderStore.orderScheduled) {
+    await userStore.getUser(orderStore.orderScheduled?.userId);
+  }
+  if (userStore.user) {
+    await billStore.getBillById(userStore.user.currentBill);
+  }
+});
 </script>
 
 <template>
