@@ -29,7 +29,8 @@ function closeModal(): void {
 }
 
 async function confirmScheduleOrder(): Promise<void> {
-  await orderStore.updateOrderScheduled(props.orderId, { date: props.date, time: props.time });
+  console.log(props.orderId, { date: props.date, time: props.time })
+  // await orderStore.updateOrderScheduled(props.orderId, { date: props.date, time: props.time });
   closeModal();
 }
 </script>

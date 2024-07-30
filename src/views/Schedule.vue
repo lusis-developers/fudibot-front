@@ -28,34 +28,35 @@ const cardTitle = computed(() => isOrderSet.value ? 'Programa tu entrega' : 'Tu 
 const availableDates = computed(() => {
   const today = new Date();
   today.setDate(today.getDate() + 1); // Empezar desde el día siguiente
-  const days = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
-  const result: string[] = [];
+  const days = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
+  const result: { value: string; label: string }[] = [];
 
   if (schedules.value) {
-        
     schedules.value.forEach((schedule) => {
       for (let i = 0; i < 14; i++) {
         const date = new Date(today);
         date.setDate(today.getDate() + i);
-        if (days[date.getDay()] === schedule.day) {
-          result.push(date.toLocaleDateString('es-ES', {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-          }));
+        if (days[date.getDay()] === schedule.day.toLowerCase()) {
+          result.push({
+            value: date.toISOString().split('T')[0], // Formato ISO para manejo
+            label: formatDate(date) // Formato legible para mostrar
+          });
         }
       }
     });
-
   }
+  
+  // Ordenar las fechas desde la más cercana a la más lejana
+  result.sort((a, b) => new Date(a.value).getTime() - new Date(b.value).getTime());
+
   return result;
 });
+const datesToDisplay = computed(() => availableDates.value.map(date => date.label));
 const availableTimes = computed(() => {
   if (!selectedDay.value) {
     return [];
   }
-  const selectedDayName = new Date(selectedDay.value).toLocaleDateString('es-ES', { weekday: 'long' });
+  const selectedDayName = new Date(confirmation.date).toLocaleDateString('es-ES', { weekday: 'long' });
   const schedule = schedules.value?.find((s) => s.day.toLowerCase() === selectedDayName.toLowerCase());
 
   if (!schedule) {
@@ -80,9 +81,17 @@ function confirmSelection(): void {
   }
 }
 
+function formatDate(date: Date): string {
+  return date.toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+}
+
 function handleInput($event: string, selectType: string): void {
   if (selectType === 'DAY') {
-    selectedDay.value = $event;
+    const matchedDate = availableDates.value.find(date => date.label === $event);
+    if (matchedDate) {
+      selectedDay.value = matchedDate.label;
+      confirmation.date = matchedDate.value;
+    }
   }
   if (selectType === 'TIME') {
     selectedTime.value = $event;
@@ -126,7 +135,7 @@ onMounted(async () => {
         <div class="form">
           <CrushSelect
             v-if="availableDates !== null"
-            :options="availableDates"
+            :options="datesToDisplay"
             :value="selectedDay"
             label="Seleccione un dia de entrega"
             class="form-group"
