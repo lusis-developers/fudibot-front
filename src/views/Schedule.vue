@@ -56,7 +56,8 @@ const availableTimes = computed(() => {
   if (!selectedDay.value) {
     return [];
   }
-  const selectedDayName = new Date(confirmation.date).toLocaleDateString('es-ES', { weekday: 'long' });
+
+  const selectedDayName = selectedDay.value.split(',')[0];
   const schedule = schedules.value?.find((s) => s.day.toLowerCase() === selectedDayName.toLowerCase());
 
   if (!schedule) {
