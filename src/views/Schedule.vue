@@ -5,6 +5,7 @@ import { useRoute } from 'vue-router';
 import useRestaurantStore from '@/store/restaurant';
 import fudibot from '@/assets/fudi-isologo-color.png';
 import Card from '@/components/Card.vue';
+import ScheduleModal from '@/components/Modals/ScheduleModal.vue';
 
 const route = useRoute();
 
@@ -12,8 +13,9 @@ const restaurantStore = useRestaurantStore();
 
 const orderId = ref('');
 const restaurantId = ref('');
-const selectedDay = ref<string | null>(null);
-const selectedTime = ref<string | null>(null);
+const selectedDay = ref<string>('');
+const selectedTime = ref<string>('');
+const isModalOpen = ref(false);
 const confirmation = reactive({
   date: '',
   time: ''
@@ -62,8 +64,9 @@ const availableTimes = computed(() => {
 
 function confirmSelection(): void {
   if (selectedDay.value && selectedTime.value) {
-    confirmation.date = selectedDay.value,
-    confirmation.time = selectedTime.value
+    confirmation.date = selectedDay.value;
+    confirmation.time = selectedTime.value;
+    openCloseModal();
   }
 }
 
@@ -74,6 +77,10 @@ function handleInput($event: string, selectType: string): void {
   if (selectType === 'TIME') {
     selectedTime.value = $event;
   }
+}
+
+function openCloseModal(): void {
+  isModalOpen.value = !isModalOpen.value;
 }
 
 onMounted(async () => {
@@ -106,6 +113,7 @@ onMounted(async () => {
       <template #content>
         <div class="form">
           <CrushSelect
+            v-if="availableDates !== null"
             :options="availableDates"
             :value="selectedDay"
             label="Seleccione un dia de entrega"
@@ -113,6 +121,7 @@ onMounted(async () => {
             @update:value="handleInput($event, 'DAY')" />
 
           <CrushSelect
+            v-if="availableTimes.length"
             :options="availableTimes"
             :value="selectedTime"
             label="Seleccione una hora de entrega:"
@@ -127,13 +136,16 @@ onMounted(async () => {
               Confirmar
             </CrushButton>
           </div>
-          <div v-if="confirmation">
-            <p>Ha seleccionado el {{ confirmation.date }} a las {{ confirmation.time }}.</p>
-          </div>
         </div>
       </template>
     </Card>
   </div>
+  <ScheduleModal
+    v-if="isModalOpen"
+    :isModalOpen="isModalOpen"
+    :date="confirmation.date"
+    :time="confirmation.time"
+    @close-modal="openCloseModal" />
 </template>
 
 <style lang="scss" scoped>

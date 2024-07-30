@@ -15,6 +15,12 @@ export interface Order {
   order: OrderItem[]
 }
 
+export interface OrderSchedule {
+  scheduleDate: string,
+  scheduleTime: string,
+  isScheduleSet: boolean,
+}
+
 export interface OrdersRequested {
   deliveryCost: number,
   items: OrderItem[],
@@ -25,6 +31,8 @@ export interface OrdersRequested {
   _id: string,
   paymentType: PaymentType,
   wireTransferUrl: string,
+  isSchedule: boolean,
+  schedule?: OrderSchedule,
   createdAt: string,
   updatedAt: string,
 }
