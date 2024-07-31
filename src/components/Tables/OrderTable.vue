@@ -47,6 +47,7 @@ function translatePaymentType (paymentType: PaymentType) {
           :total="order.totalOrder"
           :status="order.orderStatus"
           :userId="order.userId"
+          :schedule="order.schedule"
           :paymentType="translatePaymentType(order.paymentType)"
           :wireTransferImage="order.wireTransferUrl">
         </OrderRow>      

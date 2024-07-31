@@ -13,7 +13,7 @@ import useRestaurantStore from '@/store/restaurant';
 import { formatToCurrency } from '@/utils/inputFormats';
 import Modal from '@/components/Modal.vue';
 
-import type { OrderItem } from '@/interfaces/order.interface';
+import type { OrderItem, OrderSchedule } from '@/interfaces/order.interface';
 import { PaymentTypeSpanishTranslate } from '@/enum/PaymentType.enum';
 import axios from 'axios';
 
@@ -56,6 +56,11 @@ const props = defineProps({
     type: String,
     required: false,
   },
+  schedule: {
+    type: Object as PropType<OrderSchedule>,
+    required: false,
+    default: null
+  }
 });
 
 const orderStore = useOrderStore();
@@ -66,6 +71,14 @@ const userStore = useUserStore();
 const deliveryStore = useDeliveryStore();
 const billStore = useBillStore();
 
+const validTransitions: Record<OrderStatus, OrderStatus[]> = {
+  [OrderStatus.OPEN]: [OrderStatus.PREPARING, OrderStatus.CANCELLED_BY_RESTAURANT],
+  [OrderStatus.PREPARING]: [OrderStatus.ON_THE_WAY],
+  [OrderStatus.ON_THE_WAY]: [OrderStatus.DELIVERED],
+  [OrderStatus.DELIVERED]: [],
+  [OrderStatus.CANCELLED_BY_RESTAURANT]: [],
+  [OrderStatus.FAILED_DELIVERY]: []
+};
 const statusSelected = ref(props.status);
 const formattedTotal = computed(() => formatToCurrency(props.total));
 const statusClass = computed(() => {
@@ -87,14 +100,38 @@ const statusClass = computed(() => {
   }
 });
 const showTransfer = computed(() => props.paymentType === PaymentTypeSpanishTranslate.WIRE_TRANSFER);
-const validTransitions: Record<OrderStatus, OrderStatus[]> = {
-  [OrderStatus.OPEN]: [OrderStatus.PREPARING, OrderStatus.CANCELLED_BY_RESTAURANT],
-  [OrderStatus.PREPARING]: [OrderStatus.ON_THE_WAY],
-  [OrderStatus.ON_THE_WAY]: [OrderStatus.DELIVERED],
-  [OrderStatus.DELIVERED]: [],
-  [OrderStatus.CANCELLED_BY_RESTAURANT]: [],
-  [OrderStatus.FAILED_DELIVERY]: []
-};
+const isWithinHalfHour = computed(() => {
+  if (!props.schedule.date || !props.schedule.time) {
+    return false;
+  }
+
+  // Extraer los componentes de la fecha
+  const dateParts = props.schedule.date.split(', ')[1].split(' ');
+  const day = parseInt(dateParts[0]);
+  const month = getMonthFromName(dateParts[2]);
+  const year = parseInt(dateParts[4]);
+
+  // Extraer los componentes de la hora
+  const timeParts = props.schedule.time.split(':');
+  const hours = parseInt(timeParts[0]);
+  const minutes = parseInt(timeParts[1]);
+
+  // Crear el objeto Date para la fecha del evento
+  const eventDate = new Date(year, month, day, hours, minutes);
+
+  // Verifica que eventDate es un objeto Date válido
+  if (isNaN(eventDate.getTime())) {
+    return false;
+  }
+
+  // Obtener la fecha y hora actual
+  const now = new Date();
+
+  // Calcular la diferencia en minutos
+  const diffInMinutes = (eventDate.getTime() - now.getTime()) / (1000 * 60);
+
+  return diffInMinutes >= 0 && diffInMinutes <= 30;
+});
 
 function updateStatus(status: OrderStatus): void {
   if (validTransitions[statusSelected.value as OrderStatus].includes(status)) {
@@ -132,7 +169,11 @@ async function downloadTransfer() {
 
 async function submitStatus(): Promise<void> {
   if (restaurantStore.restaurant) {
-    await orderStore.updateOrderStatus(props._id, statusSelected.value, restaurantStore.restaurant?._id, restaurantStore.restaurant?.scheduledDelivery);
+    await orderStore.updateOrderStatus(
+      props._id, statusSelected.value,
+      restaurantStore.restaurant?._id,
+      restaurantStore.restaurant?.scheduledDelivery
+    );
   }
 
 
@@ -154,11 +195,20 @@ async function submitStatus(): Promise<void> {
       }
       // TODO: dispatch bill link if not sheduledDelivery setup
       if (restaurantStore.restaurant && !restaurantStore.restaurant?.scheduledDelivery) {
-        await billStore.sendCreateBill(restaurantStore.restaurant?._id, userStore.user.currentBill, userStore.user.number);
+        await billStore.sendCreateBill(
+          restaurantStore.restaurant?._id,
+          userStore.user.currentBill,
+          userStore.user.number
+        );
       }
     }
   }
   closeModal();
+}
+
+function getMonthFromName(monthName: string) {
+  const months = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+  return months.indexOf(monthName.toLowerCase());
 }
 
 onMounted( async () => {
@@ -214,7 +264,10 @@ function isStatusButtonEnabled(status: OrderStatus): boolean {
         <div class="status-actions">
           <span 
             class="payment-type">
-              Tipo de pago: <span class="payment-detail">{{ props.paymentType }}</span>
+            Tipo de pago:
+            <span class="payment-detail">
+              {{ props.paymentType }}
+            </span>
             <CrushButton 
               v-if="showTransfer"
               @click="downloadTransfer"
@@ -223,20 +276,33 @@ function isStatusButtonEnabled(status: OrderStatus): boolean {
               <i class="fa-solid fa-download"></i>
             </CrushButton>
           </span>          
-          <span>Cambiar estado</span>
-          <button
-            v-for="(status, index) in statusAvailable"
-            :key="index"
-            :class="{
-              active: statusSelected === status.status,
-              [statusClass]: statusSelected === status.status,
-              disabled: !isStatusButtonEnabled(status.status) && statusSelected !== status.status
-            }"
-            :disabled="!isStatusButtonEnabled(status.status)"
-            @click="isStatusButtonEnabled(status.status) ? updateStatus(status.status) : null"
-          >
-            {{ status.nameDisplayed }}
-          </button>
+          <template v-if="isWithinHalfHour">
+            <span>Cambiar estado</span>
+            <button
+              v-for="(status, index) in statusAvailable"
+              :key="index"
+              :class="{
+                active: statusSelected === status.status,
+                [statusClass]: statusSelected === status.status,
+                disabled: !isStatusButtonEnabled(status.status) && statusSelected !== status.status
+              }"
+              :disabled="!isStatusButtonEnabled(status.status)"
+              @click="isStatusButtonEnabled(status.status) ? updateStatus(status.status) : null">
+              {{ status.nameDisplayed }}
+            </button>
+          </template>
+          <template v-else>
+            <h3>
+              Este pedido está programado para el día
+              {{ schedule.date }}
+              a las {{ schedule.time }} horas.
+            </h3>
+            <CrushButton
+              variant="secondary"
+              @click="updateStatus(statusAvailable[statusAvailable.length - 1].status)">
+              {{ statusAvailable[statusAvailable.length - 1].nameDisplayed }}
+            </CrushButton>
+          </template>
         </div>
       </div>
     </template>
@@ -328,7 +394,8 @@ function isStatusButtonEnabled(status: OrderStatus): boolean {
       }
 
       button {
-        width: 128px;
+        width: 100%;
+        max-width: 256px;
         background-color: white;
         border-radius: 8px;
         padding: 8px 4px;
