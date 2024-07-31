@@ -13,7 +13,9 @@ const orderStore = useOrderStore();
 const clientStore = useClientStore();
 
 function changePage(page: number) {
-  orderStore.getOrders(clientStore.client?.restaurant?._id!, page);
+  if (clientStore.client?.restaurant) {
+    orderStore.getOrders(clientStore.client?.restaurant?._id!, page, clientStore.client?.restaurant?.scheduledDelivery);
+  }
 }
 
 const nextPage = computed(() => orderStore.nextPage !== null ? orderStore.nextPage : 0)
@@ -23,7 +25,9 @@ onMounted( async () => {
   const userAuth = await authStore.checkAuth();
   await clientStore.getClientByEmail(userAuth?.email!);
 
-  orderStore.getOrders(clientStore.client?.restaurant?._id!);
+  if (clientStore.client?.restaurant) {
+    await orderStore.getOrders(clientStore.client?.restaurant?._id, 1,clientStore.client?.restaurant?.scheduledDelivery);
+  }
 });
 </script>
 

@@ -34,9 +34,9 @@ const useOrderStore = defineStore("OrderStore", {
   }),
 
   actions: {
-    async getOrders(restaurantId: string, page: number = 1): Promise<void> {
+    async getOrders(restaurantId: string, page: number = 1, scheduledDelivery: boolean): Promise<void> {
       try {
-        const response = await orderService.getOrders(restaurantId, page);
+        const response = await orderService.getOrders(restaurantId, page, scheduledDelivery);
         this.orders = response.data.orders;
         this.currentPage = response.data.currentPage;
         this.totalPages = response.data.totalPages;
@@ -49,10 +49,10 @@ const useOrderStore = defineStore("OrderStore", {
         this.error = error as AxiosError;
       }
     },
-    async updateOrderStatus(orderId: string, status: string, restaurantId: string) {
+    async updateOrderStatus(orderId: string, status: string, restaurantId: string, scheduledDelivery: boolean) {
       try {
         await orderService.updateOrderStatus(orderId, status);
-        this.getOrders(restaurantId);
+        this.getOrders(restaurantId, this.currentPage, scheduledDelivery);
       } catch (error: unknown) {
         this.error = error as AxiosError;
       }

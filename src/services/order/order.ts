@@ -5,8 +5,8 @@ import APIBase from '../base';
 import type { OrderResponse, OrderSchedule } from '@/interfaces/order.interface';
 
 class APIOrder extends APIBase {
-  async getOrders(restaurantId: string, page: number = 1): Promise<AxiosResponse<OrderResponse>> {
-    return await this.get<OrderResponse>(`orders/${restaurantId}?page=${page}`);
+  async getOrders(restaurantId: string, page: number = 1, scheduleDelivery: boolean = false): Promise<AxiosResponse<OrderResponse>> {
+    return await this.get<OrderResponse>(`orders/${restaurantId}?page=${page}&scheduledDelivery=${scheduleDelivery}`);
   }
 
   async updateOrderStatus(orderId: string, status: string): Promise<AxiosResponse> {
