@@ -3,14 +3,15 @@ import { PropType, computed, onMounted, ref } from 'vue';
 
 import useUserStore from '@/store/user';
 import useAuthStore from '@/store/auth';
+import useBillStore from '@/store/bill';
 import useOrderStore from '@/store/order';
-import Modal from '@/components/Modal.vue';
+import useDeliveryStore from '@/store/delivery';
 import useClientStore from '@/store/client';
 import { OrderStatus } from '@/enum/order.enum';
-import useDeliveryStore from '@/store/delivery';
 import { statusAvailable } from '@/utils/order';
 import useRestaurantStore from '@/store/restaurant';
 import { formatToCurrency } from '@/utils/inputFormats';
+import Modal from '@/components/Modal.vue';
 
 import type { OrderItem } from '@/interfaces/order.interface';
 import { PaymentTypeSpanishTranslate } from '@/enum/PaymentType.enum';
@@ -63,6 +64,7 @@ const authStore = useAuthStore();
 const clientStore = useClientStore();
 const userStore = useUserStore();
 const deliveryStore = useDeliveryStore();
+const billStore = useBillStore();
 
 const statusSelected = ref(props.status);
 const formattedTotal = computed(() => formatToCurrency(props.total));
@@ -129,24 +131,31 @@ async function downloadTransfer() {
 };
 
 async function submitStatus(): Promise<void> {
-  await orderStore.updateOrderStatus(props._id, statusSelected.value, restaurantStore.restaurant?._id!);
-  console.log('status selected', statusSelected.value);
+  if (restaurantStore.restaurant) {
+    await orderStore.updateOrderStatus(props._id, statusSelected.value, restaurantStore.restaurant?._id, restaurantStore.restaurant?.scheduledDelivery);
+  }
 
-  console.log('condition', statusSelected.value === OrderStatus.PREPARING)
+
   if (statusSelected.value === OrderStatus.PREPARING) {
     await userStore.getUser(props.userId);
 
-    console.log('user', userStore.user);
     if (userStore.user) {
 
       const data = {
         from: userStore.user.number,
         name: userStore.user.name
-      } 
-      await deliveryStore.createBooking(
-        restaurantStore.restaurant?.uuid!,
-        data
-      );
+      }
+      // TODO: dispatch picker if not own fleet
+      if (!deliveryStore.delivery?.hasOwnFleet) {
+        await deliveryStore.createBooking(
+          restaurantStore.restaurant?.uuid!,
+          data
+        );
+      }
+      // TODO: dispatch bill link if not sheduledDelivery setup
+      if (restaurantStore.restaurant && !restaurantStore.restaurant?.scheduledDelivery) {
+        await billStore.sendCreateBill(restaurantStore.restaurant?._id, userStore.user.currentBill, userStore.user.number);
+      }
     }
   }
   closeModal();
@@ -156,7 +165,10 @@ onMounted( async () => {
   const userAuth = await authStore.checkAuth();
   await clientStore.getClientByEmail(userAuth?.email!);
 
-  await restaurantStore.getRestaurantById(clientStore.client?.restaurant?._id!);
+  if (clientStore.client?.restaurant) {
+    await restaurantStore.getRestaurantById(clientStore.client?.restaurant?._id);
+    await deliveryStore.getDeliveryData(clientStore.client.restaurant.delivery);
+  }
 });
 
 // Function to check if a status button should be enabled
