@@ -14,8 +14,8 @@ class APIBill extends APIBase {
     return await this.get<Bill>(`bill/${billId}`);
   }
 
-  async sendCreateBill(restaurantId: string, billId: string, from: string): Promise<AxiosResponse> {
-    return await this.post(`bill/${restaurantId}`, { from, billId })
+  async sendCreateBill(restaurantId: string, from: string): Promise<AxiosResponse> {
+    return await this.post(`create-send-bill-link/${restaurantId}`, { from })
   }
 }
 
