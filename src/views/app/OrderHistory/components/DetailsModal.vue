@@ -100,9 +100,10 @@ const statusClass = computed(() => {
   }
 });
 const showTransfer = computed(() => props.paymentType === PaymentTypeSpanishTranslate.WIRE_TRANSFER);
+
 const isWithinHalfHour = computed(() => {
-  if (!props.schedule.date || !props.schedule.time) {
-    return false;
+  if (!props.schedule.date.length || !props.schedule.time.length) {
+    return true;
   }
 
   // Extraer los componentes de la fecha
