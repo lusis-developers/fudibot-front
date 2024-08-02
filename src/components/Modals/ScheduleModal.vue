@@ -41,7 +41,7 @@ function closeModal(): void {
 async function confirmScheduleOrder(): Promise<void> {
   await orderStore.updateOrderScheduled(props.orderId, { date: props.date, time: props.time });
   if (userStore.user) {
-    await billStore.sendCreateBill(props.restaurantId, userStore.user?.currentBill, userStore.user?.number)
+    await billStore.sendCreateBill(props.restaurantId, userStore.user?.number);
   }
   closeModal();
 }
