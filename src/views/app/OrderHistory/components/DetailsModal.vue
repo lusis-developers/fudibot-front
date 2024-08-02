@@ -197,8 +197,7 @@ async function submitStatus(): Promise<void> {
       // TODO: dispatch bill link if not sheduledDelivery setup
       if (restaurantStore.restaurant && !restaurantStore.restaurant?.scheduledDelivery) {
         await billStore.sendCreateBill(
-          restaurantStore.restaurant?._id,
-          userStore.user.currentBill,
+          restaurantStore.restaurant?.uuid,
           userStore.user.number
         );
       }
