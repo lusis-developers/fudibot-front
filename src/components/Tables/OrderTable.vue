@@ -5,6 +5,7 @@ import Card from '@/components/Card.vue';
 import OrderRow from '@/components/Tables/OrderRow.vue';
 
 import type { OrdersRequested } from '@/interfaces/order.interface';
+import { PaymentType, PaymentTypeSpanishTranslate } from '@/enum/PaymentType.enum';
 
 defineProps({
   orders: {
@@ -12,6 +13,17 @@ defineProps({
     required: true
   },
 });
+
+const paymentTypeTranslations = {
+  [PaymentType.WIRE_TRANSFER]: PaymentTypeSpanishTranslate.WIRE_TRANSFER,
+  [PaymentType.PAYMENT_LINK]: PaymentTypeSpanishTranslate.PAYMENT_LINK,
+  [PaymentType.MISSING_PAY]: PaymentTypeSpanishTranslate.MISSING_PAY,
+};
+
+function translatePaymentType (paymentType: PaymentType) {
+  const sentence = paymentTypeTranslations[paymentType] || PaymentTypeSpanishTranslate.MISSING_PAY; 
+  return sentence
+};
 </script>
 
 <template>
@@ -34,7 +46,10 @@ defineProps({
           :items="order.items"
           :total="order.totalOrder"
           :status="order.orderStatus"
-          :userId="order.userId">
+          :userId="order.userId"
+          :schedule="order.schedule"
+          :paymentType="translatePaymentType(order.paymentType)"
+          :wireTransferImage="order.wireTransferUrl">
         </OrderRow>      
       </div>
     </template>

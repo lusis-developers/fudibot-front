@@ -11,6 +11,7 @@ const Register = () => import('@/views/Register.vue');
 const Authorize = () => import('@/views/Authorize.vue');
 const Wizard = () => import('@/views/Wizard/Index.vue');
 const Bill = () => import('@/views/Bill.vue');
+const Schedule = () => import('@/views/Schedule.vue');
 const Datafast = () => import('@/views/Datafast.vue');
 const Meals = () => import('@/views/app/MealsView/Index.vue');
 const Drinks = () => import('@/views/app/DrinksView/Index.vue');
@@ -67,6 +68,14 @@ const routes: Array<RouteRecordRaw> = [
     component: Datafast,
     meta: {
       title: 'Realiza tu pago 💵'
+    }
+  },
+  {
+    path: '/schedule',
+    name: 'Schedule',
+    component: Schedule,
+    meta: {
+      title: 'Programa tu orden 📝'
     }
   },
   {

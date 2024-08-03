@@ -7,7 +7,7 @@ export const statusAvailable = [
   },
   {
     status: OrderStatus.PREPARING,
-    nameDisplayed: 'Preparando'
+    nameDisplayed: 'Preparando pedido'
   },
   {
     status: OrderStatus.ON_THE_WAY,
@@ -15,6 +15,6 @@ export const statusAvailable = [
   },
   {
     status: OrderStatus.CANCELLED_BY_RESTAURANT,
-    nameDisplayed: 'Cancelado'
+    nameDisplayed: 'Cancelar pedido al cliente'
   },
 ]

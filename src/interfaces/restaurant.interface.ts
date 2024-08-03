@@ -23,7 +23,8 @@ export interface Restaurant {
   bankSettings?: Bank[]| string[],
   createdAt: string,
   updatedAt: string,
-  botId: string
+  botId: string,
+  scheduledDelivery: boolean
 }
 
 export interface Schedule {

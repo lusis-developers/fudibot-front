@@ -14,6 +14,7 @@ interface RootState {
   hasPreviousPage: boolean;
   previousPage: number | null;
   error: string | null;
+  isLoading: boolean
 }
 
 const mealService = new APIMeal();
@@ -29,10 +30,12 @@ const useMealStore = defineStore("MealStore", {
     hasPreviousPage: false,
     previousPage: null,
     error: null,
+    isLoading: false
   }),
 
   actions: {
     async getMeals(uuid: string, page: number = 1): Promise<void> {
+      this.isLoading = true;
       try {
         const response = await mealService.getMeals(uuid, page);
         this.meals = response.data.meals;
@@ -45,6 +48,8 @@ const useMealStore = defineStore("MealStore", {
         this.hasPreviousPage = response.data.hasPreviousPage;
       } catch (error: unknown) {
         this.error = String(error)
+      } finally {
+        this.isLoading = false;
       }
     },
     async addMeal(meal: Meal, uuid: string) {

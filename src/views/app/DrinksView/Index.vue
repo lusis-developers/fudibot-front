@@ -4,9 +4,10 @@ import { onMounted, ref, computed } from 'vue';
 import useAuthStore from '@/store/auth';
 import useDrinkStore from '@/store/drink';
 import useClientStore from '@/store/client';
+import useRestaurantStore from '@/store/restaurant';
 import { Categories } from '@/enum/mealOrDrink.enum';
 import ProductTable from '@/components/Tables/ProductTable.vue'; 
-import useRestaurantStore from '@/store/restaurant';
+
 import CreateMealDrinkModal from '@/components/Modals/CreateMealDrinkModal.vue';
 
 const authStore = useAuthStore();
@@ -26,13 +27,15 @@ function changePage(page: number) {
 
 const nextPage = computed(() => drinksStore.nextPage !== null ? drinksStore.nextPage : 0);
 const previousPage = computed(() => drinksStore.previousPage !== null ? drinksStore.previousPage : 0);
+const drinks = computed(() => drinksStore.drinks);
+const restaurantUuid = computed(() => restaurantStore.restaurant?.uuid);
 
 onMounted( async () => {
   const userAuth = await authStore.checkAuth();
   await clientStore.getClientByEmail(userAuth?.email!);
 
-  restaurantStore.getRestaurantById(clientStore.client?.restaurant?._id!);
-  drinksStore.getDrinks(clientStore.client?.restaurant?.uuid!);
+  await restaurantStore.getRestaurantById(clientStore.client?.restaurant?._id!);
+  await drinksStore.getDrinks(clientStore.client?.restaurant?.uuid!);
 });
 </script>
 
@@ -45,8 +48,10 @@ onMounted( async () => {
         @click="openCloseModal" />
     </div>
     <ProductTable
-      v-if="drinksStore.drinks.length"
-      :items="drinksStore.drinks" />
+      v-if="drinks && restaurantUuid"
+      :items="drinks"
+      :restaurantUuid="restaurantUuid"
+      :categoryType="Categories.DRINK" />
     <div class="meals-pagination">
       <Pagination
         :totalPages="drinksStore.totalPages"
@@ -57,11 +62,11 @@ onMounted( async () => {
         :previousPage="previousPage"
         @pageChange="changePage" />
     </div>
-    <CreateMealDrinkModal
-      :isModalOpen="isModalOpen"
-      :category="Categories.DRINK"
-      @close-modal="openCloseModal" />
   </div>
+  <CreateMealDrinkModal
+    :isModalOpen="isModalOpen"
+    :category="Categories.DRINK"
+    @close-modal="openCloseModal" />
 </template>
 
 <style lang="scss" scoped>

@@ -3,8 +3,9 @@ import { ref, computed, PropType } from 'vue';
 
 import { OrderStatus } from '@/enum/order.enum';
 import { formatPriceToDisplay } from '@/utils/inputFormats';
-import { OrderItem } from '@/interfaces/order.interface';
 import DetailsModal from '@/views/app/OrderHistory/components/DetailsModal.vue';
+
+import type { OrderItem, OrderSchedule} from '@/interfaces/order.interface';
 
 const props = defineProps({
   _id: {
@@ -30,6 +31,19 @@ const props = defineProps({
   userId: {
     type: String,
     required: true
+  },
+  paymentType: {
+    type: String,
+    required: true
+  },
+  wireTransferImage: {
+    type: String,
+    required: false,
+  },
+  schedule: {
+    type: Object as PropType<OrderSchedule>,
+    required: false,
+    default: null
   }
 });
 
@@ -97,6 +111,9 @@ function openCloseModal(): void {
     :total="total"
     :status="status"
     :userId="userId"
+    :paymentType="paymentType"
+    :wireTransferImage="wireTransferImage"
+    :schedule="schedule"
     @closeModal="openCloseModal" />
 </template>
 

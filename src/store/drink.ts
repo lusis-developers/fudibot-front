@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import APIDrink from '@/services/drink/drinks';
 
 import type { Drink } from '@/interfaces/drink.interface';
+import { Categories } from '@/enum/mealOrDrink.enum';
 
 interface RootState {
   drinks: Drink[];
@@ -34,7 +35,12 @@ const useDrinkStore = defineStore("DrinkStore", {
     async getDrinks(uuid: string, page: number = 1): Promise<void> {
       try {
         const response = await drinkService.getDrinks(uuid, page);
-        this.drinks = response.data.drinks;
+        this.drinks = response.data.drinks.map((drink: Drink) => ({
+          ...drink,
+          categoryType: Categories.DRINK
+        }));;
+
+
         this.currentPage = response.data.currentPage;
         this.totalPages = response.data.totalPages;
         this.totalOrders = response.data.totalOrders;

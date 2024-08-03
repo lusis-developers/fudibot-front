@@ -5,4 +5,5 @@ export interface Bill {
   documentType: BillIdType,
   documentNumber: string,
   email: string,
+  isSent: boolean
 }

@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia';
 
-import type { OrdersRequested } from '@/interfaces/order.interface';
+import type { OrdersRequested, OrderSchedule } from '@/interfaces/order.interface';
 import APIOrder from '@/services/order/order';
+import { AxiosError } from 'axios';
 
 interface RootState {
   orders: OrdersRequested[];
@@ -12,7 +13,8 @@ interface RootState {
   nextPage: number | null;
   hasPreviousPage: boolean;
   previousPage: number | null;
-  error: string | null;
+  error: AxiosError | null;
+  orderScheduled: OrdersRequested | null;
 }
 
 const orderService = new APIOrder();
@@ -28,12 +30,13 @@ const useOrderStore = defineStore("OrderStore", {
     hasPreviousPage: false,
     previousPage: null,
     error: null,
+    orderScheduled: null
   }),
 
   actions: {
-    async getOrders(restaurantId: string, page: number = 1): Promise<void> {
+    async getOrders(restaurantId: string, page: number = 1, scheduledDelivery: boolean): Promise<void> {
       try {
-        const response = await orderService.getOrders(restaurantId, page);
+        const response = await orderService.getOrders(restaurantId, page, scheduledDelivery);
         this.orders = response.data.orders;
         this.currentPage = response.data.currentPage;
         this.totalPages = response.data.totalPages;
@@ -43,15 +46,31 @@ const useOrderStore = defineStore("OrderStore", {
         this.previousPage = response.data.previousPage;
         this.hasPreviousPage = response.data.hasPreviousPage;
       } catch (error) {
-        this.error = String(error);
+        this.error = error as AxiosError;
       }
     },
-    async updateOrderStatus(orderId: string, status: string, restaurantId: string) {
+    async updateOrderStatus(orderId: string, status: string, restaurantId: string, scheduledDelivery: boolean) {
       try {
         await orderService.updateOrderStatus(orderId, status);
-        this.getOrders(restaurantId);
+        this.getOrders(restaurantId, this.currentPage, scheduledDelivery);
       } catch (error: unknown) {
-        this.error = String(error);
+        this.error = error as AxiosError;
+      }
+    },
+    async updateOrderScheduled(orderId: string, schedule: Pick<OrderSchedule, 'date' | 'time'>): Promise<void> {
+      try {
+        await orderService.patchOrderSchedule(orderId, schedule);
+        this.getOrderById(orderId);
+      } catch (error: unknown) {
+        this.error = error as AxiosError;
+      }
+    },
+    async getOrderById(orderId: string): Promise<void> {
+      try {
+        const response = await orderService.getOrderById(orderId);
+        this.orderScheduled = response.data;
+      } catch (error: unknown) {
+        this.error = error as AxiosError;
       }
     }
   },

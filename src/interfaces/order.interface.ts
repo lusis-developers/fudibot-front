@@ -1,4 +1,5 @@
 import { OrderStatus } from "@/enum/order.enum"
+import { PaymentType } from "@/enum/PaymentType.enum"
 
 export interface OrderItem {
   item: string,
@@ -14,6 +15,12 @@ export interface Order {
   order: OrderItem[]
 }
 
+export interface OrderSchedule {
+  date: string,
+  time: string,
+  set: boolean,
+}
+
 export interface OrdersRequested {
   deliveryCost: number,
   items: OrderItem[],
@@ -21,7 +28,11 @@ export interface OrdersRequested {
   totalOrder: number,
   userId: string,
   restaurantId: string,
-  _id: string
+  _id: string,
+  paymentType: PaymentType,
+  wireTransferUrl: string,
+  isSchedule: boolean,
+  schedule?: OrderSchedule,
   createdAt: string,
   updatedAt: string,
 }

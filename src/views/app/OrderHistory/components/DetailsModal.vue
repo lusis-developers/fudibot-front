@@ -1,18 +1,21 @@
 <script setup lang="ts">
 import { PropType, computed, onMounted, ref } from 'vue';
 
-import useAuthStore from '@/store/auth';
-import useOrderStore from '@/store/order';
-import useClientStore from '@/store/client';
 import useUserStore from '@/store/user';
+import useAuthStore from '@/store/auth';
+import useBillStore from '@/store/bill';
+import useOrderStore from '@/store/order';
+import useDeliveryStore from '@/store/delivery';
+import useClientStore from '@/store/client';
 import { OrderStatus } from '@/enum/order.enum';
 import { statusAvailable } from '@/utils/order';
-import { formatToCurrency } from '@/utils/inputFormats';
 import useRestaurantStore from '@/store/restaurant';
+import { formatToCurrency } from '@/utils/inputFormats';
 import Modal from '@/components/Modal.vue';
 
-import type { OrderItem } from '@/interfaces/order.interface';
-import useDeliveryStore from '@/store/delivery';
+import type { OrderItem, OrderSchedule } from '@/interfaces/order.interface';
+import { PaymentTypeSpanishTranslate } from '@/enum/PaymentType.enum';
+import axios from 'axios';
 
 const emit = defineEmits(['update:modalValue', 'closeModal'])
 
@@ -44,6 +47,19 @@ const props = defineProps({
   userId: {
     type: String,
     required: true
+  },
+  paymentType: {
+    type: String,
+    required: true
+  },
+  wireTransferImage: {
+    type: String,
+    required: false,
+  },
+  schedule: {
+    type: Object as PropType<OrderSchedule>,
+    required: false,
+    default: null
   }
 });
 
@@ -53,7 +69,16 @@ const authStore = useAuthStore();
 const clientStore = useClientStore();
 const userStore = useUserStore();
 const deliveryStore = useDeliveryStore();
+const billStore = useBillStore();
 
+const validTransitions: Record<OrderStatus, OrderStatus[]> = {
+  [OrderStatus.OPEN]: [OrderStatus.PREPARING, OrderStatus.CANCELLED_BY_RESTAURANT],
+  [OrderStatus.PREPARING]: [OrderStatus.ON_THE_WAY],
+  [OrderStatus.ON_THE_WAY]: [OrderStatus.DELIVERED],
+  [OrderStatus.DELIVERED]: [],
+  [OrderStatus.CANCELLED_BY_RESTAURANT]: [],
+  [OrderStatus.FAILED_DELIVERY]: []
+};
 const statusSelected = ref(props.status);
 const formattedTotal = computed(() => formatToCurrency(props.total));
 const statusClass = computed(() => {
@@ -74,14 +99,40 @@ const statusClass = computed(() => {
       return '';
   }
 });
-const validTransitions: Record<OrderStatus, OrderStatus[]> = {
-  [OrderStatus.OPEN]: [OrderStatus.PREPARING, OrderStatus.CANCELLED_BY_RESTAURANT],
-  [OrderStatus.PREPARING]: [OrderStatus.ON_THE_WAY],
-  [OrderStatus.ON_THE_WAY]: [OrderStatus.DELIVERED],
-  [OrderStatus.DELIVERED]: [],
-  [OrderStatus.CANCELLED_BY_RESTAURANT]: [],
-  [OrderStatus.FAILED_DELIVERY]: []
-};
+const showTransfer = computed(() => props.paymentType === PaymentTypeSpanishTranslate.WIRE_TRANSFER);
+
+const isWithinHalfHour = computed(() => {
+  if (!props.schedule.date.length || !props.schedule.time.length) {
+    return true;
+  }
+
+  // Extraer los componentes de la fecha
+  const dateParts = props.schedule.date.split(', ')[1].split(' ');
+  const day = parseInt(dateParts[0]);
+  const month = getMonthFromName(dateParts[2]);
+  const year = parseInt(dateParts[4]);
+
+  // Extraer los componentes de la hora
+  const timeParts = props.schedule.time.split(':');
+  const hours = parseInt(timeParts[0]);
+  const minutes = parseInt(timeParts[1]);
+
+  // Crear el objeto Date para la fecha del evento
+  const eventDate = new Date(year, month, day, hours, minutes);
+
+  // Verifica que eventDate es un objeto Date válido
+  if (isNaN(eventDate.getTime())) {
+    return false;
+  }
+
+  // Obtener la fecha y hora actual
+  const now = new Date();
+
+  // Calcular la diferencia en minutos
+  const diffInMinutes = (eventDate.getTime() - now.getTime()) / (1000 * 60);
+
+  return diffInMinutes >= 0 && diffInMinutes <= 30;
+});
 
 function updateStatus(status: OrderStatus): void {
   if (validTransitions[statusSelected.value as OrderStatus].includes(status)) {
@@ -93,35 +144,81 @@ function closeModal(): void {
   emit('closeModal');
   statusSelected.value = props.status;
 }
-async function submitStatus(): Promise<void> {
-  await orderStore.updateOrderStatus(props._id, statusSelected.value, restaurantStore.restaurant?._id!);
-  console.log('status selected', statusSelected.value);
 
-  console.log('condition', statusSelected.value === OrderStatus.PREPARING)
+async function downloadTransfer() {
+  const transferImage = props.wireTransferImage;
+  if (transferImage) {
+    try {
+      const response = await axios.get(transferImage, { responseType: 'blob' });
+      const blob = new Blob([response.data], { type: response.data.type });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'transferencia.pdf';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error al descargar el archivo:', error);
+      window.open(transferImage, '_blank');
+    }
+  } else {
+    console.error('Is not possible to download wire transfer');
+  };
+};
+
+async function submitStatus(): Promise<void> {
+  if (restaurantStore.restaurant) {
+    await orderStore.updateOrderStatus(
+      props._id, statusSelected.value,
+      restaurantStore.restaurant?._id,
+      restaurantStore.restaurant?.scheduledDelivery
+    );
+  }
+
+
   if (statusSelected.value === OrderStatus.PREPARING) {
     await userStore.getUser(props.userId);
 
-    console.log('user', userStore.user);
     if (userStore.user) {
 
       const data = {
         from: userStore.user.number,
         name: userStore.user.name
-      } 
-      await deliveryStore.createBooking(
-        restaurantStore.restaurant?.uuid!,
-        data
-      );
+      }
+      // TODO: dispatch picker if not own fleet
+      if (!deliveryStore.delivery?.hasOwnFleet) {
+        await deliveryStore.createBooking(
+          restaurantStore.restaurant?.uuid!,
+          data
+        );
+      }
+      // TODO: dispatch bill link if not sheduledDelivery setup
+      if (restaurantStore.restaurant && !restaurantStore.restaurant?.scheduledDelivery) {
+        await billStore.sendCreateBill(
+          restaurantStore.restaurant?.uuid,
+          userStore.user.number
+        );
+      }
     }
   }
   closeModal();
+}
+
+function getMonthFromName(monthName: string) {
+  const months = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+  return months.indexOf(monthName.toLowerCase());
 }
 
 onMounted( async () => {
   const userAuth = await authStore.checkAuth();
   await clientStore.getClientByEmail(userAuth?.email!);
 
-  await restaurantStore.getRestaurantById(clientStore.client?.restaurant?._id!);
+  if (clientStore.client?.restaurant) {
+    await restaurantStore.getRestaurantById(clientStore.client?.restaurant?._id);
+    await deliveryStore.getDeliveryData(clientStore.client.restaurant.delivery);
+  }
 });
 
 // Function to check if a status button should be enabled
@@ -138,7 +235,7 @@ function isStatusButtonEnabled(status: OrderStatus): boolean {
   <Modal :modalValue="modalValue">
     <template #header>
       <div class="modal-header">
-        <h4>Order Details</h4>
+        <h4>Detalle de orden</h4>
         <CrushButton variant="secondary" @click="closeModal">
           <i class="fa-solid fa-x"></i>
         </CrushButton>
@@ -165,20 +262,47 @@ function isStatusButtonEnabled(status: OrderStatus): boolean {
           <span :class="[statusClass]">{{ status }}</span>
         </div>
         <div class="status-actions">
-          <span>Cambiar estado</span>
-          <button
-            v-for="(status, index) in statusAvailable"
-            :key="index"
-            :class="{
-              active: statusSelected === status.status,
-              [statusClass]: statusSelected === status.status,
-              disabled: !isStatusButtonEnabled(status.status) && statusSelected !== status.status
-            }"
-            :disabled="!isStatusButtonEnabled(status.status)"
-            @click="isStatusButtonEnabled(status.status) ? updateStatus(status.status) : null"
-          >
-            {{ status.nameDisplayed }}
-          </button>
+          <span 
+            class="payment-type">
+            Tipo de pago:
+            <span class="payment-detail">
+              {{ props.paymentType }}
+            </span>
+            <CrushButton 
+              v-if="showTransfer"
+              @click="downloadTransfer"
+              class="show-transfer-button">
+              Descargar transferencia
+              <i class="fa-solid fa-download"></i>
+            </CrushButton>
+          </span>          
+          <template v-if="isWithinHalfHour">
+            <span>Cambiar estado</span>
+            <button
+              v-for="(status, index) in statusAvailable"
+              :key="index"
+              :class="{
+                active: statusSelected === status.status,
+                [statusClass]: statusSelected === status.status,
+                disabled: !isStatusButtonEnabled(status.status) && statusSelected !== status.status
+              }"
+              :disabled="!isStatusButtonEnabled(status.status)"
+              @click="isStatusButtonEnabled(status.status) ? updateStatus(status.status) : null">
+              {{ status.nameDisplayed }}
+            </button>
+          </template>
+          <template v-else>
+            <h3>
+              Este pedido está programado para el día
+              {{ schedule.date }}
+              a las {{ schedule.time }} horas.
+            </h3>
+            <CrushButton
+              variant="secondary"
+              @click="updateStatus(statusAvailable[statusAvailable.length - 1].status)">
+              {{ statusAvailable[statusAvailable.length - 1].nameDisplayed }}
+            </CrushButton>
+          </template>
         </div>
       </div>
     </template>
@@ -242,9 +366,36 @@ function isStatusButtonEnabled(status: OrderStatus): boolean {
     .status-actions {
       display: flex;
       flex-direction: column;
+      align-items: flex-start;
+      margin-bottom: 20px;
+      gap: 16px;
+
+      .payment-type {
+        width: 100%;
+        padding: 16px 0;
+        font-weight: bold;  
+        color: $black;  
+        border-top: 1px solid $light-grey;
+        border-bottom: 1px solid $light-grey;
+
+        .show-transfer-button {
+          width: 50%;
+          display: inline-block;
+          margin: 16px 0 0 0;
+          font-size: 16px; 
+          color: $black;
+          font-weight: normal;
+        }
+
+        .payment-detail {
+          color: $green;
+          font-weight: normal;
+        }
+      }
 
       button {
-        width: 128px;
+        width: 100%;
+        max-width: 256px;
         background-color: white;
         border-radius: 8px;
         padding: 8px 4px;

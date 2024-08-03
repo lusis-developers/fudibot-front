@@ -7,8 +7,9 @@ import useClientStore from '@/store/client';
 import useRestaurantStore from '@/store/restaurant';
 import { Categories } from '@/enum/mealOrDrink.enum';
 import ProductTable from '@/components/Tables/ProductTable.vue'; 
-import CreateMealDrinkModal from '@/components/Modals/CreateMealDrinkModal.vue';
 import Pagination from '@/components/Pagination.vue';
+
+import CreateMealDrinkModal from '@/components/Modals/CreateMealDrinkModal.vue';
 
 const authStore = useAuthStore();
 const mealStore = useMealStore();
@@ -18,7 +19,7 @@ const restaurantStore = useRestaurantStore();
 const isModalOpen = ref(false);
 
 function openCloseModal(): void {
-  isModalOpen.value = !isModalOpen.value
+  isModalOpen.value = !isModalOpen.value;
 }
 
 function changePage(page: number) {
@@ -27,13 +28,14 @@ function changePage(page: number) {
 
 const nextPage = computed(() => mealStore.nextPage !== null ? mealStore.nextPage : 0);
 const previousPage = computed(() => mealStore.previousPage !== null ? mealStore.previousPage : 0);
+const meals = computed(() => mealStore.meals);
+const restaurantUuid = computed(() => restaurantStore.restaurant?.uuid);
 
-onMounted( async () => {
+onMounted(async () => {
   const userAuth = await authStore.checkAuth();
   await clientStore.getClientByEmail(userAuth?.email!);
-  
-  restaurantStore.getRestaurantById(clientStore.client?.restaurant?._id!);
-  mealStore.getMeals(clientStore.client?.restaurant?.uuid!);
+  await restaurantStore.getRestaurantById(clientStore.client?.restaurant?._id!);
+  await mealStore.getMeals(clientStore.client?.restaurant?.uuid!);
 });
 </script>
 
@@ -46,8 +48,10 @@ onMounted( async () => {
         @click="openCloseModal" />
     </div>
     <ProductTable
-      v-if="mealStore.meals.length"
-      :items="mealStore.meals" />
+      v-if="meals && restaurantUuid"
+      :items="meals"
+      :restaurantUuid="restaurantUuid"
+      :categoryType="Categories.MEAL" />
     <div class="meals-pagination">
       <Pagination
         :totalPages="mealStore.totalPages"
