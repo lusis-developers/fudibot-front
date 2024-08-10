@@ -6,13 +6,13 @@ import useUserStore from '@/store/user';
 import useAuthStore from '@/store/auth';
 import useBillStore from '@/store/bill';
 import useOrderStore from '@/store/order';
+import Modal from '@/components/Modal.vue';
 import useDeliveryStore from '@/store/delivery';
 import useClientStore from '@/store/client';
 import { OrderStatus } from '@/enum/order.enum';
 import { statusAvailable } from '@/utils/order';
 import useRestaurantStore from '@/store/restaurant';
 import { formatToCurrency } from '@/utils/inputFormats';
-import Modal from '@/components/Modal.vue';
 
 import { PaymentTypeSpanishTranslate } from '@/enum/PaymentType.enum';
 
