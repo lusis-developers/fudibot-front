@@ -16,17 +16,18 @@ const clientStore = useClientStore();
 const restaurantStore = useRestaurantStore();
 const botStore = useBotStore();
 
+const builderBotUrl = 'https://www.bbot.site/link-device/-SsKnPfqEdZpFxElmpSuR';
 const showModal = ref(false);
 const botId = computed(() => restaurantStore.restaurant?.botId);
 const restaurant = computed(() => restaurantStore.restaurant);
 const qrCodeStatus = computed(() => botStore.status);
 
-function getQRInterval(): void {
+async function getQRInterval(): Promise<void> {
   setInterval(async () => {
     if (botId.value) {
       await botStore.getBot(botId.value);
     }
-  }, 20000); // 20000 milisegundos = 20 segundos
+  }, 10000); // 10000 milisegundos = 10 segundos
 }
 
 onMounted(async () => {
@@ -36,7 +37,7 @@ onMounted(async () => {
   if (!clientStore.client?.restaurant?.companyName) {
     router.push({ path: '/wizard' });
   }
-  getQRInterval();
+  await getQRInterval();
   if (botId.value && !qrCodeStatus.value) {
     await botStore.createBot(botId.value);
   }
@@ -54,14 +55,17 @@ onMounted(async () => {
         :manager="restaurant.manager"
         @edit="showModal = true" />
   </div>
-  <qrCode
+  <div v-if="botStore.status">
+    {{ qrCodeStatus.status }}
+  </div>
+  <!-- <qrCode
     v-if="botStore.status"
     :base64="botStore.status.base64Qr"
     :status="botStore.status.status"
     :botId="botId!" />
   <ModalEdit 
     :showModal="showModal" 
-    @closeModal="showModal = false" />
+    @closeModal="showModal = false" /> -->
 </template>
 
 <style lang="scss" scoped>
