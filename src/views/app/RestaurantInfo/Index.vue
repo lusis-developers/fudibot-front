@@ -22,13 +22,13 @@ const botId = computed(() => restaurantStore.restaurant?.botId);
 const restaurant = computed(() => restaurantStore.restaurant);
 const qrCodeStatus = computed(() => botStore.status);
 
-async function getQRInterval(): Promise<void> {
-  setInterval(async () => {
-    if (botId.value) {
-      await botStore.getBot(botId.value);
-    }
-  }, 10000); // 10000 milisegundos = 10 segundos
-}
+// async function getQRInterval(): Promise<void> {
+//   setInterval(async () => {
+//     if (botId.value) {
+//       await botStore.getBot(botId.value);
+//     }
+//   }, 10000); // 10000 milisegundos = 10 segundos
+// }
 
 onMounted(async () => {
   const userAuth = await authStore.checkAuth();
@@ -37,10 +37,10 @@ onMounted(async () => {
   if (!clientStore.client?.restaurant?.companyName) {
     router.push({ path: '/wizard' });
   }
-  await getQRInterval();
-  if (botId.value && !qrCodeStatus.value) {
-    await botStore.createBot(botId.value);
-  }
+  // await getQRInterval();
+  // if (botId.value && !qrCodeStatus.value) {
+  //   await botStore.createBot(botId.value);
+  // }
 });
 </script>
 
@@ -55,6 +55,11 @@ onMounted(async () => {
         :manager="restaurant.manager"
         @edit="showModal = true" />
   </div>
+  <CrushButton
+    v-if="botId"
+    @click="botStore.createBot(botId)">
+    Crear QR
+  </CrushButton>
   <div v-if="botStore.status">
     {{ qrCodeStatus.status }}
   </div>
