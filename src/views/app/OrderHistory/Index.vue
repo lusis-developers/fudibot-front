@@ -6,6 +6,7 @@ import useOrderStore from '@/store/order';
 import useClientStore from '@/store/client';
 
 import Pagination from '@/components/Pagination.vue';
+import GlobalLoading from '@/components/GlobalLoading.vue'
 import OrderTable from '@/components/Tables/OrderTable.vue';
 
 const authStore = useAuthStore();
@@ -32,7 +33,10 @@ onMounted( async () => {
 </script>
 
 <template>
-  <div class="orders">
+  <GlobalLoading v-if="orderStore.isLoading"/>
+  <div 
+    v-else
+    class="orders">
     <OrderTable
       v-if="orderStore.orders.length"
       :orders="orderStore.orders" />

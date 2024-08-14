@@ -6,3 +6,4 @@ declare module '@nabux-crush/crush-editor';
 declare module  '@nabux-crush/crush-alert';
 declare module '@nabux-crush/crush-upload';
 declare module '@nabux-crush/crush-select'
+declare module '@nabux-crush/crush-global-loading'

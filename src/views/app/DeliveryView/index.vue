@@ -8,6 +8,7 @@ import useDeliveryStore from '@/store/delivery';
 import FleetConfig from './components/FleetConfig.vue';
 import { formatPriceToDisplay } from '@/utils/inputFormats';
 import FleetDetailCard from './components/FleetDetailCard.vue';
+import GlobalLoading from '@/components/GlobalLoading.vue';
 
 
 const deliveryStore = useDeliveryStore();
@@ -28,7 +29,8 @@ onMounted(async() => {
 </script>
 
 <template>
-  <div class="container" v-if="deliveryStore.delivery">
+  <GlobalLoading v-if="deliveryStore.isLoading"/>
+  <div class="container" v-else>
     <FleetConfig />
     <div class="container-cards" v-if="cards">
       <Card
