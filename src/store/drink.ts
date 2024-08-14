@@ -14,6 +14,7 @@ interface RootState {
   hasPreviousPage: boolean;
   previousPage: number | null;
   error: string | null;
+  isLoading: boolean;
 }
 
 const drinkService = new APIDrink();
@@ -29,10 +30,12 @@ const useDrinkStore = defineStore("DrinkStore", {
     hasPreviousPage: false,
     previousPage: null,
     error: null,
+    isLoading: false,
   }),
 
   actions: {
     async getDrinks(uuid: string, page: number = 1): Promise<void> {
+      this.isLoading = true;
       try {
         const response = await drinkService.getDrinks(uuid, page);
         this.drinks = response.data.drinks.map((drink: Drink) => ({
@@ -50,6 +53,8 @@ const useDrinkStore = defineStore("DrinkStore", {
         this.hasPreviousPage = response.data.hasPreviousPage;
       } catch(error: unknown) {
         this.error = String(error)
+      } finally {
+        this.isLoading = false;
       }
     },
     async addDrink(drink: Drink, uuid: string): Promise<void> {

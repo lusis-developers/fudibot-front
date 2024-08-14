@@ -12,6 +12,7 @@ import CrushButton from '@nabux-crush/crush-button';
 import CrushTextField from '@nabux-crush/crush-text-field';
 import CrushUpload from '@nabux-crush/crush-upload';
 import CrushSelect from '@nabux-crush/crush-select';
+import CrushGlobalLoading from '@nabux-crush/crush-global-loading'
 
 async function createVueApp() {
   const app = createApp(App);
@@ -32,6 +33,7 @@ async function createVueApp() {
   app.component('CrushTextField', CrushTextField);
   app.component('CrushUpload', CrushUpload);
   app.component('CrushSelect', CrushSelect);
+  app.component('CrushGlobalLoading', CrushGlobalLoading);
 
   return app;
 }

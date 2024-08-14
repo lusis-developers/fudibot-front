@@ -2,13 +2,14 @@
 import { useRouter } from 'vue-router';
 import { onMounted, computed, ref } from 'vue';
 
+import useBotStore from '@/store/bot';
 import useAuthStore from '@/store/auth';
 import useClientStore from '@/store/client';
+import qrCode from './components/qrCode.vue';
 import useRestaurantStore from '@/store/restaurant';
+import GlobalLoading from '@/components/GlobalLoading.vue'
 import ModalEdit from './components/ModalEdit.vue/index.vue';
 import RestaurantDetails from './components/RestaurantDetails.vue';
-import qrCode from './components/qrCode.vue';
-import useBotStore from '@/store/bot';
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -17,6 +18,7 @@ const restaurantStore = useRestaurantStore();
 const botStore = useBotStore();
 
 const showModal = ref(false);
+const isLoading = ref(true);
 const botId = computed(() => restaurantStore.restaurant?.botId);
 const restaurant = computed(() => restaurantStore.restaurant);
 const qrCodeStatus = computed(() => botStore.status);
@@ -40,28 +42,33 @@ onMounted(async () => {
   if (botId.value && !qrCodeStatus.value) {
     await botStore.createBot(botId.value);
   }
+
+  isLoading.value = false;
 });
 </script>
 
 <template>
-  <div 
-    v-if="restaurant && !showModal" 
-    class="restaurant-info">
-      <RestaurantDetails 
-        :companyName="restaurant.companyName" 
-        :logo="restaurant.logo"
-        :website="restaurant.website"
-        :manager="restaurant.manager"
-        @edit="showModal = true" />
+  <GlobalLoading v-if="isLoading"/>
+  <div v-else>
+    <div 
+      v-if="restaurant && !showModal" 
+      class="restaurant-info">
+        <RestaurantDetails 
+          :companyName="restaurant.companyName" 
+          :logo="restaurant.logo"
+          :website="restaurant.website"
+          :manager="restaurant.manager"
+          @edit="showModal = true" />
+    </div>
+    <qrCode
+      v-if="botStore.status"
+      :base64="botStore.status.base64Qr"
+      :status="botStore.status.status"
+      :botId="botId!" />
+    <ModalEdit 
+      :showModal="showModal" 
+      @closeModal="showModal = false" />
   </div>
-  <qrCode
-    v-if="botStore.status"
-    :base64="botStore.status.base64Qr"
-    :status="botStore.status.status"
-    :botId="botId!" />
-  <ModalEdit 
-    :showModal="showModal" 
-    @closeModal="showModal = false" />
 </template>
 
 <style lang="scss" scoped>

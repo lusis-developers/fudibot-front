@@ -7,6 +7,7 @@ import type { AddOrEditFleetDetail, Delivery, HasOwnFleet } from '@/interfaces/d
 interface RootState {
   delivery: Delivery | null;
   error: string | null;
+  isLoading: boolean,
 };
 
 const deliveryService = new APIDelivery();
@@ -14,17 +15,21 @@ const deliveryService = new APIDelivery();
 const useDeliveryStore = defineStore("DeliveryStore", {
   state: (): RootState => ({
     delivery: null,
-    error: null
+    error: null,
+    isLoading: false,
   }),
 
   actions: {
     async getDeliveryData(id: string) {
+      this.isLoading = true
       try {
         const response = await deliveryService.getDeliveryData(id);
         this.delivery = response.data;
       } catch (error) {
         this.error = String(error);
-      };
+      } finally {
+        this.isLoading = false
+      }
     },
     async postHasOwnFleet(data: HasOwnFleet) {
       try {
