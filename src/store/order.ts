@@ -15,6 +15,7 @@ interface RootState {
   previousPage: number | null;
   error: AxiosError | null;
   orderScheduled: OrdersRequested | null;
+  isLoading: boolean;
 }
 
 const orderService = new APIOrder();
@@ -30,11 +31,13 @@ const useOrderStore = defineStore("OrderStore", {
     hasPreviousPage: false,
     previousPage: null,
     error: null,
-    orderScheduled: null
+    orderScheduled: null,
+    isLoading: false,
   }),
 
   actions: {
     async getOrders(restaurantId: string, page: number = 1, scheduledDelivery: boolean): Promise<void> {
+      this.isLoading = true;
       try {
         const response = await orderService.getOrders(restaurantId, page, scheduledDelivery);
         this.orders = response.data.orders;
@@ -47,6 +50,8 @@ const useOrderStore = defineStore("OrderStore", {
         this.hasPreviousPage = response.data.hasPreviousPage;
       } catch (error) {
         this.error = error as AxiosError;
+      } finally {
+        this.isLoading = false;
       }
     },
     async updateOrderStatus(orderId: string, status: string, restaurantId: string, scheduledDelivery: boolean) {

@@ -2,13 +2,14 @@
 import { useRouter } from 'vue-router';
 import { onMounted, computed, ref } from 'vue';
 
+import useBotStore from '@/store/bot';
 import useAuthStore from '@/store/auth';
 import useClientStore from '@/store/client';
+import qrCode from './components/qrCode.vue';
 import useRestaurantStore from '@/store/restaurant';
+import GlobalLoading from '@/components/GlobalLoading.vue'
 import ModalEdit from './components/ModalEdit.vue/index.vue';
 import RestaurantDetails from './components/RestaurantDetails.vue';
-import qrCode from './components/qrCode.vue';
-import useBotStore from '@/store/bot';
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -18,6 +19,7 @@ const botStore = useBotStore();
 
 const builderBotUrl = 'https://www.bbot.site/link-device/-SsKnPfqEdZpFxElmpSuR';
 const showModal = ref(false);
+const isLoading = ref(true);
 const botId = computed(() => restaurantStore.restaurant?.botId);
 const restaurant = computed(() => restaurantStore.restaurant);
 const qrCodeStatus = computed(() => botStore.status);
