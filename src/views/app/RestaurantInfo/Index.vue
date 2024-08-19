@@ -10,7 +10,6 @@ import useRestaurantStore from '@/store/restaurant';
 import GlobalLoading from '@/components/GlobalLoading.vue'
 import ModalEdit from './components/ModalEdit.vue/index.vue';
 import RestaurantDetails from './components/RestaurantDetails.vue';
-import { QrCode } from '@/enum/qrCode.enum';
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -18,7 +17,6 @@ const clientStore = useClientStore();
 const restaurantStore = useRestaurantStore();
 const botStore = useBotStore();
 
-// const builderBotUrl = 'https://www.bbot.site/link-device/-SsKnPfqEdZpFxElmpSuR';
 const showModal = ref(false);
 const isLoading = ref(true);
 const botId = computed(() => restaurantStore.restaurant?.botId);
@@ -41,11 +39,15 @@ onMounted(async () => {
     router.push({ path: '/wizard' });
   }
   getQRInterval();
+  isLoading.value = false;
 });
 </script>
 
 <template>
-  <div class="info-wrapper crush-two-column-layout">
+  <GlobalLoading v-if="isLoading" />
+  <div
+    v-else
+    class="info-wrapper crush-two-column-layout">
     <div
       v-if="restaurant && !showModal" 
       class="restaurant-info crush-col-1">
