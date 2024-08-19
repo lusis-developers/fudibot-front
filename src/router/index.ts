@@ -23,10 +23,6 @@ const RestaurantInfo = () => import('@/views/app/RestaurantInfo/Index.vue');
 
 const routes: Array<RouteRecordRaw> = [
   {
-    path: '/',
-    redirect: '/login',
-  },
-  {
     path: '/login',
     name: 'Login',
     component: Login,

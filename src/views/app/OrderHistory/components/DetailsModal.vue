@@ -1,22 +1,21 @@
 <script setup lang="ts">
-import axios from 'axios';
 import { PropType, computed, onMounted, ref } from 'vue';
 
 import useUserStore from '@/store/user';
 import useAuthStore from '@/store/auth';
 import useBillStore from '@/store/bill';
 import useOrderStore from '@/store/order';
-import Modal from '@/components/Modal.vue';
 import useDeliveryStore from '@/store/delivery';
 import useClientStore from '@/store/client';
 import { OrderStatus } from '@/enum/order.enum';
 import { statusAvailable } from '@/utils/order';
 import useRestaurantStore from '@/store/restaurant';
 import { formatToCurrency } from '@/utils/inputFormats';
-
-import { PaymentTypeSpanishTranslate } from '@/enum/PaymentType.enum';
+import Modal from '@/components/Modal.vue';
 
 import type { OrderItem, OrderSchedule } from '@/interfaces/order.interface';
+import { PaymentTypeSpanishTranslate } from '@/enum/PaymentType.enum';
+import axios from 'axios';
 
 const emit = defineEmits(['update:modalValue', 'closeModal'])
 
@@ -81,8 +80,6 @@ const validTransitions: Record<OrderStatus, OrderStatus[]> = {
   [OrderStatus.FAILED_DELIVERY]: []
 };
 const statusSelected = ref(props.status);
-const isLoading = ref(false);
-const initialStatus = ref(props.status);
 const formattedTotal = computed(() => formatToCurrency(props.total));
 const statusClass = computed(() => {
   switch (props.status) {
@@ -172,52 +169,41 @@ async function downloadTransfer() {
 };
 
 async function submitStatus(): Promise<void> {
-  if(statusSelected.value === initialStatus.value) {
-    isLoading.value = false;
-    return;
+  if (restaurantStore.restaurant) {
+    await orderStore.updateOrderStatus(
+      props._id, statusSelected.value,
+      restaurantStore.restaurant?._id,
+      restaurantStore.restaurant?.scheduledDelivery
+    );
   }
 
-  isLoading.value = true;
 
-  try {
-    if (restaurantStore.restaurant) {
-      await orderStore.updateOrderStatus(
-        props._id, statusSelected.value,
-        restaurantStore.restaurant?._id,
-        restaurantStore.restaurant?.scheduledDelivery
-      );
-    }
-  
-  
-    if (statusSelected.value === OrderStatus.PREPARING) {
-      await userStore.getUser(props.userId);
-  
-      if (userStore.user) {
-  
-        const data = {
-          from: userStore.user.number,
-          name: userStore.user.name
-        }
-        // TODO: dispatch picker if not own fleet
-        if (!deliveryStore.delivery?.hasOwnFleet) {
-          await deliveryStore.createBooking(
-            restaurantStore.restaurant?.uuid!,
-            data
-          );
-        }
-        // TODO: dispatch bill link if not sheduledDelivery setup
-        if (restaurantStore.restaurant && !restaurantStore.restaurant?.scheduledDelivery) {
-          await billStore.sendCreateBill(
-            restaurantStore.restaurant?.uuid,
-            userStore.user.number
-          );
-        }
+  if (statusSelected.value === OrderStatus.PREPARING) {
+    await userStore.getUser(props.userId);
+
+    if (userStore.user) {
+
+      const data = {
+        from: userStore.user.number,
+        name: userStore.user.name
+      }
+      // TODO: dispatch picker if not own fleet
+      if (!deliveryStore.delivery?.hasOwnFleet) {
+        await deliveryStore.createBooking(
+          restaurantStore.restaurant?.uuid!,
+          data
+        );
+      }
+      // TODO: dispatch bill link if not sheduledDelivery setup
+      if (restaurantStore.restaurant && !restaurantStore.restaurant?.scheduledDelivery) {
+        await billStore.sendCreateBill(
+          restaurantStore.restaurant?.uuid,
+          userStore.user.number
+        );
       }
     }
-    closeModal();
-  } finally {
-    isLoading.value = false;
   }
+  closeModal();
 }
 
 function getMonthFromName(monthName: string) {
@@ -325,11 +311,8 @@ function isStatusButtonEnabled(status: OrderStatus): boolean {
         <CrushButton variant="secondary" @click="closeModal">
           Cancel
         </CrushButton>
-        <CrushButton
-          text="Guardar"
-          :dataLoading="isLoading"
-          :disabled="isLoading || statusSelected === initialStatus"
-          @click="submitStatus">
+        <CrushButton @click="submitStatus">
+          Guardar
         </CrushButton>
       </div>
     </template>

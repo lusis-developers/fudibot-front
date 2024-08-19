@@ -6,9 +6,7 @@ import useDrinkStore from '@/store/drink';
 import useClientStore from '@/store/client';
 import useRestaurantStore from '@/store/restaurant';
 import { Categories } from '@/enum/mealOrDrink.enum';
-import GlobalLoading from '@/components/GlobalLoading.vue';
 import ProductTable from '@/components/Tables/ProductTable.vue'; 
-
 
 import CreateMealDrinkModal from '@/components/Modals/CreateMealDrinkModal.vue';
 
@@ -42,8 +40,7 @@ onMounted( async () => {
 </script>
 
 <template>
-  <GlobalLoading v-if="drinksStore.isLoading"/>
-  <div class="drinks" v-else>
+  <div class="drinks">
     <div class="drinks-actions">
       <CrushButton
         variant="primary"

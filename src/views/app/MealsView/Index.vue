@@ -40,8 +40,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <CrushLoading v-if="mealStore.isLoading"/>
-  <div class="meals" v-else>
+  <div class="meals">
     <div class="meals-actions">
       <CrushButton
         variant="primary"
