@@ -3,9 +3,10 @@ import { computed, onMounted, ref, watch } from 'vue';
 import QRCode from 'qrcode';
 
 import { QrCode } from '@/enum/qrCode.enum';
-import useBotStore from '@/store/bot';
+// import useBotStore from '@/store/bot';
 import QrCodeImage from '@/assets/QRCode.png';
 import Card from '@/components/Card.vue';
+import DeleteModal from '@/views/app/RestaurantInfo/components/DeleteModal.vue/Index.vue';
 
 const props = defineProps({
   base64: {
@@ -22,9 +23,10 @@ const props = defineProps({
   }
 });
 
-const botStore = useBotStore();
+// const botStore = useBotStore();
 
 const canvasRef = ref<HTMLCanvasElement | null>(null);
+const isDeleteModalOpen = ref(false);
 const isBotConnected = computed(() => props.status === QrCode.ONLINE);
 const statusMessage = computed(() => isBotConnected.value ? 'Conectado' : 'Escanea el código');
 const statusClass = computed(() => isBotConnected.value ? 'online' : 'pending');
@@ -37,8 +39,8 @@ function generateQRCode(): void {
   }
 }
 
-async function deleteBot(): Promise<void> {
-  await botStore.deleteBot(props.botId);
+async function openCloseDeleteModal(): Promise<void> {
+  isDeleteModalOpen.value = !isDeleteModalOpen.value
 }
 
 onMounted(() => {
@@ -66,9 +68,8 @@ watch(
             </span>
           </span>
           <CrushButton
-            v-if="isBotConnected"
             :small="true"
-            @click="deleteBot">
+            @click="openCloseDeleteModal">
             Desconectar
           </CrushButton> 
         </div>
@@ -91,6 +92,11 @@ watch(
       </template>
     </Card>
   </div>
+  <DeleteModal
+    v-if="botId"
+    :modalValue="isDeleteModalOpen"
+    :botId="botId!"
+    @close-modal="openCloseDeleteModal" />
 </template>
 
 <style lang="scss" scoped>
