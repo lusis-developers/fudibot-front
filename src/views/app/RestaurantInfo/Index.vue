@@ -2,13 +2,15 @@
 import { useRouter } from 'vue-router';
 import { onMounted, computed, ref } from 'vue';
 
+import useBotStore from '@/store/bot';
 import useAuthStore from '@/store/auth';
 import useClientStore from '@/store/client';
+import qrCode from './components/qrCode.vue';
 import useRestaurantStore from '@/store/restaurant';
+import GlobalLoading from '@/components/GlobalLoading.vue'
 import ModalEdit from './components/ModalEdit.vue/index.vue';
 import RestaurantDetails from './components/RestaurantDetails.vue';
-import qrCode from './components/qrCode.vue';
-import useBotStore from '@/store/bot';
+import { QrCode } from '@/enum/qrCode.enum';
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -16,17 +18,19 @@ const clientStore = useClientStore();
 const restaurantStore = useRestaurantStore();
 const botStore = useBotStore();
 
+// const builderBotUrl = 'https://www.bbot.site/link-device/-SsKnPfqEdZpFxElmpSuR';
 const showModal = ref(false);
+const isLoading = ref(true);
 const botId = computed(() => restaurantStore.restaurant?.botId);
 const restaurant = computed(() => restaurantStore.restaurant);
 const qrCodeStatus = computed(() => botStore.status);
 
-function getQRInterval(): void {
+async function getQRInterval(): Promise<void> {
   setInterval(async () => {
     if (botId.value) {
       await botStore.getBot(botId.value);
     }
-  }, 20000); // 20000 milisegundos = 20 segundos
+  }, 10000); // 10000 milisegundos = 10 segundos
 }
 
 onMounted(async () => {
@@ -37,28 +41,37 @@ onMounted(async () => {
     router.push({ path: '/wizard' });
   }
   getQRInterval();
-  if (botId.value && !qrCodeStatus.value) {
-    await botStore.createBot(botId.value);
-  }
 });
 </script>
 
 <template>
-  <div 
-    v-if="restaurant && !showModal" 
-    class="restaurant-info">
+  <div class="info-wrapper crush-two-column-layout">
+    <div
+      v-if="restaurant && !showModal" 
+      class="restaurant-info crush-col-1">
       <RestaurantDetails 
         :companyName="restaurant.companyName" 
         :logo="restaurant.logo"
         :website="restaurant.website"
         :manager="restaurant.manager"
         @edit="showModal = true" />
+    </div>
+    <div class="restaurant-status crush-col-2">
+      <CrushButton
+        v-if="botId && !qrCodeStatus"
+        @click="botStore.createBot(botId)">
+        Crear QR
+      </CrushButton>
+      <div v-if="botStore.status">
+        {{ qrCodeStatus.status }}
+      </div>
+      <qrCode
+        v-if="botStore.status"
+        :base64="botStore.status.base64Qr"
+        :status="botStore.status.status"
+        :botId="botId!" />
+    </div>
   </div>
-  <qrCode
-    v-if="botStore.status"
-    :base64="botStore.status.base64Qr"
-    :status="botStore.status.status"
-    :botId="botId!" />
   <ModalEdit 
     :showModal="showModal" 
     @closeModal="showModal = false" />
