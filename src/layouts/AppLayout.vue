@@ -25,12 +25,12 @@ async function logout(): Promise<void> {
           {{ pageTitle }}
         </h1>
         <div class="profile-container">
-          <i class="fa-solid fa-circle-user profile-icon"></i>
+          <i class="fa-solid fa-circle-user profile-icon" />
           <div class="logout-button">
             <CrushButton
               :small="true"
               @click="logout">
-              <span>Cerrar sesión</span>
+              <span class="text">Cerrar sesión</span>
             </CrushButton>
           </div>
         </div>
@@ -81,7 +81,7 @@ async function logout(): Promise<void> {
             border: 1px solid $grey;
           }
 
-          span {
+          .text {
             font-size: $body-font-x-small;
           }
         }
