@@ -2,20 +2,39 @@
 import { computed } from 'vue';
 import { RouterView, useRoute } from 'vue-router';
 
+import useAuthStore from '@/store/auth';
 import AppNavbar from '@/components/AppNavbar.vue';
 
 const route = useRoute();
 
+const authStore = useAuthStore();
+
 const pageTitle = computed(() => route.meta.title);
+
+async function logout(): Promise<void> {
+  await authStore.signOut();
+}
 </script>
 
 <template>
   <div class="layout-container">
     <app-navbar />
     <div class="layout-container-content">
-      <h1 class="title">
-        {{ pageTitle }}
-      </h1>
+      <div class="header">
+        <h1 class="title">
+          {{ pageTitle }}
+        </h1>
+        <div class="profile-container">
+          <i class="fa-solid fa-circle-user profile-icon"></i>
+          <div class="logout-button">
+            <CrushButton
+              :small="true"
+              @click="logout">
+              <span>Cerrar sesión</span>
+            </CrushButton>
+          </div>
+        </div>
+      </div>
       <router-view />
     </div>
   </div>
@@ -30,9 +49,47 @@ const pageTitle = computed(() => route.meta.title);
     padding: 16px;
     margin: 0 auto;
     max-width: $desktop-upper-breakpoint;
-    .title {
-      font-size: $h2-font-size;
+    .header {
+      width: 100%;
       margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+
+      .title {
+        font-size: $h2-font-size;
+      }
+      
+      .profile-container {
+        position: relative;
+        display: flex;
+        align-items: center;
+
+        .profile-icon {
+          font-size: 1.5rem;
+          cursor: pointer;
+          color: $grey;
+        }
+
+        .logout-button {
+          display: none;
+          position: absolute;
+          top: 100%;
+          right: 0;
+          margin-top: 8px;
+          :deep(.crush-button.crush-primary) {
+            background-color: $white;
+            border: 1px solid $grey;
+          }
+
+          span {
+            font-size: $body-font-x-small;
+          }
+        }
+
+        &:hover .logout-button {
+          display: block;
+        }
+      }
     }
   }
 }
