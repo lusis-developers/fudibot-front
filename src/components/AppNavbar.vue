@@ -7,6 +7,11 @@ const authStore = useAuthStore();
 
 const menu = [
   {
+    name: 'Dashboard',
+    path: 'dashboard',
+    icon: 'fa-solid fa-chart-line'
+  },
+  {
     name: 'Ordenes',
     path: 'order-history',
     icon: 'fas fa-history'

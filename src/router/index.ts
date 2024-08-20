@@ -15,6 +15,7 @@ const Schedule = () => import('@/views/Schedule.vue');
 const Datafast = () => import('@/views/Datafast.vue');
 const Meals = () => import('@/views/app/MealsView/Index.vue');
 const Drinks = () => import('@/views/app/DrinksView/Index.vue');
+const Dashboard = () => import('@/views/app/Dashboard/Index.vue');
 const Integrations = () => import('@/views/app/TheIntegrations/index.vue');
 const OrderHistory = () => import('@/views/app/OrderHistory/Index.vue');
 const DeliverySetup = () => import('@/views/app/DeliveryView/index.vue');
@@ -87,6 +88,14 @@ const routes: Array<RouteRecordRaw> = [
     name: 'App',
     component: AppLayout,
     children: [
+      {
+        path: 'dashboard',
+        name: 'Dashboard',
+        component: Dashboard,
+        meta: {
+          title: 'Dashboard',
+        },
+      },
       {
         path: 'restaurant-info',
         name: 'Restaurant Info',
