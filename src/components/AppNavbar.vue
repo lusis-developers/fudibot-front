@@ -1,10 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref, computed } from 'vue';
 
-import useAuthStore from '@/store/auth';
-
-const authStore = useAuthStore();
-
 const menu = [
   {
     name: 'Dashboard',
@@ -55,10 +51,6 @@ function toggleNav(): void {
   isOpen.value = !isOpen.value;
 }
 
-async function logout(): Promise<void> {
-  await authStore.signOut();
-}
-
 onMounted(() => {
   if (isDektop.value) {
     isOpen.value = true;
@@ -95,13 +87,6 @@ onMounted(() => {
             </span>
         </router-link>
       </div>
-      <div class="logout-button">
-        <CrushButton
-        :small="true"
-        @click="logout">
-        <i class="fa-solid fa-right-from-bracket"></i>
-      </CrushButton>
-    </div>
     </div>
   </nav>
 </template>
@@ -136,18 +121,6 @@ onMounted(() => {
     flex-direction: column;
     justify-content: space-between;
     flex: 1;
-
-    .logout-button {
-      width: 100%;
-      display: flex;
-      justify-content: center;
-
-      :deep(.crush-button.crush-primary) {
-        background-color: $white;
-        border: 1px solid $grey;
-        transform: rotate(180deg); 
-      }
-    }
   }
   &-wrapper {
     width: 100%;
