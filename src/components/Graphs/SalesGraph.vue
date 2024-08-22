@@ -2,13 +2,10 @@
 import { onMounted, PropType, ref, watch } from 'vue';
 import Chart from 'chart.js/auto';
 
+import { completeMonths } from '@/utils/timeData';
 import Card from '@/components/Card.vue';
 
-interface SalesDataItem {
-  year: string;
-  month: string;
-  revenue: number;
-}
+import type { SalesDataItem } from '@/interfaces/sales.interface';
 
 const props = defineProps({
   salesData: {
@@ -23,8 +20,36 @@ function initializeChart(): void {
   const ctx = document.getElementById('salesChart') as HTMLCanvasElement;
   if (!ctx) return;
 
-  const labels = props.salesData.map(item => `${item.month} ${item.year}`);
-  const data = props.salesData.map(item => item.revenue);
+  // Crear un mapa para facilitar el acceso a los datos proporcionados
+  const dataMap = new Map<string, number>(
+    props.salesData.map(item => [item.month, item.revenue])
+  );
+
+  // Preparar las etiquetas (labels) y los datos (data) completos
+  const labels: string[] = [];
+  const data: number[] = [];
+
+  // Iterar sobre todos los meses completos
+  completeMonths.forEach(month => {
+    labels.push(`${month} 2024`);  // Asumimos que el año es siempre 2024
+    data.push(dataMap.has(month) ? dataMap.get(month)! : 0);
+  });
+
+  // Encontrar el índice del último mes con datos
+  const lastMonthWithDataIndex = data.map((value, index) => value > 0 ? index : null).filter(i => i !== null).pop() || 0;
+
+  // Si hay menos de 12 meses con datos, llenamos con ceros al principio
+  if (lastMonthWithDataIndex >= 0 && lastMonthWithDataIndex < 11) {
+    const offset = 11 - lastMonthWithDataIndex;
+    labels.splice(0, offset); // Remover meses posteriores
+    data.splice(0, offset);   // Remover datos de meses posteriores
+  }
+
+  // Si hay menos de 12 elementos, rellenamos los meses anteriores con ceros
+  while (labels.length < 12) {
+    labels.unshift(`${completeMonths[labels.length]} 2024`);
+    data.unshift(0);
+  }
 
   salesChart.value = new Chart<'line', number[], string>(ctx.getContext('2d')!, {
     type: 'line',
@@ -53,6 +78,8 @@ function initializeChart(): void {
     }
   });
 }
+
+
 
 watch(
   () => props.salesData,
@@ -87,6 +114,6 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 #salesChart {
-  height: 400px;
+  height: 320px;
 }
 </style>
