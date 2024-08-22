@@ -12,7 +12,7 @@ interface RootState {
   isLoading: boolean;
 };
 
-const useUserStore = defineStore('UserStore', {
+const useSalesStore = defineStore('SalesStore', {
   state: (): RootState => ({
     salesPerMonth: null,
     error: null,
@@ -34,4 +34,4 @@ const useUserStore = defineStore('UserStore', {
   }
 })
 
-export default useUserStore;
+export default useSalesStore;
