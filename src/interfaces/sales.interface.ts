@@ -3,3 +3,7 @@ export interface SalesDataItem {
   month: string;
   revenue: number;
 }
+
+export interface SalesOrders {
+  orders: SalesDataItem[]
+}

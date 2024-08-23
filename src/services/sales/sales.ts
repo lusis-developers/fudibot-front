@@ -2,11 +2,11 @@ import { AxiosResponse } from 'axios';
 
 import APIBase from '../base';
 
-import type { SalesDataItem } from '@/interfaces/sales.interface';
+import type { SalesOrders } from '@/interfaces/sales.interface';
 
 class APISales extends APIBase {
-  async getSalesPerMonth(restaurantId: string): Promise<AxiosResponse<SalesDataItem[]>> {
-    return await this.get<SalesDataItem[]>(`sales/${restaurantId}`);
+  async getSalesPerMonth(restaurantId: string): Promise<AxiosResponse<SalesOrders>> {
+    return await this.get<SalesOrders>(`sales-monthly/${restaurantId}`);
   }
 }
 
