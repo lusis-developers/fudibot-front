@@ -31,7 +31,7 @@ function initializeChart(): void {
 
   // Iterar sobre todos los meses completos
   completeMonths.forEach(month => {
-    labels.push(`${month} 2024`);  // Asumimos que el año es siempre 2024
+    labels.push(`${month}`);  // Asumimos que el año es siempre 2024
     data.push(dataMap.has(month) ? dataMap.get(month)! : 0);
   });
 
@@ -47,7 +47,7 @@ function initializeChart(): void {
 
   // Si hay menos de 12 elementos, rellenamos los meses anteriores con ceros
   while (labels.length < 12) {
-    labels.unshift(`${completeMonths[labels.length]} 2024`);
+    labels.unshift(`${completeMonths[labels.length]}`);
     data.unshift(0);
   }
 

@@ -24,7 +24,13 @@ const useSalesStore = defineStore('SalesStore', {
       this.isLoading = true;
       try {
         const response = await salesService.getSalesPerMonth(restaurantId);
-        this.salesPerMonth = response.data.orders;
+        this.salesPerMonth = response.data.annualSalesByMonth.map((sale) => {
+          return {
+            ...sale,
+            revenue: (sale.revenue / 100)
+          }
+        });
+        console.log(this.salesPerMonth)
       } catch (error: unknown) {
         this.error = String(error);
       } finally {

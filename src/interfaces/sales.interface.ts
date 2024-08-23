@@ -5,5 +5,5 @@ export interface SalesDataItem {
 }
 
 export interface SalesOrders {
-  orders: SalesDataItem[]
+  annualSalesByMonth: SalesDataItem[]
 }
