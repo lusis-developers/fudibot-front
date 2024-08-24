@@ -5,8 +5,8 @@ import useSalesStore from '@/store/sales';
 import useRestaurantStore from '@/store/restaurant';
 import GlobalLoading from '@/components/GlobalLoading.vue';
 import SalesGraph from '@/components/Graphs/SalesGraph.vue';
-import DetailCard from '@/views/app/Dashboard/components/DetailCard.vue';
 import { formatPriceToDisplay } from '@/utils/inputFormats';
+import DetailCard from '@/views/app/Dashboard/components/DetailCard.vue';
 
 const salesStore = useSalesStore()
 const restaurantStore = useRestaurantStore();
