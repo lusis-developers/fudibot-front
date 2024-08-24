@@ -16,7 +16,7 @@ const props = defineProps({
 
 const messageCard = computed(() => {
   return props.pickerFloatIsActive
-  ? 'Estas trabajando Picker'
+  ? 'Estas usando Picker'
   : 'Desactiva la opción inferior para trabajar con Picker' 
 })
 

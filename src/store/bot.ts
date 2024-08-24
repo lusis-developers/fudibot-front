@@ -45,10 +45,10 @@ const useBotStore = defineStore("BotStore", {
       this.isLoading = true;
       try {
         await botService.removeContainer(botId);
-        this.createBot(botId);
       } catch (error: unknown) {
         this.error = error as AxiosError;
       } finally {
+        this.status = null;
         this.isLoading = false;
       }
     }

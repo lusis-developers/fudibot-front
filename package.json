@@ -21,6 +21,7 @@
     "@nabux-crush/crush-text-field": "^0.5.1",
     "@nabux-crush/crush-upload": "^0.0.2",
     "axios": "^1.7.2",
+    "chart.js": "^4.4.4",
     "firebase": "^10.12.2",
     "pinia": "^2.1.7",
     "qrcode": "^1.5.3",

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Datafast from './components/Datafast.vue';
+// import Datafast from './components/Datafast.vue';
 import Pagoplux from './components/PagoPlux.vue';
 </script>
 
@@ -10,7 +10,7 @@ import Pagoplux from './components/PagoPlux.vue';
     </h3>
     <div class="principal-container-integration">
       <Pagoplux />
-      <Datafast />
+      <!-- <Datafast /> -->
     </div>
   </div>
 </template>

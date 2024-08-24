@@ -1,19 +1,33 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import { RouterView, useRoute } from 'vue-router';
+import { computed, onMounted } from 'vue';
+import { RouterView, useRoute, useRouter } from 'vue-router';
 
 import useAuthStore from '@/store/auth';
+import useClientStore from '@/store/client';
 import AppNavbar from '@/components/AppNavbar.vue';
+import useRestaurantStore from '@/store/restaurant';
 
 const route = useRoute();
+const router = useRouter()
 
 const authStore = useAuthStore();
+const clientStore = useClientStore();
+const restaurantStore = useRestaurantStore();
 
 const pageTitle = computed(() => route.meta.title);
 
 async function logout(): Promise<void> {
   await authStore.signOut();
 }
+
+onMounted(async () => {
+  const userAuth = await authStore.checkAuth();
+  await clientStore.getClientByEmail(userAuth?.email!);
+  await restaurantStore.getRestaurantById(clientStore.client?.restaurant?._id!);
+  if (!clientStore.client?.restaurant?.companyName) {
+    router.push({ path: '/wizard' });
+  }
+})
 </script>
 
 <template>
@@ -25,12 +39,12 @@ async function logout(): Promise<void> {
           {{ pageTitle }}
         </h1>
         <div class="profile-container">
-          <i class="fa-solid fa-circle-user profile-icon"></i>
+          <i class="fa-solid fa-circle-user profile-icon" />
           <div class="logout-button">
             <CrushButton
               :small="true"
               @click="logout">
-              <span>Cerrar sesión</span>
+              <span class="text">Cerrar sesión</span>
             </CrushButton>
           </div>
         </div>
@@ -81,7 +95,7 @@ async function logout(): Promise<void> {
             border: 1px solid $grey;
           }
 
-          span {
+          .text {
             font-size: $body-font-x-small;
           }
         }
