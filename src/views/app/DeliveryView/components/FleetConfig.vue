@@ -29,12 +29,12 @@ async function handleSelection(hasOwnFleet: boolean): Promise<void> {
   hasOwnFleet == deliveryStore.delivery?.hasOwnFleet ?? false;
 };
 
-function showForm (value: boolean): void {
-  firstForm.value = value;
-};
-function showSecondForm(value: boolean): void {
-  secondForm.value = value
-};
+// function showForm (value: boolean): void {
+//   firstForm.value = value;
+// };
+// function showSecondForm(value: boolean): void {
+//   secondForm.value = value
+// };
 function closeModal(value: boolean): void {
   firstForm.value = value;
   secondForm.value = value;

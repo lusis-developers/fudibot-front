@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Datafast from './components/Datafast.vue';
+// import Datafast from './components/Datafast.vue';
 import Pagoplux from './components/PagoPlux.vue';
 </script>
 
