@@ -7,3 +7,9 @@ export interface SalesDataItem {
 export interface SalesOrders {
   annualSalesByMonth: SalesDataItem[]
 }
+
+export interface currentMonthDetails {
+  currentMonthRevenue: number;
+  ordersOpen: number;
+  salesMonthClosed: number;
+}
