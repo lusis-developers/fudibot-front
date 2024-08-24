@@ -3,8 +3,9 @@ import { watch } from 'vue';
 
 import useSalesStore from '@/store/sales';
 import useRestaurantStore from '@/store/restaurant';
-import SalesGraph from '@/components/Graphs/SalesGraph.vue';
 import GlobalLoading from '@/components/GlobalLoading.vue';
+import SalesGraph from '@/components/Graphs/SalesGraph.vue';
+import DetailsCard from '@/views/app/Dashboard/components/DetailsCard.vue';
 
 const salesStore = useSalesStore()
 const restaurantStore = useRestaurantStore();
@@ -28,9 +29,15 @@ watch(
 <template>
   <div>
     <GlobalLoading v-if="!salesStore.salesPerMonth" />
-    <SalesGraph
-      v-else
-      :salesData="salesStore.salesPerMonth" />
+    <template v-else>
+      <div>
+        <DetailsCard
+          :title="'superCard'"
+          :data="100" />
+        <SalesGraph
+          :salesData="salesStore.salesPerMonth" />
+      </div>
+    </template>
   </div>
 </template>
 
