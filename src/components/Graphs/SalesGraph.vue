@@ -115,5 +115,6 @@ onMounted(() => {
 <style lang="scss" scoped>
 #salesChart {
   height: 320px;
+  width: 100%
 }
 </style>

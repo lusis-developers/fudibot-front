@@ -10,7 +10,7 @@ import Pagoplux from './components/PagoPlux.vue';
     </h3>
     <div class="principal-container-integration">
       <Pagoplux />
-      <Datafast />
+      <!-- <Datafast /> -->
     </div>
   </div>
 </template>

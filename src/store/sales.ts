@@ -8,6 +8,9 @@ const salesService = new APISales();
 
 interface RootState {
   salesPerMonth: SalesDataItem[] | null;
+  currentMonthRevenue: number | null,
+  ordersOpen: number | null,
+  salesMonthClosed: number | null,
   error: string | null;
   isLoading: boolean;
 };
@@ -15,6 +18,9 @@ interface RootState {
 const useSalesStore = defineStore('SalesStore', {
   state: (): RootState => ({
     salesPerMonth: null,
+    currentMonthRevenue: null,
+    ordersOpen: null,
+    salesMonthClosed: null,
     error: null,
     isLoading: false,
   }),
@@ -30,7 +36,19 @@ const useSalesStore = defineStore('SalesStore', {
             revenue: (sale.revenue / 100)
           }
         });
-        console.log(this.salesPerMonth)
+      } catch (error: unknown) {
+        this.error = String(error);
+      } finally {
+        this.isLoading = false;
+      }
+    },
+    async getSalesCurrentMonth(restaurantId: string): Promise<void> {
+      this.isLoading = true;
+      try {
+        const response = await salesService.getSalesCurrentMonth(restaurantId);
+        this.ordersOpen = response.data.ordersOpen;
+        this.salesMonthClosed = response.data.salesMonthClosed;
+        this.currentMonthRevenue = response.data.currentMonthRevenue;
       } catch (error: unknown) {
         this.error = String(error);
       } finally {
