@@ -3,7 +3,7 @@ import { computed, provide, ref } from 'vue';
 
 import PickerCard from './Card/PickerCard.vue';
 import useDeliveryStore from '@/store/delivery';
-import OwnFloatCard from './Card/OwnFloatCard.vue'
+// import OwnFloatCard from './Card/OwnFloatCard.vue'
 import ModalFleetDetail from './Modals/ModalFleetDetail.vue';
 import ModalAddGeneralCost from './Modals/ModalAddGeneralCost.vue';
 
@@ -51,11 +51,11 @@ function closeModal(value: boolean): void {
     <PickerCard
       :pickerFloatIsActive="!deliveryStore.delivery.hasOwnFleet"
       @handleSelection="handleSelection" />
-    <OwnFloatCard
+    <!-- <OwnFloatCard
       :hasOwnFleet="deliveryStore.delivery.hasOwnFleet"
       @handleSelection="handleSelection" 
       @showForm="showForm"
-      @showSecondForm="showSecondForm"/>
+      @showSecondForm="showSecondForm"/> -->
   </div>
   <ModalFleetDetail 
     :active="firstForm"
